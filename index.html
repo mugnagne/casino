@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BNZ Casino - Pro Edition</title>
+    <title>BNZ Casino - God Rays Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         body, html {
@@ -22,6 +22,30 @@
             image-rendering: pixelated;
         }
 
+        /* EFFET GOD RAYS (Jackpot) */
+        #god-rays {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg, transparent 10deg,
+                rgba(255, 255, 255, 0.4) 15deg, transparent 20deg,
+                transparent 30deg, rgba(255, 255, 255, 0.4) 45deg,
+                transparent 60deg
+            );
+            transform: translate(-50%, -50%);
+            z-index: 15;
+            display: none;
+            pointer-events: none;
+            animation: rotateRays 5s linear infinite;
+        }
+
+        @keyframes rotateRays {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
         /* UI TOP */
         .ui-top {
             position: absolute; top: 5%; width: 100%;
@@ -33,38 +57,25 @@
             padding: 12px 24px; background: rgba(0, 0, 0, 0.85);
             border: 4px solid #333; color: #fff;
             font-size: clamp(10px, 1.5vw, 18px);
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
         }
 
-        /* ZONE DES ROULEAUX (SANS CADRE NI FOND NOIR) */
+        /* ROULEAUX */
         #reels-container {
             position: absolute;
-            left: 50%; top: 44%; /* Remonté légèrement */
+            left: 50%; top: 44%;
             transform: translate(-50%, -50%);
-            width: 450px; /* Plus large pour accueillir des icônes plus grosses */
-            height: 180px; /* Plus haut */
-            display: flex;
-            justify-content: space-between;
-            overflow: hidden;
-            z-index: 5;
-            background: transparent; /* Fond supprimé */
+            width: 450px; height: 180px;
+            display: flex; justify-content: space-between;
+            overflow: hidden; z-index: 20;
         }
 
-        .reel {
-            width: 140px; /* Plus large */
-            display: flex; flex-direction: column;
-            will-change: transform;
-        }
+        .reel { width: 140px; display: flex; flex-direction: column; will-change: transform; }
 
         .symbol {
-            width: 140px;
-            height: 180px; /* Agrandissement significatif */
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            image-rendering: pixelated;
+            width: 140px; height: 180px;
+            background-size: contain; background-repeat: no-repeat;
+            background-position: center; image-rendering: pixelated;
             flex-shrink: 0;
-            /* Pas de fond noir ici */
         }
 
         .sym-B { background-image: url('https://iili.io/flqQLAP.png'); }
@@ -77,41 +88,25 @@
         .controls-bottom {
             position: absolute; bottom: 8%; width: 100%;
             display: flex; justify-content: center; gap: 60px;
+            z-index: 30;
         }
 
-        .btn-container {
-            position: relative;
-            width: clamp(160px, 20vw, 240px);
-            height: clamp(60px, 8vw, 90px);
-            cursor: pointer;
-        }
+        .btn-container { position: relative; width: 200px; height: 70px; cursor: pointer; }
+        .btn-img { width: 100%; height: 100%; background-image: url('https://iili.io/flqQQN1.png'); background-size: 100% 100%; image-rendering: pixelated; }
+        .btn-container:active { transform: translateY(4px); }
+        .btn-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; pointer-events: none; color: white; text-shadow: 2px 2px #000; }
 
-        .btn-img {
-            width: 100%; height: 100%;
-            background-image: url('https://iili.io/flqQQN1.png');
-            background-size: 100% 100%;
-            image-rendering: pixelated;
-        }
-
-        .btn-container:active { transform: translateY(6px); }
-        .btn-text {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: clamp(10px, 1.4vw, 22px);
-            pointer-events: none; color: white;
-            text-shadow: 3px 3px #000;
-        }
-
+        /* MESSAGES */
         #msg-banner {
             position: absolute; top: 30%; left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 40px; color: #fff; text-align: center;
-            display: none; z-index: 20;
-            text-shadow: 0 0 10px #f0f, 0 0 20px #f0f;
-            animation: pulse 0.5s infinite alternate;
+            font-size: 32px; color: #fff; text-align: center;
+            display: none; z-index: 40;
+            text-shadow: 0 0 10px #000;
         }
 
-        @keyframes pulse { from {transform: translate(-50%, -50%) scale(1)} to {transform: translate(-50%, -50%) scale(1.1)} }
+        .jackpot-active { font-size: 50px !important; color: #ffff00 !important; text-shadow: 0 0 20px #ff0000 !important; }
+
         .shake { animation: shake 0.1s infinite; }
         @keyframes shake { 0% {transform: translate(3px,3px)} 50% {transform: translate(-3px,-3px)} }
     </style>
@@ -119,6 +114,7 @@
 <body>
 
 <div id="casino-world">
+    <div id="god-rays"></div>
     <div id="msg-banner">JACKPOT !</div>
     
     <div class="ui-top">
@@ -138,34 +134,40 @@
             <div class="btn-text">SPIN</div>
         </div>
         <div class="btn-container" onclick="bonk()">
-            <div class="btn-img" style="filter: hue-rotate(280deg) brightness(0.8);"></div>
+            <div class="btn-img" style="filter: grayscale(1);"></div>
             <div class="btn-text">BONK</div>
         </div>
     </div>
 </div>
 
 <script>
-    const SYMBOLS = [
-        { name: 'B', class: 'sym-B', weight: 10 },      // 10%
-        { name: 'N', class: 'sym-N', weight: 10 },      // 10%
-        { name: 'Z', class: 'sym-Z', weight: 10 },      // 10%
-        { name: 'banana', class: 'sym-banana', weight: 35 }, // 35%
-        { name: 'cherry', class: 'sym-cherry', weight: 35 }  // 35%
+    // Configuration des rouleaux
+    const REEL_CONFIG = [
+        ['B', 'banana', 'cherry', 'banana', 'cherry'], // Rouleau 1
+        ['N', 'banana', 'cherry', 'banana', 'cherry'], // Rouleau 2
+        ['Z', 'banana', 'cherry', 'banana', 'cherry']  // Rouleau 3
     ];
 
+    const SYM_DATA = {
+        'B': 'sym-B', 'N': 'sym-N', 'Z': 'sym-Z',
+        'banana': 'sym-banana', 'cherry': 'sym-cherry'
+    };
+
     let chips = 100;
-    let hiScore = localStorage.getItem('bnzHiScore') || 0;
+    let hiScore = 0;
     let spinning = false;
 
     function buildReels() {
-        document.getElementById('highscore').innerText = hiScore;
         [0, 1, 2].forEach(id => {
             const r = document.getElementById(`reel-${id}`);
             r.innerHTML = '';
-            for(let i=0; i<80; i++) {
-                const s = SYMBOLS[Math.floor(Math.random()*SYMBOLS.length)];
+            // On remplit avec 80 symboles aléatoires issus de la config spécifique au rouleau
+            for(let i=0; i<85; i++) {
+                const pool = REEL_CONFIG[id];
+                const symName = pool[Math.floor(Math.random() * pool.length)];
                 const div = document.createElement('div');
-                div.className = `symbol ${s.class}`;
+                div.className = `symbol ${SYM_DATA[symName]}`;
+                div.dataset.name = symName;
                 r.appendChild(div);
             }
         });
@@ -189,45 +191,46 @@
         spinning = true;
         chips -= 10;
         document.getElementById('chips').innerText = chips;
-        playSound(220, 0.3);
+        document.getElementById('god-rays').style.display = 'none';
 
         const results = [];
-        // Système de probabilité BNZ forcé ou Random pondéré
-        if (Math.random() < 0.05) { // 5% de chance de Jackpot BNZ
-            results.push(0, 1, 2); 
+        // Probabilité Jackpot (BNZ) : 3%
+        if (Math.random() < 0.03) {
+            results.push('B', 'N', 'Z');
         } else {
             for(let i=0; i<3; i++) {
-                const r = Math.random() * 100;
-                if (r < 35) results.push(3);      // Banana
-                else if (r < 70) results.push(4); // Cherry
-                else if (r < 80) results.push(0); // B
-                else if (r < 90) results.push(1); // N
-                else results.push(2);             // Z
+                const pool = REEL_CONFIG[i];
+                results.push(pool[Math.floor(Math.random() * pool.length)]);
             }
         }
 
-        const reelElements = [0, 1, 2].map(i => document.getElementById(`reel-${i}`));
-        const animations = reelElements.map((el, i) => {
+        const animations = [0, 1, 2].map(i => {
             return new Promise(resolve => {
+                const el = document.getElementById(`reel-${i}`);
+                const targetSym = results[i];
+                // On force le symbole de fin à être le bon
+                const targetNode = el.children[60]; 
+                targetNode.className = `symbol ${SYM_DATA[targetSym]}`;
+                targetNode.dataset.name = targetSym;
+
                 let speed = 60;
                 let currentPos = 0;
-                const targetSymIdx = results[i];
-                const stopPos = (60 + targetSymIdx) * 180; 
-                
+                const stopPos = 60 * 180; 
+
                 const frame = () => {
                     currentPos += speed;
                     if (currentPos >= stopPos) {
                         el.style.transform = `translateY(-${stopPos}px)`;
-                        playSound(150 + (i*80), 0.15);
+                        playSound(150 + (i*50), 0.1);
                         resolve();
                     } else {
-                        if (currentPos > stopPos * 0.75) speed *= 0.97;
-                        if (speed < 6) speed = 6; 
+                        if (currentPos > stopPos * 0.8) speed *= 0.97;
+                        if (speed < 7) speed = 7;
                         el.style.transform = `translateY(-${currentPos}px)`;
                         requestAnimationFrame(frame);
                     }
                 };
-                setTimeout(() => requestAnimationFrame(frame), i * 250);
+                setTimeout(() => requestAnimationFrame(frame), i * 300);
             });
         });
 
@@ -236,55 +239,52 @@
         spinning = false;
     }
 
-    function checkWin(indices) {
+    function checkWin(res) {
         let win = 0;
-        const resNames = indices.map(idx => SYMBOLS[idx].name);
+        const banner = document.getElementById('msg-banner');
+        banner.classList.remove('jackpot-active');
 
-        // LOGIQUE DES POINTS
-        if(resNames[0] === 'B' && resNames[1] === 'N' && resNames[2] === 'Z') {
-            win = 1000; // SUPER JACKPOT
-            document.getElementById('msg-banner').innerText = "BNZ JACKPOT!";
-        } else if(resNames[0] === resNames[1] && resNames[1] === resNames[2]) {
-            if(resNames[0] === 'B' || resNames[0] === 'N' || resNames[0] === 'Z') win = 250;
-            else win = 100; // Triple fruits
-            document.getElementById('msg-banner').innerText = "TRIPLE COMBO!";
-        } else if(resNames[0] === resNames[1] || resNames[1] === resNames[2]) {
-            win = 20; // Paire
-            document.getElementById('msg-banner').innerText = "DOUBLE!";
+        // 1. BNZ (Énorme message + God Rays)
+        if (res[0] === 'B' && res[1] === 'N' && res[2] === 'Z') {
+            win = 1000;
+            banner.innerText = "!! BNZ JACKPOT !!";
+            banner.classList.add('jackpot-active');
+            document.getElementById('god-rays').style.display = 'block';
+            document.getElementById('casino-world').classList.add('shake');
+            playSound(500, 1.5, 0.3);
+        } 
+        // 2. TRIPLE (Gros message)
+        else if (res[0] === res[1] && res[1] === res[2]) {
+            win = 100;
+            banner.innerText = "TRIPLE COMBO ! +100";
+            playSound(400, 0.5);
+        }
+        // 3. DOUBLE (Petit message / Remboursé)
+        else if (res[0] === res[1] || res[1] === res[2] || res[0] === res[2]) {
+            win = 10;
+            banner.innerText = "DOUBLE ! REMBOURSÉ";
+            playSound(300, 0.2);
         }
 
-        if(win > 0) {
+        if (win > 0) {
             chips += win;
-            triggerWinEffects();
+            banner.style.display = 'block';
+            setTimeout(() => {
+                banner.style.display = 'none';
+                document.getElementById('casino-world').classList.remove('shake');
+            }, 3000);
         }
 
-        if(chips > hiScore) {
-            hiScore = chips;
-            localStorage.setItem('bnzHiScore', hiScore);
-        }
+        if (chips > hiScore) hiScore = chips;
         document.getElementById('chips').innerText = chips;
         document.getElementById('highscore').innerText = hiScore;
 
-        if(chips < 10) {
-            setTimeout(() => { alert("PLUS DE JETONS ! RESET..."); chips = 100; buildReels(); }, 1000);
+        if (chips < 10) {
+            setTimeout(() => { alert("GAME OVER - RESET"); chips = 100; buildReels(); }, 500);
         }
     }
 
-    function triggerWinEffects() {
-        const banner = document.getElementById('msg-banner');
-        banner.style.display = 'block';
-        document.getElementById('casino-world').classList.add('shake');
-        playSound(440, 0.5, 0.2);
-        setTimeout(() => {
-            banner.style.display = 'none';
-            document.getElementById('casino-world').classList.remove('shake');
-        }, 2000);
-    }
-
-    function bonk() {
-        if(audioCtx.state === 'suspended') audioCtx.resume();
-        playSound(80, 0.15, 0.3);
-    }
+    function bonk() { playSound(100, 0.1); }
 
     buildReels();
 </script>
