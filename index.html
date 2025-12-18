@@ -3,121 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Casino - Debug Mode</title>
+    <title>BNZ Casino - Pixel Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #050505;
+            background-color: #000;
             font-family: 'Press Start 2P', cursive;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             overflow: hidden;
+            color: white;
         }
 
-        /* --- LE FOND DU CASINO --- */
+        /* --- LE FOND --- */
         #casino-world {
             position: relative;
             width: 1280px;
             height: 720px;
-            background-color: #1a1a1a; /* FALLBACK FOND */
-            background-image: url('assets/background_casino.png');
+            background-image: url('https://iili.io/flqZxUl.png');
             background-size: cover;
             image-rendering: pixelated;
-            border: 4px solid #333;
         }
 
-        /* --- UI HAUT (Jetons & Highscore) --- */
+        /* --- UI SCORES --- */
         .ui-top {
             position: absolute;
-            top: 30px;
+            top: 20px;
             width: 100%;
             display: flex;
             justify-content: space-between;
-            padding: 0 50px;
+            padding: 0 40px;
             box-sizing: border-box;
+            z-index: 10;
         }
 
         .display-box {
-            width: 300px;
-            height: 80px;
-            background-color: #441111; /* FALLBACK UI */
-            background-image: url('assets/ui_display.png');
-            background-size: 100% 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ff0044;
-            border: 4px solid #662222;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 4px solid #666;
+            min-width: 250px;
+            text-align: center;
+            color: #fff;
+            font-size: 14px;
         }
 
-        /* --- LA MACHINE À SOUS --- */
+        #count-chips { color: #00ff00; }
+        #count-high { color: #ff00ff; }
+
+        /* --- LA MACHINE (365x341) --- */
         #machine-wrap {
             position: absolute;
             left: 50%;
-            top: 45%;
+            top: 48%;
             transform: translate(-50%, -50%);
-            width: 500px;
-            height: 400px;
-            background-color: #222; /* FALLBACK MACHINE */
-            background-image: url('assets/machine_frame.png');
+            width: 365px;
+            height: 341px;
+            background-image: url('https://iili.io/flqZIJ2.png');
             background-size: contain;
             background-repeat: no-repeat;
-            border: 8px solid #ffd700;
-            padding: 20px;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
         }
 
-        #reels-container {
-            display: flex;
-            gap: 10px;
-            background: #000;
-            padding: 10px;
-            border: 4px solid #444;
+        /* Fenêtre de visualisation des rouleaux */
+        #reels-window {
+            width: 300px; /* Ajusté pour tenir dans le cadre */
+            height: 140px; /* Exactement la hauteur d'une icône */
             overflow: hidden;
-            height: 210px; /* 3 symboles de 70px */
+            display: flex;
+            background: rgba(0,0,0,0.5);
+            margin-top: -10px; /* Ajustement visuel selon le cadre */
         }
 
         .reel {
-            width: 120px;
+            width: 100px; /* 300 / 3 */
             display: flex;
             flex-direction: column;
-            transition: transform 0.1s linear;
+            position: relative;
         }
 
         .symbol {
-            width: 120px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            box-sizing: border-box;
-            border: 1px solid rgba(255,255,255,0.1);
-            background-size: contain;
+            width: 100px;
+            height: 140px; /* Ta dimension spécifiée */
+            background-size: 80% auto; /* Pour laisser un peu d'air */
             background-repeat: no-repeat;
             background-position: center;
+            image-rendering: pixelated;
+            flex-shrink: 0;
         }
 
-        /* Couleurs de fallback pour chaque symbole */
-        .sym-cherry { background-color: #ff4d4d; background-image: url('assets/cherry.png'); }
-        .sym-lemon  { background-color: #ffee58; background-image: url('assets/lemon.png'); color: #000; }
-        .sym-grape  { background-color: #ab47bc; background-image: url('assets/grape.png'); }
-        .sym-bell   { background-color: #ffa726; background-image: url('assets/bell.png'); }
-        .sym-seven  { background-color: #cfd8dc; background-image: url('assets/seven.png'); color: #000; }
-        .sym-B      { background-color: #29b6f6; background-image: url('assets/B.png'); }
-        .sym-N      { background-color: #0288d1; background-image: url('assets/N.png'); }
-        .sym-Z      { background-color: #01579b; background-image: url('assets/Z.png'); }
+        /* Classes des symboles avec tes liens */
+        .sym-B { background-image: url('https://iili.io/flqQLAP.png'); }
+        .sym-N { background-image: url('https://iili.io/flqZ2RI.png'); }
+        .sym-Z { background-image: url('https://iili.io/flqZol4.png'); }
+        .sym-banana { background-image: url('https://iili.io/flqQPSV.png'); }
+        .sym-cherry { background-image: url('https://iili.io/flqZHSp.png'); }
 
         /* --- BOUTONS --- */
         .controls-bottom {
             position: absolute;
-            bottom: 40px;
+            bottom: 30px;
             width: 100%;
             display: flex;
             justify-content: space-around;
@@ -125,46 +115,53 @@
             box-sizing: border-box;
         }
 
-        .btn {
+        .btn-container {
+            position: relative;
             width: 220px;
             height: 80px;
-            border: none;
             cursor: pointer;
-            font-family: 'Press Start 2P', cursive;
-            color: white;
-            text-shadow: 2px 2px #000;
-            image-rendering: pixelated;
-            background-size: 100% 100%;
             transition: transform 0.1s;
         }
 
-        .btn:active { transform: scale(0.95); }
+        .btn-container:active { transform: scale(0.92); }
 
-        #btn-spin { background-color: #e63946; background-image: url('assets/btn_spin.png'); }
-        #btn-bonk { background-color: #457b9d; background-image: url('assets/btn_bonk.png'); }
-        
-        #jackpot-alert {
-            position: absolute;
-            bottom: 150px;
-            width: 400px;
-            height: 100px;
-            background-color: #ffb703;
-            background-image: url('assets/btn_jackpot.png');
-            display: none;
-            align-items: center;
-            justify-content: center;
-            border: 6px double white;
-            animation: blink 0.2s infinite;
+        .btn-img {
+            width: 100%;
+            height: 100%;
+            background-image: url('https://iili.io/flqQQN1.png');
+            background-size: 100% 100%;
+            image-rendering: pixelated;
         }
 
-        @keyframes blink {
-            0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; }
+        .btn-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            font-size: 20px;
+            text-shadow: 3px 3px #000;
+            color: #fff;
+        }
+
+        /* --- EFFETS --- */
+        #jackpot-msg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            color: #ffff00;
+            text-shadow: 4px 4px #ff0000;
+            display: none;
+            z-index: 100;
+            text-align: center;
         }
 
         .shake { animation: shakeAnim 0.1s infinite; }
         @keyframes shakeAnim {
-            0% { transform: translate(2px, 2px); }
-            50% { transform: translate(-2px, -2px); }
+            0% { transform: translate(3px, 3px); }
+            50% { transform: translate(-3px, -3px); }
         }
     </style>
 </head>
@@ -172,125 +169,117 @@
 
 <div id="casino-world">
     <div class="ui-top">
-        <div class="display-box">CHIPS:<span id="count-chips">100</span></div>
-        <div class="display-box">HIGH:<span id="count-high">0</span></div>
+        <div class="display-box">CHIPS: <span id="count-chips">100</span></div>
+        <div class="display-box">HI-SCORE: <span id="count-high">0</span></div>
     </div>
 
     <div id="machine-wrap">
-        <div id="reels-container">
+        <div id="reels-window">
             <div class="reel" id="reel-0"></div>
             <div class="reel" id="reel-1"></div>
             <div class="reel" id="reel-2"></div>
         </div>
-        <div style="margin-top: 20px; color: #ffd700;">COST: 10</div>
     </div>
 
-    <div id="jackpot-alert">JACKPOT !!!</div>
+    <div id="jackpot-msg">JACKPOT BNZ !!!</div>
 
     <div class="controls-bottom">
-        <button id="btn-spin" class="btn">SPIN</button>
-        <button id="btn-bonk" class="btn">BONK</button>
+        <div class="btn-container" onclick="spin()">
+            <div class="btn-img"></div>
+            <div class="btn-text">SPIN</div>
+        </div>
+        <div class="btn-container" onclick="bonk()">
+            <div class="btn-img" style="filter: hue-rotate(90deg);"></div>
+            <div class="btn-text">BONK</div>
+        </div>
     </div>
 </div>
 
 <script>
     const SYMBOLS = [
-        { name: 'cherry', class: 'sym-cherry' },
-        { name: 'lemon',  class: 'sym-lemon' },
-        { name: 'grape',  class: 'sym-grape' },
-        { name: 'bell',   class: 'sym-bell' },
-        { name: 'seven',  class: 'sym-seven' },
-        { name: 'B',      class: 'sym-B' },
-        { name: 'N',      class: 'sym-N' },
-        { name: 'Z',      class: 'sym-Z' }
+        { name: 'B', class: 'sym-B' },
+        { name: 'N', class: 'sym-N' },
+        { name: 'Z', class: 'sym-Z' },
+        { name: 'banana', class: 'sym-banana' },
+        { name: 'cherry', class: 'sym-cherry' }
     ];
 
     let chips = 100;
     let hiScore = localStorage.getItem('pixelHiScore') || 0;
     let isSpinning = false;
 
-    // Audio context initialization
+    // Audio procedural pour le feedback
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playTone(freq, type, dur) {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + dur);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start(); osc.stop(audioCtx.currentTime + dur);
+    function playSfx(f, t, d, v=0.1) {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = t; o.frequency.value = f;
+        g.gain.setValueAtTime(v, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + d);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(); o.stop(audioCtx.currentTime + d);
     }
 
-    // Initialisation des rouleaux
-    function createSymbol(symObj) {
-        const div = document.createElement('div');
-        div.className = `symbol ${symObj.class}`;
-        div.innerHTML = `<span>${symObj.name.toUpperCase()}</span>`;
-        return div;
-    }
-
-    function initGame() {
+    function initReels() {
         document.getElementById('count-high').innerText = hiScore;
         for(let i=0; i<3; i++) {
             const reel = document.getElementById(`reel-${i}`);
-            for(let j=0; j<20; j++) {
-                reel.appendChild(createSymbol(SYMBOLS[Math.floor(Math.random()*SYMBOLS.length)]));
+            for(let j=0; j<15; j++) {
+                const s = SYMBOLS[Math.floor(Math.random()*SYMBOLS.length)];
+                const div = document.createElement('div');
+                div.className = `symbol ${s.class}`;
+                reel.appendChild(div);
             }
         }
     }
 
     async function spin() {
         if(isSpinning || chips < 10) return;
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+        
         isSpinning = true;
         chips -= 10;
         document.getElementById('count-chips').innerText = chips;
-        playTone(200, 'square', 0.2);
+        playSfx(150, 'square', 0.2);
 
         const results = [];
-        const promises = [];
+        const reelElements = [0, 1, 2].map(i => document.getElementById(`reel-${i}`));
 
         for(let i=0; i<3; i++) {
-            promises.push(new Promise(resolve => {
-                const reel = document.getElementById(`reel-${i}`);
-                let speed = 30 + (i * 10);
-                let pos = 0;
-                
-                const interval = setInterval(() => {
-                    pos += speed;
-                    reel.style.transform = `translateY(-${pos % 1000}px)`;
-                    speed *= 0.98;
+            const targetIdx = Math.floor(Math.random() * SYMBOLS.length);
+            results.push(SYMBOLS[targetIdx].name);
 
-                    if(speed < 1.5) {
-                        clearInterval(interval);
-                        // Aligner
-                        const finalIdx = Math.floor(Math.random() * SYMBOLS.length);
-                        results[i] = SYMBOLS[finalIdx].name;
-                        // On force le visuel du symbole gagnant au milieu pour le debug
-                        reel.children[1].className = `symbol ${SYMBOLS[finalIdx].class}`;
-                        reel.children[1].innerHTML = SYMBOLS[finalIdx].name;
-                        
-                        playTone(100 + (i*50), 'sawtooth', 0.1);
-                        resolve();
-                    }
-                }, 20);
-            }));
-            await new Promise(r => setTimeout(r, 200)); // Décalage entre reels
+            // Animation simple par décalage
+            let pos = 0;
+            let speed = 40 + (i * 10);
+            
+            const anim = setInterval(() => {
+                pos += speed;
+                reelElements[i].style.transform = `translateY(-${pos % (15 * 140)}px)`;
+                speed *= 0.97;
+
+                if(speed < 2) {
+                    clearInterval(anim);
+                    // Force l'alignement sur le symbole choisi
+                    reelElements[i].style.transform = `translateY(-${targetIdx * 140}px)`;
+                    playSfx(100 + (i*50), 'triangle', 0.15);
+                    if(i === 2) checkEndGame(results);
+                }
+            }, 20);
+            await new Promise(r => setTimeout(r, 300));
         }
-
-        await Promise.all(promises);
-        checkWin(results);
-        isSpinning = false;
     }
 
-    function checkWin(res) {
+    function checkEndGame(res) {
+        isSpinning = false;
         let win = 0;
+
         if(res[0] === 'B' && res[1] === 'N' && res[2] === 'Z') {
             win = 500;
-            triggerJackpot();
+            showJackpot();
         } else if(res[0] === res[1] && res[1] === res[2]) {
-            win = 50;
-            playTone(600, 'sine', 0.5);
+            win = res[0] === 'banana' ? 30 : 50;
+            playSfx(500, 'sine', 0.4);
         }
 
         if(win > 0) {
@@ -302,30 +291,32 @@
         }
         document.getElementById('count-chips').innerText = chips;
         document.getElementById('count-high').innerText = hiScore;
+
+        if(chips < 10) {
+            alert("PLUS DE JETONS ! Recommence !");
+            chips = 100;
+            document.getElementById('count-chips').innerText = chips;
+        }
     }
 
-    function triggerJackpot() {
-        const alert = document.getElementById('jackpot-alert');
+    function showJackpot() {
+        const msg = document.getElementById('jackpot-msg');
         const world = document.getElementById('casino-world');
-        alert.style.display = 'flex';
+        msg.style.display = 'block';
         world.classList.add('shake');
-        playTone(440, 'square', 1);
+        playSfx(400, 'square', 1);
         setTimeout(() => {
-            alert.style.display = 'none';
+            msg.style.display = 'none';
             world.classList.remove('shake');
         }, 3000);
     }
 
-    document.getElementById('btn-spin').onclick = () => {
+    function bonk() {
         if(audioCtx.state === 'suspended') audioCtx.resume();
-        spin();
-    };
-    
-    document.getElementById('btn-bonk').onclick = () => {
-        playTone(150, 'triangle', 0.1);
-    };
+        playSfx(80, 'sawtooth', 0.1, 0.2);
+    }
 
-    initGame();
+    initReels();
 </script>
 
 </body>
