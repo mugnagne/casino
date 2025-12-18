@@ -3,96 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BNZ Casino - Final Fix</title>
+    <title>BNZ Casino - Pro Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            font-family: 'Press Start 2P', cursive;
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #000; display: flex;
+            justify-content: center; align-items: center;
+            overflow: hidden; font-family: 'Press Start 2P', cursive;
         }
 
-        /* --- CONTENEUR PRINCIPAL SANS BORDS NOIRS --- */
         #casino-world {
             position: relative;
-            width: 100vw;
-            height: 56.25vw; /* Ratio 16:9 automatique */
-            max-height: 100vh;
-            max-width: 177.78vh;
+            width: 100vw; height: 56.25vw;
+            max-height: 100vh; max-width: 177.78vh;
             background-image: url('https://iili.io/flqZxUl.png');
-            background-size: cover;
-            background-position: center;
+            background-size: cover; background-position: center;
             image-rendering: pixelated;
         }
 
-        /* --- UI TOP --- */
+        /* UI TOP */
         .ui-top {
-            position: absolute;
-            top: 5%;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 10%;
-            box-sizing: border-box;
-            z-index: 10;
+            position: absolute; top: 5%; width: 100%;
+            display: flex; justify-content: space-between;
+            padding: 0 10%; box-sizing: border-box; z-index: 10;
         }
 
         .display-box {
-            padding: 10px 20px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 3px solid #555;
-            color: #fff;
+            padding: 12px 24px; background: rgba(0, 0, 0, 0.85);
+            border: 4px solid #333; color: #fff;
             font-size: clamp(10px, 1.5vw, 18px);
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
         }
 
-        /* --- MACHINE : RE-POSITIONNÉE SUR TON IMAGE --- */
-        #machine-wrap {
+        /* ZONE DES ROULEAUX (SANS CADRE NI FOND NOIR) */
+        #reels-container {
             position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -46%); /* Ajusté pour coller au dessin */
-            width: 365px;
-            height: 341px;
-            background-image: url('https://iili.io/flqZIJ2.png');
-            background-size: contain;
-            background-repeat: no-repeat;
+            left: 50%; top: 44%; /* Remonté légèrement */
+            transform: translate(-50%, -50%);
+            width: 450px; /* Plus large pour accueillir des icônes plus grosses */
+            height: 180px; /* Plus haut */
             display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 5;
-        }
-
-        #reels-window {
-            width: 300px;
-            height: 140px; 
+            justify-content: space-between;
             overflow: hidden;
-            display: flex;
-            background: #000;
-            margin-top: -12px; /* Centrage dans le rectangle doré */
+            z-index: 5;
+            background: transparent; /* Fond supprimé */
         }
 
         .reel {
-            width: 100px;
-            display: flex;
-            flex-direction: column;
+            width: 140px; /* Plus large */
+            display: flex; flex-direction: column;
             will-change: transform;
         }
 
         .symbol {
-            width: 100px;
-            height: 140px;
-            background-size: 80%;
+            width: 140px;
+            height: 180px; /* Agrandissement significatif */
+            background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
             image-rendering: pixelated;
             flex-shrink: 0;
+            /* Pas de fond noir ici */
         }
 
         .sym-B { background-image: url('https://iili.io/flqQLAP.png'); }
@@ -101,20 +73,16 @@
         .sym-banana { background-image: url('https://iili.io/flqQPSV.png'); }
         .sym-cherry { background-image: url('https://iili.io/flqZHSp.png'); }
 
-        /* --- BOUTONS --- */
+        /* BOUTONS */
         .controls-bottom {
-            position: absolute;
-            bottom: 8%;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 50px;
+            position: absolute; bottom: 8%; width: 100%;
+            display: flex; justify-content: center; gap: 60px;
         }
 
         .btn-container {
             position: relative;
-            width: clamp(150px, 18vw, 220px);
-            height: clamp(55px, 7vw, 80px);
+            width: clamp(160px, 20vw, 240px);
+            height: clamp(60px, 8vw, 90px);
             cursor: pointer;
         }
 
@@ -125,30 +93,27 @@
             image-rendering: pixelated;
         }
 
-        .btn-container:active { transform: translateY(4px); }
-
+        .btn-container:active { transform: translateY(6px); }
         .btn-text {
             position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            font-size: clamp(10px, 1.2vw, 20px);
-            pointer-events: none;
+            font-size: clamp(10px, 1.4vw, 22px);
+            pointer-events: none; color: white;
+            text-shadow: 3px 3px #000;
         }
 
-        /* --- EFFETS --- */
         #msg-banner {
-            position: absolute;
-            top: 40%; left: 50%;
+            position: absolute; top: 30%; left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 30px;
-            color: #ff0;
-            text-align: center;
-            display: none;
-            z-index: 20;
-            text-shadow: 4px 4px #000;
+            font-size: 40px; color: #fff; text-align: center;
+            display: none; z-index: 20;
+            text-shadow: 0 0 10px #f0f, 0 0 20px #f0f;
+            animation: pulse 0.5s infinite alternate;
         }
 
+        @keyframes pulse { from {transform: translate(-50%, -50%) scale(1)} to {transform: translate(-50%, -50%) scale(1.1)} }
         .shake { animation: shake 0.1s infinite; }
-        @keyframes shake { 0% {transform: translate(2px,2px)} 50% {transform: translate(-2px,-2px)} }
+        @keyframes shake { 0% {transform: translate(3px,3px)} 50% {transform: translate(-3px,-3px)} }
     </style>
 </head>
 <body>
@@ -161,12 +126,10 @@
         <div class="display-box">HI-SCORE: <span id="highscore">0</span></div>
     </div>
 
-    <div id="machine-wrap">
-        <div id="reels-window">
-            <div class="reel" id="reel-0"></div>
-            <div class="reel" id="reel-1"></div>
-            <div class="reel" id="reel-2"></div>
-        </div>
+    <div id="reels-container">
+        <div class="reel" id="reel-0"></div>
+        <div class="reel" id="reel-1"></div>
+        <div class="reel" id="reel-2"></div>
     </div>
 
     <div class="controls-bottom">
@@ -175,7 +138,7 @@
             <div class="btn-text">SPIN</div>
         </div>
         <div class="btn-container" onclick="bonk()">
-            <div class="btn-img" style="filter: grayscale(1) brightness(0.7);"></div>
+            <div class="btn-img" style="filter: hue-rotate(280deg) brightness(0.8);"></div>
             <div class="btn-text">BONK</div>
         </div>
     </div>
@@ -183,26 +146,24 @@
 
 <script>
     const SYMBOLS = [
-        { name: 'B', class: 'sym-B' },
-        { name: 'N', class: 'sym-N' },
-        { name: 'Z', class: 'sym-Z' },
-        { name: 'banana', class: 'sym-banana' },
-        { name: 'cherry', class: 'sym-cherry' }
+        { name: 'B', class: 'sym-B', weight: 10 },      // 10%
+        { name: 'N', class: 'sym-N', weight: 10 },      // 10%
+        { name: 'Z', class: 'sym-Z', weight: 10 },      // 10%
+        { name: 'banana', class: 'sym-banana', weight: 35 }, // 35%
+        { name: 'cherry', class: 'sym-cherry', weight: 35 }  // 35%
     ];
 
     let chips = 100;
     let hiScore = localStorage.getItem('bnzHiScore') || 0;
     let spinning = false;
 
-    // Création des bandes de symboles (longues pour l'illusion du spin)
     function buildReels() {
         document.getElementById('highscore').innerText = hiScore;
         [0, 1, 2].forEach(id => {
             const r = document.getElementById(`reel-${id}`);
             r.innerHTML = '';
-            // On crée une bande très longue (50 symboles)
-            for(let i=0; i<60; i++) {
-                const s = SYMBOLS[i % SYMBOLS.length];
+            for(let i=0; i<80; i++) {
+                const s = SYMBOLS[Math.floor(Math.random()*SYMBOLS.length)];
                 const div = document.createElement('div');
                 div.className = `symbol ${s.class}`;
                 r.appendChild(div);
@@ -211,10 +172,11 @@
     }
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playSound(f, d) {
+    function playSound(f, d, v=0.1) {
         const o = audioCtx.createOscillator();
         const g = audioCtx.createGain();
         o.frequency.value = f;
+        g.gain.setValueAtTime(v, audioCtx.currentTime);
         g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + d);
         o.connect(g); g.connect(audioCtx.destination);
         o.start(); o.stop(audioCtx.currentTime + d);
@@ -227,50 +189,49 @@
         spinning = true;
         chips -= 10;
         document.getElementById('chips').innerText = chips;
-        playSound(200, 0.2);
+        playSound(220, 0.3);
 
-        // 1. DÉCIDER DU RÉSULTAT AVANT L'ANIMATION
         const results = [];
-        if (Math.random() < 0.1) { // 10% de chance de BNZ
-            results.push(0, 1, 2); // B, N, Z
+        // Système de probabilité BNZ forcé ou Random pondéré
+        if (Math.random() < 0.05) { // 5% de chance de Jackpot BNZ
+            results.push(0, 1, 2); 
         } else {
-            for(let i=0; i<3; i++) results.push(Math.floor(Math.random() * SYMBOLS.length));
+            for(let i=0; i<3; i++) {
+                const r = Math.random() * 100;
+                if (r < 35) results.push(3);      // Banana
+                else if (r < 70) results.push(4); // Cherry
+                else if (r < 80) results.push(0); // B
+                else if (r < 90) results.push(1); // N
+                else results.push(2);             // Z
+            }
         }
 
-        // 2. LANCER L'ANIMATION
         const reelElements = [0, 1, 2].map(i => document.getElementById(`reel-${i}`));
-        
         const animations = reelElements.map((el, i) => {
             return new Promise(resolve => {
-                let speed = 50;
+                let speed = 60;
                 let currentPos = 0;
                 const targetSymIdx = results[i];
-                
-                // On veut s'arrêter sur le symbole cible vers la fin de la bande (ex: index 40 + target)
-                const stopPos = (40 + targetSymIdx) * 140; 
+                const stopPos = (60 + targetSymIdx) * 180; 
                 
                 const frame = () => {
                     currentPos += speed;
                     if (currentPos >= stopPos) {
                         el.style.transform = `translateY(-${stopPos}px)`;
-                        playSound(150 + (i*50), 0.1);
+                        playSound(150 + (i*80), 0.15);
                         resolve();
                     } else {
-                        // Ralentissement progressif vers la fin
-                        if (currentPos > stopPos * 0.7) speed *= 0.96;
-                        if (speed < 5) speed = 5; 
-                        
+                        if (currentPos > stopPos * 0.75) speed *= 0.97;
+                        if (speed < 6) speed = 6; 
                         el.style.transform = `translateY(-${currentPos}px)`;
                         requestAnimationFrame(frame);
                     }
                 };
-                setTimeout(() => requestAnimationFrame(frame), i * 200);
+                setTimeout(() => requestAnimationFrame(frame), i * 250);
             });
         });
 
         await Promise.all(animations);
-        
-        // 3. VÉRIFIER LE GAIN (BASÉ SUR LES INDEX CHOISIS AU DÉBUT)
         checkWin(results);
         spinning = false;
     }
@@ -279,29 +240,41 @@
         let win = 0;
         const resNames = indices.map(idx => SYMBOLS[idx].name);
 
+        // LOGIQUE DES POINTS
         if(resNames[0] === 'B' && resNames[1] === 'N' && resNames[2] === 'Z') {
-            win = 500;
-            document.getElementById('msg-banner').innerText = "JACKPOT BNZ !";
-            triggerEffects();
+            win = 1000; // SUPER JACKPOT
+            document.getElementById('msg-banner').innerText = "BNZ JACKPOT!";
         } else if(resNames[0] === resNames[1] && resNames[1] === resNames[2]) {
-            win = 50;
-            document.getElementById('msg-banner').innerText = "TRIPLE !";
-            triggerEffects();
+            if(resNames[0] === 'B' || resNames[0] === 'N' || resNames[0] === 'Z') win = 250;
+            else win = 100; // Triple fruits
+            document.getElementById('msg-banner').innerText = "TRIPLE COMBO!";
+        } else if(resNames[0] === resNames[1] || resNames[1] === resNames[2]) {
+            win = 20; // Paire
+            document.getElementById('msg-banner').innerText = "DOUBLE!";
         }
 
-        chips += win;
+        if(win > 0) {
+            chips += win;
+            triggerWinEffects();
+        }
+
         if(chips > hiScore) {
             hiScore = chips;
             localStorage.setItem('bnzHiScore', hiScore);
         }
         document.getElementById('chips').innerText = chips;
         document.getElementById('highscore').innerText = hiScore;
+
+        if(chips < 10) {
+            setTimeout(() => { alert("PLUS DE JETONS ! RESET..."); chips = 100; buildReels(); }, 1000);
+        }
     }
 
-    function triggerEffects() {
+    function triggerWinEffects() {
         const banner = document.getElementById('msg-banner');
         banner.style.display = 'block';
         document.getElementById('casino-world').classList.add('shake');
+        playSound(440, 0.5, 0.2);
         setTimeout(() => {
             banner.style.display = 'none';
             document.getElementById('casino-world').classList.remove('shake');
@@ -310,7 +283,7 @@
 
     function bonk() {
         if(audioCtx.state === 'suspended') audioCtx.resume();
-        playSound(100, 0.1);
+        playSound(80, 0.15, 0.3);
     }
 
     buildReels();
