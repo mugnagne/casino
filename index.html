@@ -20,26 +20,31 @@
             background-image: url('https://iili.io/flqZxUl.png');
             background-size: cover; background-position: center;
             image-rendering: pixelated;
-        }
-
-        /* EFFET GOD RAYS (Jackpot) */
-        #god-rays {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 200%; height: 200%;
-            background: conic-gradient(
-                from 0deg,
-                transparent 0deg, transparent 10deg,
-                rgba(255, 255, 255, 0.4) 15deg, transparent 20deg,
-                transparent 30deg, rgba(255, 255, 255, 0.4) 45deg,
-                transparent 60deg
-            );
-            transform: translate(-50%, -50%);
-            z-index: 15;
-            display: none;
-            pointer-events: none;
-            animation: rotateRays 5s linear infinite;
-        }
+    
+    #god-rays {
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 300%; height: 300%; /* Plus grand pour couvrir tout l'écran en rotation */
+        background: conic-gradient(
+            from 0deg,
+            transparent 0deg,
+            rgba(255, 255, 255, 0.6) 2deg,
+            transparent 4deg,
+            transparent 8deg,
+            rgba(255, 255, 200, 0.5) 10deg,
+            transparent 12deg,
+            transparent 18deg,
+            rgba(255, 255, 255, 0.6) 20deg,
+            transparent 22deg
+        ); /* Motif répété beaucoup plus de fois */
+        background-repeat: repeat;
+        transform: translate(-50%, -50%);
+        z-index: 15;
+        display: none;
+        pointer-events: none;
+        mix-blend-mode: overlay; /* Pour que les rayons brillent sur le décor */
+        animation: rotateRays 3s linear infinite; /* Rotation plus rapide pour plus d'énergie */
+    }
 
         @keyframes rotateRays {
             from { transform: translate(-50%, -50%) rotate(0deg); }
