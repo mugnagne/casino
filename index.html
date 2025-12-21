@@ -2,46 +2,39 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>BNZ CASINO - DRINKING ENGINE</title>
+    <title>BNZ CASINO - VERSION ULTIME</title>
     <style>
-        body { font-family: 'Impact', sans-serif; background: #000; color: white; text-align: center; margin: 0; }
-        .header { background: linear-gradient(to bottom, #444, #111); padding: 20px; border-bottom: 4px solid gold; }
+        body { font-family: 'Impact', sans-serif; background: #050505; color: white; text-align: center; margin: 0; }
+        .header { background: #111; padding: 20px; border-bottom: 5px solid gold; box-shadow: 0 0 20px gold; }
+        #chips-display { font-size: 3.5rem; color: gold; }
         
-        /* Affichage des jetons */
-        #chips-display { font-size: 3rem; color: gold; text-shadow: 2px 2px #ff0000; }
+        .slot-machine { margin: 30px auto; padding: 25px; background: #1a1a1a; width: fit-content; border: 8px solid #333; border-radius: 30px; }
+        .reels-container { display: flex; gap: 15px; margin-bottom: 25px; }
+        .reel { width: 100px; height: 130px; background: #fff; color: #000; font-size: 3.5rem; display: flex; align-items: center; justify-content: center; border-radius: 15px; border-bottom: 6px solid #bbb; }
         
-        /* La Machine */
-        .slot-machine { margin: 40px auto; padding: 20px; background: #222; width: fit-content; border: 10px solid #444; border-radius: 20px; }
-        .reels-container { display: flex; gap: 15px; margin-bottom: 20px; }
-        .reel { width: 100px; height: 120px; background: #eee; color: #000; font-size: 3.5rem; display: flex; align-items: center; justify-content: center; border-radius: 10px; border-bottom: 5px solid #aaa; }
-        
-        /* Zone d'action (Le coeur du jeu) */
         #action-box { 
-            min-height: 120px; margin: 20px auto; width: 90%; max-width: 500px;
-            background: #111; border: 3px dashed gold; padding: 20px;
+            min-height: 140px; margin: 20px auto; width: 90%; max-width: 550px;
+            background: #000; border: 2px solid #444; padding: 20px;
             display: flex; flex-direction: column; justify-content: center;
-            font-size: 1.4rem; line-height: 1.4;
         }
-        .title-event { font-weight: bold; margin-bottom: 10px; text-transform: uppercase; }
-        .desc-event { color: #00ff00; font-family: sans-serif; }
+        .title-event { font-size: 1.8rem; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; }
+        .desc-event { color: #00ff00; font-family: 'Arial', sans-serif; font-size: 1.2rem; }
 
-        /* Boutons */
-        .btn { padding: 20px 60px; font-size: 1.8rem; cursor: pointer; border: none; border-radius: 10px; font-weight: bold; transition: 0.2s; }
-        #spin-btn { background: #ffcc00; color: black; box-shadow: 0 8px #997700; }
+        .btn { padding: 20px 60px; font-size: 1.8rem; cursor: pointer; border: none; border-radius: 15px; font-weight: bold; }
+        #spin-btn { background: #ffcc00; color: #000; box-shadow: 0 8px #997700; }
         #spin-btn:active { box-shadow: 0 2px #997700; transform: translateY(4px); }
-        #spin-btn:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; }
-        
-        #refill-btn { background: #ff0000; color: white; display: none; }
+        #spin-btn:disabled { background: #222; color: #444; box-shadow: none; }
+        #refill-btn { background: #d32f2f; color: white; display: none; }
 
-        .rare { color: #ff00ff !important; text-shadow: 0 0 10px #ff00ff; }
-        .legendary { color: #ffff00 !important; text-shadow: 0 0 20px #ffff00; }
+        .rare { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
+        .legendary { color: gold; text-shadow: 0 0 20px gold; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <div id="chips-display">100</div>
-        <div style="font-size: 0.8rem; letter-spacing: 2px;">JETONS VIRTUELS</div>
+        <div style="font-size: 0.9rem; letter-spacing: 3px;">JETONS VIRTUELS</div>
     </div>
 
     <div class="slot-machine">
@@ -50,35 +43,44 @@
             <div class="reel" id="r1">?</div>
             <div class="reel" id="r2">?</div>
         </div>
-        
         <button id="spin-btn" class="btn" onclick="play()">SPIN (-10)</button>
         <button id="refill-btn" class="btn" onclick="refill()">J'AI BU MON SHOT</button>
     </div>
 
     <div id="action-box">
-        <div class="title-event">EN ATTENTE</div>
-        <div class="desc-event">Insère 10 jetons pour lancer la roue.</div>
+        <div class="title-event">BNZ ENGINE v2</div>
+        <div class="desc-event">En attente du premier joueur...</div>
     </div>
 
 <script>
     let chips = 100;
-    const symbols = ['B', 'N', 'Z', '💀', '🔥', '🃏', '🍺'];
+    // B uniquement slot 0, N slot 1, Z slot 2. Autres symboles partout.
+    const fruitSyms = ['🍺', '💀', '🔥', '🃏', '🍌', '🍒', '🍋'];
 
-    // CONFIGURATION DES EVENTS
     const EVENTS = {
         DOUBLE: [
-            { t: "CIBLE", d: "Donne 2 gorgées à la personne de ton choix." },
-            { t: "TOURNE", d: "Tout le monde tourne sur soi-même, le dernier boit." },
-            { t: "MIROIR", d: "Choisis un partenaire. Quand tu bois, il boit (jusqu'au prochain double)." },
-            { t: "INVENTEUR", d: "Invente une règle de mot interdit pendant 3 tours." },
-            { t: "BOOMERANG", d: "La personne à ta droite te donne 2 gorgées." }
+            { t: "CIBLE", d: "Donne 2 gorgées à ton voisin de gauche." },
+            { t: "MIROIR", d: "Choisis un partenaire : s'il boit, tu bois, et vice versa." },
+            { t: "INVENTEUR", d: "Interdis un mot (ex: 'boire') jusqu'au prochain Double." },
+            { t: "BOOMERANG", d: "Celui qui a joué avant toi te donne 2 gorgées." },
+            { t: "STATUE", d: "Le dernier qui bouge boit une gorgée." },
+            { t: "QUESTION", d: "Pose une question à quelqu'un. S'il répond, il boit." },
+            { t: "SANTÉ", d: "Tout le monde boit une gorgée, sauf toi." },
+            { t: "FINGERS", d: "Jeu du doigt sur le verre : le dernier boit." },
+            { t: "MARQUE", d: "Donne une marque de voiture. Le premier qui sèche boit." },
+            { t: "VETO", d: "Annule la prochaine gorgée que tu devrais prendre." }
         ],
         TRIPLE: [
-            { t: "DICTATEUR", d: "Tout le monde finit son verre sauf toi." },
-            { t: "CASCADE", d: "Lance une cascade (tout le monde boit en suivant le voisin)." },
-            { t: "MAITRE DES POUCES", d: "Tu es le maître des pouces jusqu'au prochain triple." },
-            { t: "SHOT ROULETTE", d: "Désigne 2 personnes : Duel de Chifoumi, le perdant prend un shot." },
-            { t: "CRACKLIST", d: "Donne une catégorie (ex: Marques de bières). Le premier qui sèche boit un shot." }
+            { t: "DICTATEUR", d: "Désigne 3 personnes qui doivent finir leur verre." },
+            { t: "CASCADE", d: "Lance une cascade générale. Personne ne s'arrête avant toi." },
+            { t: "SHOT ROULETTE", d: "Prépare un shot. Joue au Chifoumi avec un rival, le perdant l'avale." },
+            { t: "MAITRE DU POUCE", d: "Quand tu poses ton pouce sur la table, le dernier boit (permanent)." },
+            { t: "ESCLAVE", d: "La personne à ta droite doit t'apporter tes verres pendant 20 min." },
+            { t: "BUFFLE", d: "Interdiction de boire de la main droite (ou gauche pour les gauchers)." },
+            { t: "PYRAMIDE", d: "Distribue 5 gorgées à répartir dans le groupe." },
+            { t: "CRACKLIST", d: "Thème : 'Films de cul'. Le premier qui sèche prend un shot." },
+            { t: "ROI", d: "Personne ne peut te regarder dans les yeux sans boire." },
+            { t: "TOUR DE TABLE", d: "Raconte une anecdote. Ceux qui l'ont déjà fait boivent." }
         ],
         BNZ: [
             { t: "LE SAINT GRAAL", d: "🔥 TU REMPORTES 10 JETONS IRL ! 🔥" }
@@ -90,26 +92,30 @@
         chips -= 10;
         updateUI();
 
-        const btn = document.getElementById('spin-btn');
-        const box = document.getElementById('action-box');
-        btn.disabled = true;
-        box.innerHTML = '<div class="title-event">BRASSAGE...</div>';
+        document.getElementById('spin-btn').disabled = true;
+        document.getElementById('action-box').innerHTML = '<div class="title-event">ROTATION...</div>';
 
-        // Logique de probabilités (Espérance négative)
         let res = [];
         const rng = Math.random();
 
-        if (rng < 0.02) { // 2% BNZ
-            res = ['B', 'N', 'Z'];
-        } else if (rng < 0.10) { // 8% Triple
-            const s = symbols[Math.floor(Math.random()*symbols.length)];
+        // LOGIQUE DE PROBABILITÉS
+        if (rng < 0.02) { 
+            res = ['B', 'N', 'Z']; 
+        } else if (rng < 0.07) { 
+            const s = fruitSyms[Math.floor(Math.random()*fruitSyms.length)];
             res = [s, s, s];
-        } else if (rng < 0.38) { // 28% Double
-            const s1 = symbols[Math.floor(Math.random()*symbols.length)];
-            const s2 = symbols[Math.floor(Math.random()*symbols.length)];
-            res = [s1, s1, s2]; // On force une paire
-        } else { // 62% Perte
-            res = [symbols[Math.floor(Math.random()*3)], symbols[4], symbols[5]];
+        } else if (rng < 0.37) { 
+            const s = fruitSyms[Math.floor(Math.random()*fruitSyms.length)];
+            const other = fruitSyms[(fruitSyms.indexOf(s)+1)%fruitSyms.length];
+            // On s'assure que B, N, Z ne pop pas dans les doubles fruits pour respecter ta règle
+            res = [s, s, other]; 
+        } else {
+            // Perte : On mélange aléatoirement sans respecter les combos
+            res = [
+                Math.random() > 0.8 ? 'B' : fruitSyms[0],
+                Math.random() > 0.8 ? 'N' : fruitSyms[1],
+                fruitSyms[2]
+            ];
         }
 
         setTimeout(() => {
@@ -117,55 +123,35 @@
             document.getElementById('r1').innerText = res[1];
             document.getElementById('r2').innerText = res[2];
             resolve(res);
-        }, 700);
+        }, 600);
     }
 
     function resolve(res) {
         const box = document.getElementById('action-box');
         let type = "";
-        let eventList = [];
-        let winAmount = 0;
+        let win = 0;
 
-        if (res[0] === 'B' && res[1] === 'N' && res[2] === 'Z') {
-            type = "BNZ";
-            eventList = EVENTS.BNZ;
-            winAmount = 0; // Le gain est IRL
-        } else if (res[0] === res[1] && res[1] === res[2]) {
-            type = "TRIPLE";
-            eventList = EVENTS.TRIPLE;
-            winAmount = 50;
-        } else if (res[0] === res[1] || res[1] === res[2] || res[0] === res[2]) {
-            type = "DOUBLE";
-            eventList = EVENTS.DOUBLE;
-            winAmount = 5; // On rend juste la moitié pour drainer
-        }
+        if (res[0]==='B' && res[1]==='N' && res[2]==='Z') { type = "BNZ"; win = 0; }
+        else if (res[0] === res[1] && res[1] === res[2]) { type = "TRIPLE"; win = 50; }
+        else if (res[0] === res[1] || res[1] === res[2] || res[0] === res[2]) { type = "DOUBLE"; win = 5; }
 
         if (type !== "") {
-            const ev = eventList[Math.floor(Math.random()*eventList.length)];
-            chips += winAmount;
-            
-            let rarityClass = type === "TRIPLE" ? "rare" : (type === "BNZ" ? "legendary" : "");
-            
-            box.innerHTML = `
-                <div class="title-event ${rarityClass}">${type} !</div>
-                <div class="title-event" style="font-size:1.1rem">${ev.t}</div>
-                <div class="desc-event">${ev.d}</div>
-            `;
+            const evList = EVENTS[type];
+            const ev = evList[Math.floor(Math.random()*evList.length)];
+            chips += win;
+            let cls = type === "TRIPLE" ? "rare" : (type === "BNZ" ? "legendary" : "");
+            box.innerHTML = `<div class="title-event ${cls}">${type} !</div><div class="title-event" style="font-size:1.2rem">${ev.t}</div><div class="desc-event">${ev.d}</div>`;
         } else {
-            box.innerHTML = `<div class="title-event">RIEN...</div><div class="desc-event">Passe le tour au voisin.</div>`;
+            box.innerHTML = `<div class="title-event">PERDU</div><div class="desc-event">Passe le tour au suivant.</div>`;
         }
 
-        if (chips < 10) {
-            showGameOver();
-        } else {
-            document.getElementById('spin-btn').disabled = false;
-        }
+        if (chips < 10) showGameOver();
+        else document.getElementById('spin-btn').disabled = false;
         updateUI();
     }
 
     function showGameOver() {
-        const box = document.getElementById('action-box');
-        box.innerHTML = `<div class="title-event" style="color:red">BANQUEROUTE !</div><div class="desc-event">Bois un shot sec pour revenir dans la partie.</div>`;
+        document.getElementById('action-box').innerHTML = `<div class="title-event" style="color:red">À SEC !</div><div class="desc-event">Bois ton shot sec pour recharger 100 jetons.</div>`;
         document.getElementById('spin-btn').style.display = "none";
         document.getElementById('refill-btn').style.display = "inline-block";
     }
@@ -175,13 +161,10 @@
         document.getElementById('refill-btn').style.display = "none";
         document.getElementById('spin-btn').style.display = "inline-block";
         document.getElementById('spin-btn').disabled = false;
-        document.getElementById('action-box').innerHTML = `<div class="title-event">RECHARGÉ</div><div class="desc-event">C'est reparti pour la gloire.</div>`;
         updateUI();
     }
 
-    function updateUI() {
-        document.getElementById('chips-display').innerText = chips;
-    }
+    function updateUI() { document.getElementById('chips-display').innerText = chips; }
 </script>
 </body>
 </html>
