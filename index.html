@@ -3,81 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BNZ Casino - God Rays Edition</title>
+    <title>BNZ Casino - Pro Fix</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
+        /* FIX 1: FOND ADAPTATIF SANS BORDS NOIRS */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #000; display: flex;
-            justify-content: center; align-items: center;
+            background-color: #000;
+            display: flex; justify-content: center; align-items: center;
             overflow: hidden; font-family: 'Press Start 2P', cursive;
         }
 
         #casino-world {
             position: relative;
-            width: 100vw; height: 56.25vw;
-            max-height: 100vh; max-width: 177.78vh;
+            /* Se remplit pour couvrir l'écran tout en gardant le ratio via background-size */
+            width: 100vw; height: 100vh;
             background-image: url('https://iili.io/flqZxUl.png');
-            background-size: cover; background-position: center;
+            background-size: cover; 
+            background-position: center;
             image-rendering: pixelated;
-    
-    #god-rays {
-        position: absolute;
-        top: 50%; left: 50%;
-        width: 300%; height: 300%; /* Plus grand pour couvrir tout l'écran en rotation */
-        background: conic-gradient(
-            from 0deg,
-            transparent 0deg,
-            rgba(255, 255, 255, 0.6) 2deg,
-            transparent 4deg,
-            transparent 8deg,
-            rgba(255, 255, 200, 0.5) 10deg,
-            transparent 12deg,
-            transparent 18deg,
-            rgba(255, 255, 255, 0.6) 20deg,
-            transparent 22deg
-        ); /* Motif répété beaucoup plus de fois */
-        background-repeat: repeat;
-        transform: translate(-50%, -50%);
-        z-index: 15;
-        display: none;
-        pointer-events: none;
-        mix-blend-mode: overlay; /* Pour que les rayons brillent sur le décor */
-        animation: rotateRays 3s linear infinite; /* Rotation plus rapide pour plus d'énergie */
-    }
+        }
+
+        /* FIX 2: GOD RAYS OPTIMISÉS (MULTIPLES ET ROTATIFS) */
+        #god-rays {
+            position: absolute;
+            top: 50%; left: 50%;
+            /* Taille immense pour que la rotation ne montre pas les bords */
+            width: 300vmax; height: 300vmax; 
+            background: repeating-conic-gradient(
+                from 0deg,
+                rgba(255, 255, 255, 0.4) 0deg 1deg,
+                transparent 1deg 8deg,
+                rgba(255, 255, 200, 0.3) 8deg 9deg,
+                transparent 9deg 15deg
+            );
+            transform: translate(-50%, -50%);
+            z-index: 15;
+            display: none;
+            pointer-events: none;
+            animation: rotateRays 4s linear infinite;
+        }
 
         @keyframes rotateRays {
             from { transform: translate(-50%, -50%) rotate(0deg); }
             to { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
-        /* UI TOP */
+        /* INTERFACE & MACHINE */
         .ui-top {
-            position: absolute; top: 5%; width: 100%;
+            position: absolute; top: 20px; width: 100%;
             display: flex; justify-content: space-between;
-            padding: 0 10%; box-sizing: border-box; z-index: 10;
+            padding: 0 5%; box-sizing: border-box; z-index: 20;
         }
 
         .display-box {
-            padding: 12px 24px; background: rgba(0, 0, 0, 0.85);
-            border: 4px solid #333; color: #fff;
-            font-size: clamp(10px, 1.5vw, 18px);
+            padding: 15px; background: rgba(0,0,0,0.8);
+            border: 3px solid #444; color: #fff; font-size: 14px;
         }
 
-        /* ROULEAUX */
         #reels-container {
             position: absolute;
-            left: 50%; top: 44%;
+            left: 50%; top: 42%; /* Remonté pour le fix visuel */
             transform: translate(-50%, -50%);
-            width: 450px; height: 180px;
+            width: 480px; height: 180px;
             display: flex; justify-content: space-between;
             overflow: hidden; z-index: 20;
         }
 
-        .reel { width: 140px; display: flex; flex-direction: column; will-change: transform; }
+        .reel { width: 150px; display: flex; flex-direction: column; will-change: transform; }
 
         .symbol {
-            width: 140px; height: 180px;
+            width: 150px; height: 180px;
             background-size: contain; background-repeat: no-repeat;
             background-position: center; image-rendering: pixelated;
             flex-shrink: 0;
@@ -89,31 +85,24 @@
         .sym-banana { background-image: url('https://iili.io/flqQPSV.png'); }
         .sym-cherry { background-image: url('https://iili.io/flqZHSp.png'); }
 
-        /* BOUTONS */
         .controls-bottom {
-            position: absolute; bottom: 8%; width: 100%;
-            display: flex; justify-content: center; gap: 60px;
-            z-index: 30;
+            position: absolute; bottom: 50px; width: 100%;
+            display: flex; justify-content: center; gap: 40px; z-index: 30;
         }
 
-        .btn-container { position: relative; width: 200px; height: 70px; cursor: pointer; }
-        .btn-img { width: 100%; height: 100%; background-image: url('https://iili.io/flqQQN1.png'); background-size: 100% 100%; image-rendering: pixelated; }
-        .btn-container:active { transform: translateY(4px); }
-        .btn-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; pointer-events: none; color: white; text-shadow: 2px 2px #000; }
+        .btn-container { position: relative; width: 220px; height: 80px; cursor: pointer; }
+        .btn-img { width: 100%; height: 100%; background-image: url('https://iili.io/flqQQN1.png'); background-size: 100% 100%; }
+        .btn-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
 
-        /* MESSAGES */
         #msg-banner {
-            position: absolute; top: 30%; left: 50%;
+            position: absolute; top: 25%; left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 32px; color: #fff; text-align: center;
-            display: none; z-index: 40;
-            text-shadow: 0 0 10px #000;
+            font-size: 40px; color: #ffff00; text-align: center;
+            display: none; z-index: 40; text-shadow: 4px 4px #000;
         }
-
-        .jackpot-active { font-size: 50px !important; color: #ffff00 !important; text-shadow: 0 0 20px #ff0000 !important; }
 
         .shake { animation: shake 0.1s infinite; }
-        @keyframes shake { 0% {transform: translate(3px,3px)} 50% {transform: translate(-3px,-3px)} }
+        @keyframes shake { 0% {transform: translate(4px,4px)} 50% {transform: translate(-4px,-4px)} }
     </style>
 </head>
 <body>
@@ -135,28 +124,23 @@
 
     <div class="controls-bottom">
         <div class="btn-container" onclick="startSpin()">
-            <div class="btn-img"></div>
-            <div class="btn-text">SPIN</div>
+            <div class="btn-img"></div><div class="btn-text">SPIN</div>
         </div>
         <div class="btn-container" onclick="bonk()">
-            <div class="btn-img" style="filter: grayscale(1);"></div>
-            <div class="btn-text">BONK</div>
+            <div class="btn-img" style="filter: hue-rotate(90deg);"></div><div class="btn-text">BONK</div>
         </div>
     </div>
 </div>
 
 <script>
-    // Configuration des rouleaux
+    // Config: B uniquement R1, N uniquement R2, Z uniquement R3
     const REEL_CONFIG = [
-        ['B', 'banana', 'cherry', 'banana', 'cherry'], // Rouleau 1
-        ['N', 'banana', 'cherry', 'banana', 'cherry'], // Rouleau 2
-        ['Z', 'banana', 'cherry', 'banana', 'cherry']  // Rouleau 3
+        ['B', 'banana', 'cherry', 'banana', 'cherry'],
+        ['N', 'banana', 'cherry', 'banana', 'cherry'],
+        ['Z', 'banana', 'cherry', 'banana', 'cherry']
     ];
 
-    const SYM_DATA = {
-        'B': 'sym-B', 'N': 'sym-N', 'Z': 'sym-Z',
-        'banana': 'sym-banana', 'cherry': 'sym-cherry'
-    };
+    const SYM_DATA = { 'B': 'sym-B', 'N': 'sym-N', 'Z': 'sym-Z', 'banana': 'sym-banana', 'cherry': 'sym-cherry' };
 
     let chips = 100;
     let hiScore = 0;
@@ -166,24 +150,21 @@
         [0, 1, 2].forEach(id => {
             const r = document.getElementById(`reel-${id}`);
             r.innerHTML = '';
-            // On remplit avec 80 symboles aléatoires issus de la config spécifique au rouleau
-            for(let i=0; i<85; i++) {
+            for(let i=0; i<90; i++) {
                 const pool = REEL_CONFIG[id];
-                const symName = pool[Math.floor(Math.random() * pool.length)];
+                const s = pool[Math.floor(Math.random()*pool.length)];
                 const div = document.createElement('div');
-                div.className = `symbol ${SYM_DATA[symName]}`;
-                div.dataset.name = symName;
+                div.className = `symbol ${SYM_DATA[s]}`;
                 r.appendChild(div);
             }
         });
     }
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playSound(f, d, v=0.1) {
+    function playSound(f, d) {
         const o = audioCtx.createOscillator();
         const g = audioCtx.createGain();
         o.frequency.value = f;
-        g.gain.setValueAtTime(v, audioCtx.currentTime);
         g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + d);
         o.connect(g); g.connect(audioCtx.destination);
         o.start(); o.stop(audioCtx.currentTime + d);
@@ -192,46 +173,36 @@
     async function startSpin() {
         if(spinning || chips < 10) return;
         if(audioCtx.state === 'suspended') audioCtx.resume();
-        
-        spinning = true;
-        chips -= 10;
+        spinning = true; chips -= 10;
         document.getElementById('chips').innerText = chips;
         document.getElementById('god-rays').style.display = 'none';
 
         const results = [];
-        // Probabilité Jackpot (BNZ) : 3%
-        if (Math.random() < 0.03) {
-            results.push('B', 'N', 'Z');
-        } else {
-            for(let i=0; i<3; i++) {
-                const pool = REEL_CONFIG[i];
-                results.push(pool[Math.floor(Math.random() * pool.length)]);
-            }
+        if (Math.random() < 0.04) { results.push('B', 'N', 'Z'); } // 4% de chance Jackpot
+        else {
+            [0,1,2].forEach(i => results.push(REEL_CONFIG[i][Math.floor(Math.random()*REEL_CONFIG[i].length)]));
         }
 
-        const animations = [0, 1, 2].map(i => {
+        const anims = [0,1,2].map(i => {
             return new Promise(resolve => {
                 const el = document.getElementById(`reel-${i}`);
-                const targetSym = results[i];
-                // On force le symbole de fin à être le bon
-                const targetNode = el.children[60]; 
-                targetNode.className = `symbol ${SYM_DATA[targetSym]}`;
-                targetNode.dataset.name = targetSym;
-
-                let speed = 60;
-                let currentPos = 0;
-                const stopPos = 60 * 180; 
+                const targetNode = el.children[70];
+                targetNode.className = `symbol ${SYM_DATA[results[i]]}`;
+                
+                let speed = 70;
+                let pos = 0;
+                const stop = 70 * 180;
 
                 const frame = () => {
-                    currentPos += speed;
-                    if (currentPos >= stopPos) {
-                        el.style.transform = `translateY(-${stopPos}px)`;
-                        playSound(150 + (i*50), 0.1);
+                    pos += speed;
+                    if(pos >= stop) {
+                        el.style.transform = `translateY(-${stop}px)`;
+                        playSound(150 + (i*60), 0.1);
                         resolve();
                     } else {
-                        if (currentPos > stopPos * 0.8) speed *= 0.97;
-                        if (speed < 7) speed = 7;
-                        el.style.transform = `translateY(-${currentPos}px)`;
+                        if(pos > stop * 0.8) speed *= 0.96;
+                        if(speed < 8) speed = 8;
+                        el.style.transform = `translateY(-${pos}px)`;
                         requestAnimationFrame(frame);
                     }
                 };
@@ -239,7 +210,7 @@
             });
         });
 
-        await Promise.all(animations);
+        await Promise.all(anims);
         checkWin(results);
         spinning = false;
     }
@@ -247,31 +218,21 @@
     function checkWin(res) {
         let win = 0;
         const banner = document.getElementById('msg-banner');
-        banner.classList.remove('jackpot-active');
-
-        // 1. BNZ (Énorme message + God Rays)
-        if (res[0] === 'B' && res[1] === 'N' && res[2] === 'Z') {
+        
+        if(res[0]==='B' && res[1]==='N' && res[2]==='Z') {
             win = 1000;
             banner.innerText = "!! BNZ JACKPOT !!";
-            banner.classList.add('jackpot-active');
             document.getElementById('god-rays').style.display = 'block';
             document.getElementById('casino-world').classList.add('shake');
-            playSound(500, 1.5, 0.3);
-        } 
-        // 2. TRIPLE (Gros message)
-        else if (res[0] === res[1] && res[1] === res[2]) {
+        } else if(res[0]===res[1] && res[1]===res[2]) {
             win = 100;
-            banner.innerText = "TRIPLE COMBO ! +100";
-            playSound(400, 0.5);
-        }
-        // 3. DOUBLE (Petit message / Remboursé)
-        else if (res[0] === res[1] || res[1] === res[2] || res[0] === res[2]) {
+            banner.innerText = "TRIPLE COMBO !";
+        } else if(res[0]===res[1] || res[1]===res[2] || res[0]===res[2]) {
             win = 10;
-            banner.innerText = "DOUBLE ! REMBOURSÉ";
-            playSound(300, 0.2);
+            banner.innerText = "DOUBLE !";
         }
 
-        if (win > 0) {
+        if(win > 0) {
             chips += win;
             banner.style.display = 'block';
             setTimeout(() => {
@@ -279,18 +240,12 @@
                 document.getElementById('casino-world').classList.remove('shake');
             }, 3000);
         }
-
-        if (chips > hiScore) hiScore = chips;
+        if(chips > hiScore) hiScore = chips;
         document.getElementById('chips').innerText = chips;
         document.getElementById('highscore').innerText = hiScore;
-
-        if (chips < 10) {
-            setTimeout(() => { alert("GAME OVER - RESET"); chips = 100; buildReels(); }, 500);
-        }
     }
 
     function bonk() { playSound(100, 0.1); }
-
     buildReels();
 </script>
 </body>
