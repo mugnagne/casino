@@ -2,173 +2,186 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>BNZ - Drinking Game Edition</title>
+    <title>BNZ CASINO - DRINKING ENGINE</title>
     <style>
-        body { font-family: 'Courier New', Courier, monospace; background: #1a1a1a; color: #eee; text-align: center; }
-        .stats { display: flex; justify-content: center; gap: 30px; margin: 20px; font-weight: bold; }
+        body { font-family: 'Impact', sans-serif; background: #000; color: white; text-align: center; margin: 0; }
+        .header { background: linear-gradient(to bottom, #444, #111); padding: 20px; border-bottom: 4px solid gold; }
         
-        .machine {
-            display: inline-flex;
-            gap: 15px;
-            padding: 30px;
-            background: #333;
-            border: 8px solid #b22222; /* Rouge "danger" */
-            border-radius: 10px;
+        /* Affichage des jetons */
+        #chips-display { font-size: 3rem; color: gold; text-shadow: 2px 2px #ff0000; }
+        
+        /* La Machine */
+        .slot-machine { margin: 40px auto; padding: 20px; background: #222; width: fit-content; border: 10px solid #444; border-radius: 20px; }
+        .reels-container { display: flex; gap: 15px; margin-bottom: 20px; }
+        .reel { width: 100px; height: 120px; background: #eee; color: #000; font-size: 3.5rem; display: flex; align-items: center; justify-content: center; border-radius: 10px; border-bottom: 5px solid #aaa; }
+        
+        /* Zone d'action (Le coeur du jeu) */
+        #action-box { 
+            min-height: 120px; margin: 20px auto; width: 90%; max-width: 500px;
+            background: #111; border: 3px dashed gold; padding: 20px;
+            display: flex; flex-direction: column; justify-content: center;
+            font-size: 1.4rem; line-height: 1.4;
         }
+        .title-event { font-weight: bold; margin-bottom: 10px; text-transform: uppercase; }
+        .desc-event { color: #00ff00; font-family: sans-serif; }
 
-        .reel {
-            width: 80px; height: 100px;
-            background: white; color: black;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2.5rem; border-radius: 5px;
-        }
+        /* Boutons */
+        .btn { padding: 20px 60px; font-size: 1.8rem; cursor: pointer; border: none; border-radius: 10px; font-weight: bold; transition: 0.2s; }
+        #spin-btn { background: #ffcc00; color: black; box-shadow: 0 8px #997700; }
+        #spin-btn:active { box-shadow: 0 2px #997700; transform: translateY(4px); }
+        #spin-btn:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; }
+        
+        #refill-btn { background: #ff0000; color: white; display: none; }
 
-        /* Styles des messages d'action */
-        #action-display {
-            margin: 20px auto;
-            min-height: 60px;
-            width: 80%;
-            padding: 15px;
-            font-size: 1.5rem;
-            border: 2px dashed #555;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .drink-warning { color: #ff4444; animation: blink 0.5s infinite; }
-        .win-shot { color: #44ff44; }
-        .jackpot-irl { color: #ffff00; background: #000; padding: 10px; border: 2px solid gold; }
-
-        button {
-            padding: 20px 40px; font-size: 1.2rem; cursor: pointer;
-            background: #444; color: white; border: none; border-radius: 5px;
-        }
-        button:disabled { background: #222; color: #555; }
-
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } }
+        .rare { color: #ff00ff !important; text-shadow: 0 0 10px #ff00ff; }
+        .legendary { color: #ffff00 !important; text-shadow: 0 0 20px #ffff00; }
     </style>
 </head>
 <body>
 
-    <h1>BNZ : CASINO À BOIRE</h1>
-
-    <div class="stats">
-        <div>JETONS : <span id="chips">50</span></div>
+    <div class="header">
+        <div id="chips-display">100</div>
+        <div style="font-size: 0.8rem; letter-spacing: 2px;">JETONS VIRTUELS</div>
     </div>
 
-    <div class="machine">
-        <div class="reel" id="r0">?</div>
-        <div class="reel" id="r1">?</div>
-        <div class="reel" id="r2">?</div>
+    <div class="slot-machine">
+        <div class="reels-container">
+            <div class="reel" id="r0">?</div>
+            <div class="reel" id="r1">?</div>
+            <div class="reel" id="r2">?</div>
+        </div>
+        
+        <button id="spin-btn" class="btn" onclick="play()">SPIN (-10)</button>
+        <button id="refill-btn" class="btn" onclick="refill()">J'AI BU MON SHOT</button>
     </div>
 
-    <div id="action-display">Appuie sur SPIN pour commencer</div>
-
-    <div class="controls">
-        <button id="spin-btn" onclick="play()">SPIN (-10)</button>
-        <br><br>
-        <button id="refill-btn" onclick="refill()" style="display:none; background: #b22222;">J'AI BU MON SHOT (RECHARGE)</button>
+    <div id="action-box">
+        <div class="title-event">EN ATTENTE</div>
+        <div class="desc-event">Insère 10 jetons pour lancer la roue.</div>
     </div>
 
-    <script>
-        let chips = 50;
-        const config = [
-            ['B', '🍌', '🍒', '🍋', '🍇'],
-            ['N', '🍌', '🍒', '🍋', '🍇'],
-            ['Z', '🍌', '🍒', '🍋', '🍇']
-        ];
+<script>
+    let chips = 100;
+    const symbols = ['B', 'N', 'Z', '💀', '🔥', '🃏', '🍺'];
 
-        function play() {
-            if (chips < 10) return;
+    // CONFIGURATION DES EVENTS
+    const EVENTS = {
+        DOUBLE: [
+            { t: "CIBLE", d: "Donne 2 gorgées à la personne de ton choix." },
+            { t: "TOURNE", d: "Tout le monde tourne sur soi-même, le dernier boit." },
+            { t: "MIROIR", d: "Choisis un partenaire. Quand tu bois, il boit (jusqu'au prochain double)." },
+            { t: "INVENTEUR", d: "Invente une règle de mot interdit pendant 3 tours." },
+            { t: "BOOMERANG", d: "La personne à ta droite te donne 2 gorgées." }
+        ],
+        TRIPLE: [
+            { t: "DICTATEUR", d: "Tout le monde finit son verre sauf toi." },
+            { t: "CASCADE", d: "Lance une cascade (tout le monde boit en suivant le voisin)." },
+            { t: "MAITRE DES POUCES", d: "Tu es le maître des pouces jusqu'au prochain triple." },
+            { t: "SHOT ROULETTE", d: "Désigne 2 personnes : Duel de Chifoumi, le perdant prend un shot." },
+            { t: "CRACKLIST", d: "Donne une catégorie (ex: Marques de bières). Le premier qui sèche boit un shot." }
+        ],
+        BNZ: [
+            { t: "LE SAINT GRAAL", d: "🔥 TU REMPORTES 10 JETONS IRL ! 🔥" }
+        ]
+    };
 
-            chips -= 10;
-            updateUI();
+    function play() {
+        if (chips < 10) return;
+        chips -= 10;
+        updateUI();
+
+        const btn = document.getElementById('spin-btn');
+        const box = document.getElementById('action-box');
+        btn.disabled = true;
+        box.innerHTML = '<div class="title-event">BRASSAGE...</div>';
+
+        // Logique de probabilités (Espérance négative)
+        let res = [];
+        const rng = Math.random();
+
+        if (rng < 0.02) { // 2% BNZ
+            res = ['B', 'N', 'Z'];
+        } else if (rng < 0.10) { // 8% Triple
+            const s = symbols[Math.floor(Math.random()*symbols.length)];
+            res = [s, s, s];
+        } else if (rng < 0.38) { // 28% Double
+            const s1 = symbols[Math.floor(Math.random()*symbols.length)];
+            const s2 = symbols[Math.floor(Math.random()*symbols.length)];
+            res = [s1, s1, s2]; // On force une paire
+        } else { // 62% Perte
+            res = [symbols[Math.floor(Math.random()*3)], symbols[4], symbols[5]];
+        }
+
+        setTimeout(() => {
+            document.getElementById('r0').innerText = res[0];
+            document.getElementById('r1').innerText = res[1];
+            document.getElementById('r2').innerText = res[2];
+            resolve(res);
+        }, 700);
+    }
+
+    function resolve(res) {
+        const box = document.getElementById('action-box');
+        let type = "";
+        let eventList = [];
+        let winAmount = 0;
+
+        if (res[0] === 'B' && res[1] === 'N' && res[2] === 'Z') {
+            type = "BNZ";
+            eventList = EVENTS.BNZ;
+            winAmount = 0; // Le gain est IRL
+        } else if (res[0] === res[1] && res[1] === res[2]) {
+            type = "TRIPLE";
+            eventList = EVENTS.TRIPLE;
+            winAmount = 50;
+        } else if (res[0] === res[1] || res[1] === res[2] || res[0] === res[2]) {
+            type = "DOUBLE";
+            eventList = EVENTS.DOUBLE;
+            winAmount = 5; // On rend juste la moitié pour drainer
+        }
+
+        if (type !== "") {
+            const ev = eventList[Math.floor(Math.random()*eventList.length)];
+            chips += winAmount;
             
-            const btn = document.getElementById('spin-btn');
-            const display = document.getElementById('action-display');
-            btn.disabled = true;
-            display.innerText = "Le destin tourne...";
-
-            // Calcul du résultat (Espérance négative)
-            let res = [];
-            const luck = Math.random();
-
-            if (luck < 0.02) { // 2% Jackpot BNZ
-                res = ['B', 'N', 'Z'];
-            } else if (luck < 0.07) { // 5% Triple (autre que BNZ)
-                const syms = ['🍌', '🍒', '🍋'];
-                const s = syms[Math.floor(Math.random()*syms.length)];
-                res = [s, s, s];
-            } else if (luck < 0.30) { // 23% Double (donne un shot)
-                const s1 = config[0][Math.floor(Math.random()*5)];
-                const s2 = config[1][Math.floor(Math.random()*5)];
-                res = [s1, s1, s2]; // Force une paire sur les deux premiers
-            } else { // 70% Perte totale
-                res = ['🍒', '🍋', '🍌']; 
-            }
-
-            // Animation rapide
-            setTimeout(() => {
-                document.getElementById('r0').innerText = res[0];
-                document.getElementById('r1').innerText = res[1];
-                document.getElementById('r2').innerText = res[2];
-                resolveTurn(res);
-                btn.disabled = (chips < 10);
-            }, 600);
-        }
-
-        function resolveTurn(res) {
-            const display = document.getElementById('action-display');
+            let rarityClass = type === "TRIPLE" ? "rare" : (type === "BNZ" ? "legendary" : "");
             
-            // 1. JACKPOT BNZ
-            if (res[0]==='B' && res[1]==='N' && res[2]==='Z') {
-                chips += 200;
-                display.className = "jackpot-irl";
-                display.innerHTML = "🔥 BNZ ! GAGNE 1 JETON IRL + 200 CHIPS 🔥";
-            } 
-            // 2. TRIPLE
-            else if (res[0] === res[1] && res[1] === res[2]) {
-                chips += 50;
-                display.className = "win-shot";
-                display.innerText = "TRIPLE ! DONNE 2 SHOTS ! (+50 chips)";
-            }
-            // 3. DOUBLE
-            else if (res[0] === res[1] || res[1] === res[2] || res[0] === res[2]) {
-                display.className = "win-shot";
-                display.innerText = "DOUBLE ! DONNE 1 SHOT À QUELQU'UN !";
-            }
-            // 4. PERTE
-            else {
-                display.className = "";
-                display.innerText = "Rien... On continue ?";
-            }
-
-            if (chips < 10) {
-                gameOver();
-            }
-            updateUI();
+            box.innerHTML = `
+                <div class="title-event ${rarityClass}">${type} !</div>
+                <div class="title-event" style="font-size:1.1rem">${ev.t}</div>
+                <div class="desc-event">${ev.d}</div>
+            `;
+        } else {
+            box.innerHTML = `<div class="title-event">RIEN...</div><div class="desc-event">Passe le tour au voisin.</div>`;
         }
 
-        function gameOver() {
-            const display = document.getElementById('action-display');
-            display.className = "drink-warning";
-            display.innerText = "PLUS DE JETONS ! BOIS UN SHOT POUR RECHARGER.";
-            document.getElementById('refill-btn').style.display = "inline-block";
-            document.getElementById('spin-btn').style.display = "none";
-        }
-
-        function refill() {
-            chips = 50;
-            updateUI();
-            document.getElementById('refill-btn').style.display = "none";
-            document.getElementById('spin-btn').style.display = "inline-block";
+        if (chips < 10) {
+            showGameOver();
+        } else {
             document.getElementById('spin-btn').disabled = false;
-            document.getElementById('action-display').className = "";
-            document.getElementById('action-display').innerText = "C'est reparti, santé !";
         }
+        updateUI();
+    }
 
-        function updateUI() {
-            document.getElementById('chips').innerText = chips;
-        }
-    </script>
+    function showGameOver() {
+        const box = document.getElementById('action-box');
+        box.innerHTML = `<div class="title-event" style="color:red">BANQUEROUTE !</div><div class="desc-event">Bois un shot sec pour revenir dans la partie.</div>`;
+        document.getElementById('spin-btn').style.display = "none";
+        document.getElementById('refill-btn').style.display = "inline-block";
+    }
+
+    function refill() {
+        chips = 100;
+        document.getElementById('refill-btn').style.display = "none";
+        document.getElementById('spin-btn').style.display = "inline-block";
+        document.getElementById('spin-btn').disabled = false;
+        document.getElementById('action-box').innerHTML = `<div class="title-event">RECHARGÉ</div><div class="desc-event">C'est reparti pour la gloire.</div>`;
+        updateUI();
+    }
+
+    function updateUI() {
+        document.getElementById('chips-display').innerText = chips;
+    }
+</script>
 </body>
 </html>
