@@ -2,251 +2,173 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BNZ Casino - Pro Fix</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>BNZ - Drinking Game Edition</title>
     <style>
-        /* FIX 1: FOND ADAPTATIF SANS BORDS NOIRS */
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #000;
-            display: flex; justify-content: center; align-items: center;
-            overflow: hidden; font-family: 'Press Start 2P', cursive;
+        body { font-family: 'Courier New', Courier, monospace; background: #1a1a1a; color: #eee; text-align: center; }
+        .stats { display: flex; justify-content: center; gap: 30px; margin: 20px; font-weight: bold; }
+        
+        .machine {
+            display: inline-flex;
+            gap: 15px;
+            padding: 30px;
+            background: #333;
+            border: 8px solid #b22222; /* Rouge "danger" */
+            border-radius: 10px;
         }
 
-        #casino-world {
-            position: relative;
-            /* Se remplit pour couvrir l'écran tout en gardant le ratio via background-size */
-            width: 100vw; height: 100vh;
-            background-image: url('https://iili.io/flqZxUl.png');
-            background-size: cover; 
-            background-position: center;
-            image-rendering: pixelated;
+        .reel {
+            width: 80px; height: 100px;
+            background: white; color: black;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; border-radius: 5px;
         }
 
-        /* FIX 2: GOD RAYS OPTIMISÉS (MULTIPLES ET ROTATIFS) */
-        #god-rays {
-            position: absolute;
-            top: 50%; left: 50%;
-            /* Taille immense pour que la rotation ne montre pas les bords */
-            width: 300vmax; height: 300vmax; 
-            background: repeating-conic-gradient(
-                from 0deg,
-                rgba(255, 255, 255, 0.4) 0deg 1deg,
-                transparent 1deg 8deg,
-                rgba(255, 255, 200, 0.3) 8deg 9deg,
-                transparent 9deg 15deg
-            );
-            transform: translate(-50%, -50%);
-            z-index: 15;
-            display: none;
-            pointer-events: none;
-            animation: rotateRays 4s linear infinite;
+        /* Styles des messages d'action */
+        #action-display {
+            margin: 20px auto;
+            min-height: 60px;
+            width: 80%;
+            padding: 15px;
+            font-size: 1.5rem;
+            border: 2px dashed #555;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        @keyframes rotateRays {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
+        .drink-warning { color: #ff4444; animation: blink 0.5s infinite; }
+        .win-shot { color: #44ff44; }
+        .jackpot-irl { color: #ffff00; background: #000; padding: 10px; border: 2px solid gold; }
+
+        button {
+            padding: 20px 40px; font-size: 1.2rem; cursor: pointer;
+            background: #444; color: white; border: none; border-radius: 5px;
         }
+        button:disabled { background: #222; color: #555; }
 
-        /* INTERFACE & MACHINE */
-        .ui-top {
-            position: absolute; top: 20px; width: 100%;
-            display: flex; justify-content: space-between;
-            padding: 0 5%; box-sizing: border-box; z-index: 20;
-        }
-
-        .display-box {
-            padding: 15px; background: rgba(0,0,0,0.8);
-            border: 3px solid #444; color: #fff; font-size: 14px;
-        }
-
-        #reels-container {
-            position: absolute;
-            left: 50%; top: 42%; /* Remonté pour le fix visuel */
-            transform: translate(-50%, -50%);
-            width: 480px; height: 180px;
-            display: flex; justify-content: space-between;
-            overflow: hidden; z-index: 20;
-        }
-
-        .reel { width: 150px; display: flex; flex-direction: column; will-change: transform; }
-
-        .symbol {
-            width: 150px; height: 180px;
-            background-size: contain; background-repeat: no-repeat;
-            background-position: center; image-rendering: pixelated;
-            flex-shrink: 0;
-        }
-
-        .sym-B { background-image: url('https://iili.io/flqQLAP.png'); }
-        .sym-N { background-image: url('https://iili.io/flqZ2RI.png'); }
-        .sym-Z { background-image: url('https://iili.io/flqZol4.png'); }
-        .sym-banana { background-image: url('https://iili.io/flqQPSV.png'); }
-        .sym-cherry { background-image: url('https://iili.io/flqZHSp.png'); }
-
-        .controls-bottom {
-            position: absolute; bottom: 50px; width: 100%;
-            display: flex; justify-content: center; gap: 40px; z-index: 30;
-        }
-
-        .btn-container { position: relative; width: 220px; height: 80px; cursor: pointer; }
-        .btn-img { width: 100%; height: 100%; background-image: url('https://iili.io/flqQQN1.png'); background-size: 100% 100%; }
-        .btn-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
-
-        #msg-banner {
-            position: absolute; top: 25%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 40px; color: #ffff00; text-align: center;
-            display: none; z-index: 40; text-shadow: 4px 4px #000;
-        }
-
-        .shake { animation: shake 0.1s infinite; }
-        @keyframes shake { 0% {transform: translate(4px,4px)} 50% {transform: translate(-4px,-4px)} }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } }
     </style>
 </head>
 <body>
 
-<div id="casino-world">
-    <div id="god-rays"></div>
-    <div id="msg-banner">JACKPOT !</div>
-    
-    <div class="ui-top">
-        <div class="display-box">CHIPS: <span id="chips">100</span></div>
-        <div class="display-box">HI-SCORE: <span id="highscore">0</span></div>
+    <h1>BNZ : CASINO À BOIRE</h1>
+
+    <div class="stats">
+        <div>JETONS : <span id="chips">50</span></div>
     </div>
 
-    <div id="reels-container">
-        <div class="reel" id="reel-0"></div>
-        <div class="reel" id="reel-1"></div>
-        <div class="reel" id="reel-2"></div>
+    <div class="machine">
+        <div class="reel" id="r0">?</div>
+        <div class="reel" id="r1">?</div>
+        <div class="reel" id="r2">?</div>
     </div>
 
-    <div class="controls-bottom">
-        <div class="btn-container" onclick="startSpin()">
-            <div class="btn-img"></div><div class="btn-text">SPIN</div>
-        </div>
-        <div class="btn-container" onclick="bonk()">
-            <div class="btn-img" style="filter: hue-rotate(90deg);"></div><div class="btn-text">BONK</div>
-        </div>
+    <div id="action-display">Appuie sur SPIN pour commencer</div>
+
+    <div class="controls">
+        <button id="spin-btn" onclick="play()">SPIN (-10)</button>
+        <br><br>
+        <button id="refill-btn" onclick="refill()" style="display:none; background: #b22222;">J'AI BU MON SHOT (RECHARGE)</button>
     </div>
-</div>
 
-<script>
-    // Config: B uniquement R1, N uniquement R2, Z uniquement R3
-    const REEL_CONFIG = [
-        ['B', 'banana', 'cherry', 'banana', 'cherry'],
-        ['N', 'banana', 'cherry', 'banana', 'cherry'],
-        ['Z', 'banana', 'cherry', 'banana', 'cherry']
-    ];
+    <script>
+        let chips = 50;
+        const config = [
+            ['B', '🍌', '🍒', '🍋', '🍇'],
+            ['N', '🍌', '🍒', '🍋', '🍇'],
+            ['Z', '🍌', '🍒', '🍋', '🍇']
+        ];
 
-    const SYM_DATA = { 'B': 'sym-B', 'N': 'sym-N', 'Z': 'sym-Z', 'banana': 'sym-banana', 'cherry': 'sym-cherry' };
+        function play() {
+            if (chips < 10) return;
 
-    let chips = 100;
-    let hiScore = 0;
-    let spinning = false;
+            chips -= 10;
+            updateUI();
+            
+            const btn = document.getElementById('spin-btn');
+            const display = document.getElementById('action-display');
+            btn.disabled = true;
+            display.innerText = "Le destin tourne...";
 
-    function buildReels() {
-        [0, 1, 2].forEach(id => {
-            const r = document.getElementById(`reel-${id}`);
-            r.innerHTML = '';
-            for(let i=0; i<90; i++) {
-                const pool = REEL_CONFIG[id];
-                const s = pool[Math.floor(Math.random()*pool.length)];
-                const div = document.createElement('div');
-                div.className = `symbol ${SYM_DATA[s]}`;
-                r.appendChild(div);
+            // Calcul du résultat (Espérance négative)
+            let res = [];
+            const luck = Math.random();
+
+            if (luck < 0.02) { // 2% Jackpot BNZ
+                res = ['B', 'N', 'Z'];
+            } else if (luck < 0.07) { // 5% Triple (autre que BNZ)
+                const syms = ['🍌', '🍒', '🍋'];
+                const s = syms[Math.floor(Math.random()*syms.length)];
+                res = [s, s, s];
+            } else if (luck < 0.30) { // 23% Double (donne un shot)
+                const s1 = config[0][Math.floor(Math.random()*5)];
+                const s2 = config[1][Math.floor(Math.random()*5)];
+                res = [s1, s1, s2]; // Force une paire sur les deux premiers
+            } else { // 70% Perte totale
+                res = ['🍒', '🍋', '🍌']; 
             }
-        });
-    }
 
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playSound(f, d) {
-        const o = audioCtx.createOscillator();
-        const g = audioCtx.createGain();
-        o.frequency.value = f;
-        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + d);
-        o.connect(g); g.connect(audioCtx.destination);
-        o.start(); o.stop(audioCtx.currentTime + d);
-    }
-
-    async function startSpin() {
-        if(spinning || chips < 10) return;
-        if(audioCtx.state === 'suspended') audioCtx.resume();
-        spinning = true; chips -= 10;
-        document.getElementById('chips').innerText = chips;
-        document.getElementById('god-rays').style.display = 'none';
-
-        const results = [];
-        if (Math.random() < 0.04) { results.push('B', 'N', 'Z'); } // 4% de chance Jackpot
-        else {
-            [0,1,2].forEach(i => results.push(REEL_CONFIG[i][Math.floor(Math.random()*REEL_CONFIG[i].length)]));
-        }
-
-        const anims = [0,1,2].map(i => {
-            return new Promise(resolve => {
-                const el = document.getElementById(`reel-${i}`);
-                const targetNode = el.children[70];
-                targetNode.className = `symbol ${SYM_DATA[results[i]]}`;
-                
-                let speed = 70;
-                let pos = 0;
-                const stop = 70 * 180;
-
-                const frame = () => {
-                    pos += speed;
-                    if(pos >= stop) {
-                        el.style.transform = `translateY(-${stop}px)`;
-                        playSound(150 + (i*60), 0.1);
-                        resolve();
-                    } else {
-                        if(pos > stop * 0.8) speed *= 0.96;
-                        if(speed < 8) speed = 8;
-                        el.style.transform = `translateY(-${pos}px)`;
-                        requestAnimationFrame(frame);
-                    }
-                };
-                setTimeout(() => requestAnimationFrame(frame), i * 300);
-            });
-        });
-
-        await Promise.all(anims);
-        checkWin(results);
-        spinning = false;
-    }
-
-    function checkWin(res) {
-        let win = 0;
-        const banner = document.getElementById('msg-banner');
-        
-        if(res[0]==='B' && res[1]==='N' && res[2]==='Z') {
-            win = 1000;
-            banner.innerText = "!! BNZ JACKPOT !!";
-            document.getElementById('god-rays').style.display = 'block';
-            document.getElementById('casino-world').classList.add('shake');
-        } else if(res[0]===res[1] && res[1]===res[2]) {
-            win = 100;
-            banner.innerText = "TRIPLE COMBO !";
-        } else if(res[0]===res[1] || res[1]===res[2] || res[0]===res[2]) {
-            win = 10;
-            banner.innerText = "DOUBLE !";
-        }
-
-        if(win > 0) {
-            chips += win;
-            banner.style.display = 'block';
+            // Animation rapide
             setTimeout(() => {
-                banner.style.display = 'none';
-                document.getElementById('casino-world').classList.remove('shake');
-            }, 3000);
+                document.getElementById('r0').innerText = res[0];
+                document.getElementById('r1').innerText = res[1];
+                document.getElementById('r2').innerText = res[2];
+                resolveTurn(res);
+                btn.disabled = (chips < 10);
+            }, 600);
         }
-        if(chips > hiScore) hiScore = chips;
-        document.getElementById('chips').innerText = chips;
-        document.getElementById('highscore').innerText = hiScore;
-    }
 
-    function bonk() { playSound(100, 0.1); }
-    buildReels();
-</script>
+        function resolveTurn(res) {
+            const display = document.getElementById('action-display');
+            
+            // 1. JACKPOT BNZ
+            if (res[0]==='B' && res[1]==='N' && res[2]==='Z') {
+                chips += 200;
+                display.className = "jackpot-irl";
+                display.innerHTML = "🔥 BNZ ! GAGNE 1 JETON IRL + 200 CHIPS 🔥";
+            } 
+            // 2. TRIPLE
+            else if (res[0] === res[1] && res[1] === res[2]) {
+                chips += 50;
+                display.className = "win-shot";
+                display.innerText = "TRIPLE ! DONNE 2 SHOTS ! (+50 chips)";
+            }
+            // 3. DOUBLE
+            else if (res[0] === res[1] || res[1] === res[2] || res[0] === res[2]) {
+                display.className = "win-shot";
+                display.innerText = "DOUBLE ! DONNE 1 SHOT À QUELQU'UN !";
+            }
+            // 4. PERTE
+            else {
+                display.className = "";
+                display.innerText = "Rien... On continue ?";
+            }
+
+            if (chips < 10) {
+                gameOver();
+            }
+            updateUI();
+        }
+
+        function gameOver() {
+            const display = document.getElementById('action-display');
+            display.className = "drink-warning";
+            display.innerText = "PLUS DE JETONS ! BOIS UN SHOT POUR RECHARGER.";
+            document.getElementById('refill-btn').style.display = "inline-block";
+            document.getElementById('spin-btn').style.display = "none";
+        }
+
+        function refill() {
+            chips = 50;
+            updateUI();
+            document.getElementById('refill-btn').style.display = "none";
+            document.getElementById('spin-btn').style.display = "inline-block";
+            document.getElementById('spin-btn').disabled = false;
+            document.getElementById('action-display').className = "";
+            document.getElementById('action-display').innerText = "C'est reparti, santé !";
+        }
+
+        function updateUI() {
+            document.getElementById('chips').innerText = chips;
+        }
+    </script>
 </body>
 </html>
