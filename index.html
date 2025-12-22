@@ -127,44 +127,68 @@
         processResult(res);
     }
 
-    async function processResult(res) {
-        let type = "";
-        if (res[0]==='B' && res[1]==='N' && res[2]==='Z') type = "BNZ";
-        else if (res[0] === res[1] && res[1] === res[2]) type = "TRIPLE";
-        else if (res[0] === res[1] || res[1] === res[2] || res[0] === res[2]) type = "DOUBLE";
-
-        if (type !== "") {
-            const ev = EVENTS[type][Math.floor(Math.random()*EVENTS[type].length)];
-            if(type === "DOUBLE") chips += 5;
-            if(type === "TRIPLE") chips += 50;
-            
-            // SEQUENCE WARIO
-            const overlay = document.getElementById('overlay');
-            const countEl = document.getElementById('countdown');
-            const cardEl = document.getElementById('gage-card');
-            
-            overlay.style.display = 'flex';
-            cardEl.style.display = 'none';
-            countEl.style.display = 'block';
-
-            // 3, 2, 1...
-            for(let i=3; i>0; i--) {
-                countEl.innerText = i;
-                await new Promise(r => setTimeout(r, 600));
-            }
-            
-            countEl.style.display = 'none';
-            document.getElementById('gage-tag').innerText = type;
-            document.getElementById('gage-name').innerText = ev.t;
-            document.getElementById('gage-info').innerText = ev.d;
-            cardEl.style.display = 'block';
-            
-        } else {
-            if (chips < 10) showGameOver();
-            else document.getElementById('spin-btn').disabled = false;
-        }
-        updateUI();
+    async function play() {
+    if (chips < 10) return;
+    
+    // 1. Reset visuel immédiat pour casser l'impression de blocage
+    for(let i=0; i<3; i++) {
+        document.getElementById(`r${i}`).innerText = "🎲"; 
+        document.getElementById(`r${i}`).style.opacity = "0.5";
     }
+
+    chips -= 10;
+    updateUI();
+    document.getElementById('spin-btn').disabled = true;
+
+    let res = ["", "", ""];
+    const luck = Math.random();
+
+    // 2. Tirage du scénario
+    if (luck < 0.02) { 
+        // JACKPOT BNZ
+        res = ['B', 'N', 'Z']; 
+    } 
+    else if (luck < 0.08) { 
+        // TRIPLE (On force 3 symboles identiques parmis les fruits)
+        const s = fruitSyms[Math.floor(Math.random() * fruitSyms.length)];
+        res = [s, s, s];
+    } 
+    else if (luck < 0.38) { 
+        // DOUBLE (On force une paire et un intrus différent)
+        const s = fruitSyms[Math.floor(Math.random() * fruitSyms.length)];
+        let other;
+        do { other = fruitSyms[Math.floor(Math.random() * fruitSyms.length)]; } while (other === s);
+        
+        res = [s, s, other];
+        res.sort(() => Math.random() - 0.5); // On mélange l'ordre de la paire
+    } 
+    else {
+        // PERTE TOTALE (On force 3 symboles différents ET on évite B-N-Z)
+        let s1, s2, s3;
+        do {
+            s1 = Math.random() > 0.5 ? 'B' : fruitSyms[Math.floor(Math.random() * fruitSyms.length)];
+            s2 = Math.random() > 0.5 ? 'N' : fruitSyms[Math.floor(Math.random() * fruitSyms.length)];
+            s3 = Math.random() > 0.5 ? 'Z' : fruitSyms[Math.floor(Math.random() * fruitSyms.length)];
+        } while (
+            (s1 === s2 || s2 === s3 || s1 === s3) || // Pas de doubles
+            (s1 === 'B' && s2 === 'N' && s3 === 'Z') // Pas de jackpot BNZ par erreur
+        );
+        res = [s1, s2, s3];
+    }
+
+    // 3. Animation de "roulement" pour confirmer que ça change
+    for(let i=0; i<3; i++) {
+        await new Promise(r => setTimeout(r, 100)); // Délai entre chaque case
+        const el = document.getElementById(`r${i}`);
+        el.innerText = res[i];
+        el.style.opacity = "1";
+        // Petit effet de scale pour le feedback visuel
+        el.style.transform = "scale(1.1)";
+        setTimeout(() => { el.style.transform = "scale(1)"; }, 50);
+    }
+
+    processResult(res);
+}
 
     function closeGage() {
         document.getElementById('overlay').style.display = 'none';
