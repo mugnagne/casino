@@ -2,214 +2,383 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>BNZ : WARIO EDITION</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BONANZA CASINO - John Pork Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Arial Black', sans-serif; background: #000; color: white; margin: 0; overflow: hidden; }
-        
-        /* Dashboard discret en haut */
-        .dashboard { display: flex; justify-content: space-between; padding: 10px 20px; background: #111; border-bottom: 2px solid #333; }
-        #chips-display { color: gold; font-size: 1.5rem; }
+        :root {
+            --bg: #1a0633;
+            --primary: #ffcc00;
+            --secondary: #ff00ff;
+            --accent: #00ffcc;
+            --pork-pink: #ff99cc;
+        }
 
-        /* Slot Machine */
-        .machine-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; }
-        .reels { display: flex; gap: 15px; margin-bottom: 30px; }
-        .reel { width: 100px; height: 130px; background: #222; border: 4px solid #444; border-radius: 10px; font-size: 3.5rem; display: flex; align-items: center; justify-content: center; }
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Press Start 2P', cursive;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            height: 100vh;
+        }
 
-        .btn-spin { padding: 25px 80px; font-size: 2rem; background: gold; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; }
-        .btn-spin:disabled { background: #333; color: #555; }
+        /* --- UI TOP --- */
+        .header {
+            width: 100%;
+            padding: 20px;
+            background: #000;
+            border-bottom: 6px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            box-sizing: border-box;
+            z-index: 10;
+        }
 
-        /* POPUP GAGE (Style WarioWare) */
-        #overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: none; flex-direction: column; align-items: center; justify-content: center;
+        .chips-box { color: var(--primary); font-size: 14px; }
+
+        /* --- CASINO UI --- */
+        .casino-title {
+            margin: 20px 0;
+            font-size: 24px;
+            text-align: center;
+            color: var(--primary);
+            text-shadow: 4px 4px var(--secondary);
+        }
+
+        /* --- MACHINE A SOUS --- */
+        .machine-frame {
+            background: #333;
+            padding: 20px;
+            border: 8px solid #555;
+            border-radius: 10px;
+            box-shadow: 0 10px 0 #111;
+            position: relative;
+        }
+
+        .reels-window {
+            display: flex;
+            gap: 10px;
+            background: #000;
+            padding: 10px;
+            border: 4px solid #111;
+            overflow: hidden;
+            height: 120px; /* Taille d'un seul symbole */
+        }
+
+        .reel-column {
+            width: 100px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.1s linear;
+        }
+
+        .symbol {
+            width: 100px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-sizing: border-box;
+            border: 2px solid #222;
+        }
+
+        /* Couleurs des carrés (Sprites de substitution) */
+        .sym-B { background: #3366ff; color: white; } /* Bleu */
+        .sym-N { background: #ff3333; color: white; } /* Rouge */
+        .sym-Z { background: #33cc33; color: white; } /* Vert */
+        .sym-fruit { background: #555; }
+
+        /* --- BOUTONS --- */
+        .controls { margin-top: 40px; }
+
+        .btn-spin {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 20px 60px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 20px;
+            cursor: pointer;
+            border-bottom: 8px solid #997700;
+            transition: 0.1s;
+        }
+
+        .btn-spin:active {
+            transform: translateY(4px);
+            border-bottom-width: 4px;
+        }
+
+        .btn-spin:disabled {
+            background: #444;
+            color: #666;
+            border-bottom: 8px solid #222;
+            cursor: not-allowed;
+        }
+
+        /* --- OVERLAY JOHN PORK --- */
+        #pork-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             z-index: 100;
+            padding: 20px;
+            text-align: center;
         }
 
-        #countdown { font-size: 12rem; font-weight: 900; color: #ff0000; }
-        
-        #gage-card {
-            background: #fff; color: #000; padding: 40px; border-radius: 20px;
-            width: 80%; max-width: 600px; text-align: center;
-            box-shadow: 0 0 50px gold; display: none;
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .pork-avatar {
+            width: 150px;
+            height: 150px;
+            background: var(--pork-pink);
+            border: 6px solid white;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            animation: bounce 0.5s infinite alternate;
         }
 
-        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+        @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.1); } }
 
-        .gage-type { font-size: 1.5rem; text-transform: uppercase; background: #000; color: #fff; padding: 5px 15px; display: inline-block; margin-bottom: 20px; }
-        .gage-title { font-size: 2.5rem; margin-bottom: 20px; display: block; }
-        .gage-desc { font-size: 1.8rem; font-family: sans-serif; line-height: 1.2; }
+        .pork-speech {
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            position: relative;
+            max-width: 500px;
+            line-height: 1.6;
+            font-size: 12px;
+        }
 
-        /* Animation de défaite */
-        #refill-btn { padding: 30px; background: red; color: white; border: none; font-size: 2rem; cursor: pointer; display: none; }
+        .pork-speech:after {
+            content: '';
+            position: absolute;
+            top: -20px; left: 50%;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 20px solid white;
+            transform: translateX(-50%);
+        }
+
+        .btn-ok {
+            margin-top: 30px;
+            padding: 15px 30px;
+            background: var(--accent);
+            border: none;
+            font-family: 'Press Start 2P', cursive;
+            cursor: pointer;
+        }
+
+        .countdown {
+            font-size: 80px;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="dashboard">
-        <div id="chips-display">CHIPS: 100</div>
-        <div id="status">WARIO MODE</div>
+    <div class="header">
+        <div class="chips-box">CHIPS: <span id="chips-val">100</span></div>
+        <div style="color: var(--secondary)">WARIO MODE</div>
     </div>
 
-    <div class="machine-container">
-        <div class="reels">
-            <div class="reel" id="r0">?</div>
-            <div class="reel" id="r1">?</div>
-            <div class="reel" id="r2">?</div>
+    <h1 class="casino-title">BONANZA CASINO</h1>
+
+    <div class="machine-frame">
+        <div class="reels-window">
+            <div class="reel-column" id="reel-0"></div>
+            <div class="reel-column" id="reel-1"></div>
+            <div class="reel-column" id="reel-2"></div>
         </div>
-        <button id="spin-btn" class="btn-spin" onclick="play()">SPIN</button>
-        <button id="refill-btn" onclick="refill()">BOIS TON SHOT ET RECLIQUE</button>
     </div>
 
-    <div id="overlay">
-        <div id="countdown">3</div>
-        <div id="gage-card">
-            <div id="gage-tag" class="gage-type">DOUBLE</div>
-            <b id="gage-name" class="gage-title">NOM DU GAGE</b>
-            <div id="gage-info" class="gage-desc">Description du gage ici.</div>
-            <br>
-            <button onclick="closeGage()" style="padding:10px 20px; cursor:pointer; margin-top:20px;">OK !</button>
+    <div class="controls">
+        <button id="spin-btn" class="btn-spin" onclick="startGame()">SPIN!</button>
+    </div>
+
+    <div id="pork-overlay">
+        <div id="pork-timer" class="countdown"></div>
+        <div class="pork-avatar">🐷</div>
+        <div class="pork-speech">
+            <p id="pork-text">...</p>
         </div>
+        <button class="btn-ok" onclick="closePork()">C'EST FAIT !</button>
     </div>
 
 <script>
+    // --- CONFIGURATION ---
     let chips = 100;
-    const fruitSyms = ['🍺', '💀', '🔥', '🃏', '🍌', '🍒', '🍋'];
-
+    const symbols = ['🍺', '💀', '🔥', '🃏', '🍌', '🍒', '🍋'];
     const EVENTS = {
         DOUBLE: [
-            { t: "CIBLE", d: "Donne 2 gorgées à ton voisin de gauche." },
-            { t: "MIROIR", d: "Choisis un partenaire : s'il boit, tu bois." },
-            { t: "SYLLABE", d: "Suite de mots (Bateau -> Tonneau). Le premier qui bloque boit." },
+            { t: "SYLLABE", d: "Jeu des suites (Bateau -> Tonneau). Le premier qui bloque boit." },
             { t: "LE SAVANT", d: "Cite 5 villes d'un pays en 10s ou bois 3 fois." },
             { t: "C'EST QUI ?", d: "À 3, tout le monde pointe celui qui est le plus '...'. Le plus désigné boit." },
-            { t: "SANTÉ", d: "Tout le monde boit une gorgée, sauf toi." },
             { t: "FINGERS", d: "Jeu du doigt sur le verre : le dernier boit." },
-            { t: "MARQUE", d: "Donne une marque de voiture. Le premier qui sèche boit." },
-            { t: "VETO", d: "Annule la prochaine gorgée que tu devrais prendre." }
+            { t: "MARQUE", d: "Donne une marque de voiture. Le premier qui sèche boit." }
         ],
         TRIPLE: [
             { t: "DICTATEUR", d: "Désigne 3 personnes qui doivent finir leur verre." },
-            { t: "CASCADE", d: "Lance une cascade générale." },
-            { t: "DÉCRET ROYAL", d: "Invente une règle interdite. Le premier qui faut boit." },
+            { t: "DÉCRET ROYAL", d: "Invente une règle interdite. Le premier qui faute boit." },
             { t: "L'ENCHÈRE", d: "Celui qui accepte de boire le plus de gorgées échappe au shot." },
             { t: "ESCLAVE", d: "La personne à ta droite te sert pendant 20 min." },
-            { t: "BUFFLE", d: "Interdiction de boire de la main forte." },
-            { t: "PYRAMIDE", d: "Distribue 5 gorgées dans le groupe." },
-            { t: "CRACKLIST", d: "Thème : 'Séries Netflix'. Le premier qui sèche boit." },
-            { t: "ROI", d: "Personne ne peut te regarder dans les yeux sans boire." },
-            { t: "TOUR DE TABLE", d: "Une anecdote. Ceux qui l'ont déjà fait boivent." }
+            { t: "CRACKLIST", d: "Thème : 'Séries Netflix'. Le premier qui sèche boit." }
         ],
-        BNZ: [{ t: "LE SAINT GRAAL", d: "🔥 GAGNE 10 JETONS IRL 🔥" }]
+        BNZ: [{ t: "LE SAINT GRAAL", d: "Tu gagnes 10 jetons IRL. Range ça vite avant que je change d'avis." }]
     };
 
-    async function play() {
-        if (chips < 10) return;
-        chips -= 10;
-        updateUI();
-        document.getElementById('spin-btn').disabled = true;
+    // --- AUDIO ENGINE ---
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playTone(freq, duration, type = 'square') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    }
 
-        // Tirage (Identique aux specs précédentes)
-        let res = [];
-        const rng = Math.random();
-        if (rng < 0.02) res = ['B', 'N', 'Z'];
-        else if (rng < 0.07) { const s = fruitSyms[Math.floor(Math.random()*7)]; res = [s, s, s]; }
-        else if (rng < 0.37) { const s = fruitSyms[Math.floor(Math.random()*7)]; res = [s, s, fruitSyms[0]]; }
-        else res = ['B', fruitSyms[1], fruitSyms[2]];
-
-        // Animation rapide
+    // --- INITIALISATION DES REELS ---
+    function initReels() {
         for(let i=0; i<3; i++) {
-            await new Promise(r => setTimeout(r, 150));
-            document.getElementById(`r${i}`).innerText = res[i];
+            const reel = document.getElementById(`reel-${i}`);
+            reel.innerHTML = '';
+            // On crée une longue bande de symboles aléatoires
+            for(let j=0; j<40; j++) {
+                const div = document.createElement('div');
+                div.className = 'symbol sym-fruit';
+                div.innerText = symbols[Math.floor(Math.random()*symbols.length)];
+                reel.appendChild(div);
+            }
+        }
+    }
+    initReels();
+
+    // --- LOGIQUE DE JEU ---
+    async function startGame() {
+        if(chips < 10) {
+            alert("PLUS DE JETONS ! John Pork va te dégager !");
+            return;
         }
 
-        processResult(res);
-    }
+        chips -= 10;
+        document.getElementById('chips-val').innerText = chips;
+        document.getElementById('spin-btn').disabled = true;
+        playTone(200, 0.1);
 
-    async function play() {
-    if (chips < 10) return;
-    
-    // 1. Reset visuel immédiat pour casser l'impression de blocage
-    for(let i=0; i<3; i++) {
-        document.getElementById(`r${i}`).innerText = "🎲"; 
-        document.getElementById(`r${i}`).style.opacity = "0.5";
-    }
+        // Tirage du résultat
+        const luck = Math.random();
+        let result = [];
+        if(luck < 0.03) result = ['B', 'N', 'Z'];
+        else if(luck < 0.10) { const s = symbols[Math.floor(Math.random()*7)]; result = [s, s, s]; }
+        else if(luck < 0.40) { const s = symbols[Math.floor(Math.random()*7)]; result = [s, s, symbols[0]]; }
+        else { result = [symbols[0], symbols[1], symbols[2]]; }
 
-    chips -= 10;
-    updateUI();
-    document.getElementById('spin-btn').disabled = true;
+        // Animation de rotation
+        const anims = [];
+        for(let i=0; i<3; i++) {
+            anims.push(spinReel(i, result[i]));
+        }
 
-    let res = ["", "", ""];
-    const luck = Math.random();
-
-    // 2. Tirage du scénario
-    if (luck < 0.02) { 
-        // JACKPOT BNZ
-        res = ['B', 'N', 'Z']; 
-    } 
-    else if (luck < 0.08) { 
-        // TRIPLE (On force 3 symboles identiques parmis les fruits)
-        const s = fruitSyms[Math.floor(Math.random() * fruitSyms.length)];
-        res = [s, s, s];
-    } 
-    else if (luck < 0.38) { 
-        // DOUBLE (On force une paire et un intrus différent)
-        const s = fruitSyms[Math.floor(Math.random() * fruitSyms.length)];
-        let other;
-        do { other = fruitSyms[Math.floor(Math.random() * fruitSyms.length)]; } while (other === s);
+        await Promise.all(anims);
         
-        res = [s, s, other];
-        res.sort(() => Math.random() - 0.5); // On mélange l'ordre de la paire
-    } 
-    else {
-        // PERTE TOTALE (On force 3 symboles différents ET on évite B-N-Z)
-        let s1, s2, s3;
-        do {
-            s1 = Math.random() > 0.5 ? 'B' : fruitSyms[Math.floor(Math.random() * fruitSyms.length)];
-            s2 = Math.random() > 0.5 ? 'N' : fruitSyms[Math.floor(Math.random() * fruitSyms.length)];
-            s3 = Math.random() > 0.5 ? 'Z' : fruitSyms[Math.floor(Math.random() * fruitSyms.length)];
-        } while (
-            (s1 === s2 || s2 === s3 || s1 === s3) || // Pas de doubles
-            (s1 === 'B' && s2 === 'N' && s3 === 'Z') // Pas de jackpot BNZ par erreur
-        );
-        res = [s1, s2, s3];
+        // Analyser gain
+        setTimeout(() => checkWinner(result), 500);
     }
 
-    // 3. Animation de "roulement" pour confirmer que ça change
-    for(let i=0; i<3; i++) {
-        await new Promise(r => setTimeout(r, 100)); // Délai entre chaque case
-        const el = document.getElementById(`r${i}`);
-        el.innerText = res[i];
-        el.style.opacity = "1";
-        // Petit effet de scale pour le feedback visuel
-        el.style.transform = "scale(1.1)";
-        setTimeout(() => { el.style.transform = "scale(1)"; }, 50);
+    function spinReel(id, targetSymbol) {
+        return new Promise(resolve => {
+            const reel = document.getElementById(`reel-${id}`);
+            const totalSymbols = 30 + (id * 10); // Différentes longueurs pour effet décalé
+            
+            // On prépare la bande
+            reel.innerHTML = '';
+            for(let j=0; j<totalSymbols; j++) {
+                const div = document.createElement('div');
+                if(j === totalSymbols - 1) {
+                    div.innerText = targetSymbol;
+                    div.className = `symbol sym-${targetSymbol}`;
+                } else {
+                    div.innerText = symbols[Math.floor(Math.random()*symbols.length)];
+                    div.className = 'symbol sym-fruit';
+                }
+                reel.appendChild(div);
+            }
+
+            // Animation CSS
+            const targetY = (totalSymbols - 1) * 120;
+            reel.style.transition = `transform ${1 + id * 0.5}s cubic-bezier(0.45, 0.05, 0.55, 0.95)`;
+            reel.style.transform = `translateY(-${targetY}px)`;
+
+            setTimeout(() => {
+                playTone(150 + (id*50), 0.2);
+                resolve();
+            }, 1000 + id * 500);
+        });
     }
 
-    processResult(res);
-}
+    async function checkWinner(res) {
+        let type = "";
+        if (res[0]==='B' && res[1]==='N' && res[2]==='Z') type = "BNZ";
+        else if (res[0] === res[1] && res[1] === res[2]) type = "TRIPLE";
+        else if (res[0] === res[1] || res[1] === res[2] || res[0] === res[2]) type = "DOUBLE";
 
-    function closeGage() {
-        document.getElementById('overlay').style.display = 'none';
-        if (chips < 10) showGameOver();
-        else document.getElementById('spin-btn').disabled = false;
+        if(type !== "") {
+            const ev = EVENTS[type][Math.floor(Math.random()*EVENTS[type].length)];
+            if(type === "DOUBLE") chips += 5;
+            if(type === "TRIPLE") chips += 50;
+            if(type === "BNZ") playTone(800, 0.5, 'triangle');
+
+            // SEQUENCE JOHN PORK
+            const overlay = document.getElementById('pork-overlay');
+            const timer = document.getElementById('pork-timer');
+            const text = document.getElementById('pork-text');
+            
+            overlay.style.display = 'flex';
+            
+            // 3, 2, 1
+            for(let i=3; i>0; i--) {
+                timer.innerText = i;
+                playTone(400, 0.1);
+                await new Promise(r => setTimeout(r, 700));
+            }
+            
+            timer.innerText = "ALORS !";
+            text.innerHTML = `VOUS AVEZ INTÉRÊT À <strong>${ev.t}</strong> (${ev.d}) SINON JE VOUS DÉGAGE DU CASINO LES GROS LARDS !`;
+            playTone(100, 0.5, 'sawtooth');
+        } else {
+            document.getElementById('spin-btn').disabled = false;
+        }
+        document.getElementById('chips-val').innerText = chips;
     }
 
-    function showGameOver() {
-        document.getElementById('spin-btn').style.display = 'none';
-        document.getElementById('refill-btn').style.display = 'block';
-    }
-
-    function refill() {
-        chips = 100;
-        updateUI();
-        document.getElementById('spin-btn').style.display = 'block';
-        document.getElementById('refill-btn').style.display = 'none';
+    function closePork() {
+        document.getElementById('pork-overlay').style.display = 'none';
+        // Reset position reels pour le prochain spin sans animation brutale
+        const reels = document.querySelectorAll('.reel-column');
+        reels.forEach(r => {
+            r.style.transition = 'none';
+            r.style.transform = 'translateY(0)';
+        });
         document.getElementById('spin-btn').disabled = false;
+        playTone(600, 0.1);
     }
-
-    function updateUI() { document.getElementById('chips-display').innerText = "CHIPS: " + chips; }
 </script>
 </body>
 </html>
