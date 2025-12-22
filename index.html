@@ -218,7 +218,6 @@
     </div>
 
 <script>
-    // --- CONFIGURATION ---
     let chips = 100;
     const symbols = ['🍺', '💀', '🔥', '🃏', '🍌', '🍒', '🍋'];
     const EVENTS = {
@@ -236,100 +235,63 @@
             { t: "ESCLAVE", d: "La personne à ta droite te sert pendant 20 min." },
             { t: "CRACKLIST", d: "Thème : 'Séries Netflix'. Le premier qui sèche boit." }
         ],
-        BNZ: [{ t: "LE SAINT GRAAL", d: "Tu gagnes 10 jetons IRL. Range ça vite avant que je change d'avis." }]
+        BNZ: [{ t: "LE SAINT GRAAL", d: "Tu gagnes 10 jetons IRL. Range ça vite avant que je te dégage !" }]
     };
 
-    // --- AUDIO ENGINE ---
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playTone(freq, duration, type = 'square') {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
         gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + duration);
     }
 
-    // --- INITIALISATION DES REELS ---
-    function initReels() {
-        for(let i=0; i<3; i++) {
-            const reel = document.getElementById(`reel-${i}`);
-            reel.innerHTML = '';
-            // On crée une longue bande de symboles aléatoires
-            for(let j=0; j<40; j++) {
-                const div = document.createElement('div');
-                div.className = 'symbol sym-fruit';
-                div.innerText = symbols[Math.floor(Math.random()*symbols.length)];
-                reel.appendChild(div);
-            }
-        }
-    }
-    initReels();
-
-    // --- LOGIQUE DE JEU ---
     async function startGame() {
-        if(chips < 10) {
-            alert("PLUS DE JETONS ! John Pork va te dégager !");
-            return;
-        }
-
+        if(chips < 10) return;
         chips -= 10;
         document.getElementById('chips-val').innerText = chips;
         document.getElementById('spin-btn').disabled = true;
-        playTone(200, 0.1);
 
-        // Tirage du résultat
+        // Tirage
         const luck = Math.random();
         let result = [];
         if(luck < 0.03) result = ['B', 'N', 'Z'];
-        else if(luck < 0.10) { const s = symbols[Math.floor(Math.random()*7)]; result = [s, s, s]; }
-        else if(luck < 0.40) { const s = symbols[Math.floor(Math.random()*7)]; result = [s, s, symbols[0]]; }
-        else { result = [symbols[0], symbols[1], symbols[2]]; }
-
-        // Animation de rotation
-        const anims = [];
-        for(let i=0; i<3; i++) {
-            anims.push(spinReel(i, result[i]));
+        else if(luck < 0.12) { const s = symbols[Math.floor(Math.random()*7)]; result = [s, s, s]; }
+        else if(luck < 0.45) { 
+            const s = symbols[Math.floor(Math.random()*7)]; 
+            let s2; do { s2 = symbols[Math.floor(Math.random()*7)]; } while(s2===s);
+            result = [s, s, s2].sort(()=>Math.random()-0.5); 
+        }
+        else { 
+            result = [symbols[0], symbols[1], symbols[2]].sort(()=>Math.random()-0.5); 
         }
 
+        const anims = [spinReel(0, result[0]), spinReel(1, result[1]), spinReel(2, result[2])];
         await Promise.all(anims);
-        
-        // Analyser gain
-        setTimeout(() => checkWinner(result), 500);
+        setTimeout(() => checkWinner(result), 400);
     }
 
     function spinReel(id, targetSymbol) {
         return new Promise(resolve => {
             const reel = document.getElementById(`reel-${id}`);
-            const totalSymbols = 30 + (id * 10); // Différentes longueurs pour effet décalé
-            
-            // On prépare la bande
             reel.innerHTML = '';
-            for(let j=0; j<totalSymbols; j++) {
+            const count = 15 + (id * 5);
+            for(let j=0; j<count; j++) {
                 const div = document.createElement('div');
-                if(j === totalSymbols - 1) {
-                    div.innerText = targetSymbol;
-                    div.className = `symbol sym-${targetSymbol}`;
-                } else {
-                    div.innerText = symbols[Math.floor(Math.random()*symbols.length)];
-                    div.className = 'symbol sym-fruit';
-                }
+                const sym = (j === count-1) ? targetSymbol : symbols[Math.floor(Math.random()*7)];
+                div.innerText = sym;
+                div.className = `symbol ${sym==='B'||sym==='N'||sym==='Z' ? 'sym-'+sym : 'sym-fruit'}`;
                 reel.appendChild(div);
             }
-
-            // Animation CSS
-            const targetY = (totalSymbols - 1) * 120;
-            reel.style.transition = `transform ${1 + id * 0.5}s cubic-bezier(0.45, 0.05, 0.55, 0.95)`;
-            reel.style.transform = `translateY(-${targetY}px)`;
-
-            setTimeout(() => {
-                playTone(150 + (id*50), 0.2);
-                resolve();
-            }, 1000 + id * 500);
+            reel.style.transition = 'none';
+            reel.style.transform = 'translateY(0)';
+            reel.offsetHeight;
+            reel.style.transition = `transform ${1 + id*0.4}s cubic-bezier(0.15, 0, 0.15, 1)`;
+            reel.style.transform = `translateY(-${(count-1)*120}px)`;
+            setTimeout(() => { playTone(150+(id*50), 0.1); resolve(); }, 1200 + id*400);
         });
     }
 
@@ -343,25 +305,16 @@
             const ev = EVENTS[type][Math.floor(Math.random()*EVENTS[type].length)];
             if(type === "DOUBLE") chips += 5;
             if(type === "TRIPLE") chips += 50;
-            if(type === "BNZ") playTone(800, 0.5, 'triangle');
-
-            // SEQUENCE JOHN PORK
+            
             const overlay = document.getElementById('pork-overlay');
-            const timer = document.getElementById('pork-timer');
-            const text = document.getElementById('pork-text');
-            
             overlay.style.display = 'flex';
-            
-            // 3, 2, 1
             for(let i=3; i>0; i--) {
-                timer.innerText = i;
+                document.getElementById('pork-timer').innerText = i;
                 playTone(400, 0.1);
-                await new Promise(r => setTimeout(r, 700));
+                await new Promise(r => setTimeout(r, 600));
             }
-            
-            timer.innerText = "ALORS !";
-            text.innerHTML = `VOUS AVEZ INTÉRÊT À <strong>${ev.t}</strong> (${ev.d}) SINON JE VOUS DÉGAGE DU CASINO LES GROS LARDS !`;
-            playTone(100, 0.5, 'sawtooth');
+            document.getElementById('pork-timer').innerText = "!!!";
+            document.getElementById('pork-text').innerHTML = `JOHN PORK DIT : <br><br><strong>${ev.t}</strong><br>${ev.d}<br><br>SINON JE VOUS DÉGAGE !`;
         } else {
             document.getElementById('spin-btn').disabled = false;
         }
@@ -370,14 +323,7 @@
 
     function closePork() {
         document.getElementById('pork-overlay').style.display = 'none';
-        // Reset position reels pour le prochain spin sans animation brutale
-        const reels = document.querySelectorAll('.reel-column');
-        reels.forEach(r => {
-            r.style.transition = 'none';
-            r.style.transform = 'translateY(0)';
-        });
         document.getElementById('spin-btn').disabled = false;
-        playTone(600, 0.1);
     }
 </script>
 </body>
