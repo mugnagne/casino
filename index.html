@@ -2,169 +2,190 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>BNZ CASINO - VERSION ULTIME</title>
+    <title>BNZ : WARIO EDITION</title>
     <style>
-        body { font-family: 'Impact', sans-serif; background: #050505; color: white; text-align: center; margin: 0; }
-        .header { background: #111; padding: 20px; border-bottom: 5px solid gold; box-shadow: 0 0 20px gold; }
-        #chips-display { font-size: 3.5rem; color: gold; }
+        body { font-family: 'Arial Black', sans-serif; background: #000; color: white; margin: 0; overflow: hidden; }
         
-        .slot-machine { margin: 30px auto; padding: 25px; background: #1a1a1a; width: fit-content; border: 8px solid #333; border-radius: 30px; }
-        .reels-container { display: flex; gap: 15px; margin-bottom: 25px; }
-        .reel { width: 100px; height: 130px; background: #fff; color: #000; font-size: 3.5rem; display: flex; align-items: center; justify-content: center; border-radius: 15px; border-bottom: 6px solid #bbb; }
-        
-        #action-box { 
-            min-height: 140px; margin: 20px auto; width: 90%; max-width: 550px;
-            background: #000; border: 2px solid #444; padding: 20px;
-            display: flex; flex-direction: column; justify-content: center;
+        /* Dashboard discret en haut */
+        .dashboard { display: flex; justify-content: space-between; padding: 10px 20px; background: #111; border-bottom: 2px solid #333; }
+        #chips-display { color: gold; font-size: 1.5rem; }
+
+        /* Slot Machine */
+        .machine-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; }
+        .reels { display: flex; gap: 15px; margin-bottom: 30px; }
+        .reel { width: 100px; height: 130px; background: #222; border: 4px solid #444; border-radius: 10px; font-size: 3.5rem; display: flex; align-items: center; justify-content: center; }
+
+        .btn-spin { padding: 25px 80px; font-size: 2rem; background: gold; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; }
+        .btn-spin:disabled { background: #333; color: #555; }
+
+        /* POPUP GAGE (Style WarioWare) */
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 100;
         }
-        .title-event { font-size: 1.8rem; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; }
-        .desc-event { color: #00ff00; font-family: 'Arial', sans-serif; font-size: 1.2rem; }
 
-        .btn { padding: 20px 60px; font-size: 1.8rem; cursor: pointer; border: none; border-radius: 15px; font-weight: bold; }
-        #spin-btn { background: #ffcc00; color: #000; box-shadow: 0 8px #997700; }
-        #spin-btn:active { box-shadow: 0 2px #997700; transform: translateY(4px); }
-        #spin-btn:disabled { background: #222; color: #444; box-shadow: none; }
-        #refill-btn { background: #d32f2f; color: white; display: none; }
+        #countdown { font-size: 12rem; font-weight: 900; color: #ff0000; }
+        
+        #gage-card {
+            background: #fff; color: #000; padding: 40px; border-radius: 20px;
+            width: 80%; max-width: 600px; text-align: center;
+            box-shadow: 0 0 50px gold; display: none;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-        .rare { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
-        .legendary { color: gold; text-shadow: 0 0 20px gold; }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+        .gage-type { font-size: 1.5rem; text-transform: uppercase; background: #000; color: #fff; padding: 5px 15px; display: inline-block; margin-bottom: 20px; }
+        .gage-title { font-size: 2.5rem; margin-bottom: 20px; display: block; }
+        .gage-desc { font-size: 1.8rem; font-family: sans-serif; line-height: 1.2; }
+
+        /* Animation de défaite */
+        #refill-btn { padding: 30px; background: red; color: white; border: none; font-size: 2rem; cursor: pointer; display: none; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div id="chips-display">100</div>
-        <div style="font-size: 0.9rem; letter-spacing: 3px;">JETONS VIRTUELS</div>
+    <div class="dashboard">
+        <div id="chips-display">CHIPS: 100</div>
+        <div id="status">WARIO MODE</div>
     </div>
 
-    <div class="slot-machine">
-        <div class="reels-container">
+    <div class="machine-container">
+        <div class="reels">
             <div class="reel" id="r0">?</div>
             <div class="reel" id="r1">?</div>
             <div class="reel" id="r2">?</div>
         </div>
-        <button id="spin-btn" class="btn" onclick="play()">SPIN (-10)</button>
-        <button id="refill-btn" class="btn" onclick="refill()">J'AI BU MON SHOT</button>
+        <button id="spin-btn" class="btn-spin" onclick="play()">SPIN</button>
+        <button id="refill-btn" onclick="refill()">BOIS TON SHOT ET RECLIQUE</button>
     </div>
 
-    <div id="action-box">
-        <div class="title-event">BNZ ENGINE v2</div>
-        <div class="desc-event">En attente du premier joueur...</div>
+    <div id="overlay">
+        <div id="countdown">3</div>
+        <div id="gage-card">
+            <div id="gage-tag" class="gage-type">DOUBLE</div>
+            <b id="gage-name" class="gage-title">NOM DU GAGE</b>
+            <div id="gage-info" class="gage-desc">Description du gage ici.</div>
+            <br>
+            <button onclick="closeGage()" style="padding:10px 20px; cursor:pointer; margin-top:20px;">OK !</button>
+        </div>
     </div>
 
 <script>
     let chips = 100;
-    // B uniquement slot 0, N slot 1, Z slot 2. Autres symboles partout.
     const fruitSyms = ['🍺', '💀', '🔥', '🃏', '🍌', '🍒', '🍋'];
 
     const EVENTS = {
-    DOUBLE: [
-        { t: "CIBLE", d: "Donne 2 gorgées à ton voisin de gauche." },
-        { t: "MIROIR", d: "Choisis un partenaire : s'il boit, tu bois, et vice versa." },
-        { t: "INVENTEUR", d: "Interdis un mot (ex: 'boire') jusqu'au prochain Double." },
-        { t: "SYLLABE", d: "Jeu des suites (Bateau -> Tonneau). Le premier qui bloque boit." },
-        { t: "LE SAVANT", d: "Cite 5 villes d'un pays choisi par les autres en 10s ou bois 3 fois." },
-        { t: "C'EST QUI ?", d: "À 3, tout le monde pointe celui qui est le plus '...'. Le plus désigné boit 3 fois." },
-        { t: "SANTÉ", d: "Tout le monde boit une gorgée, sauf toi." },
-        { t: "FINGERS", d: "Jeu du doigt sur le verre : le dernier boit." },
-        { t: "MARQUE", d: "Donne une marque de voiture. Le premier qui sèche boit." },
-        { t: "VETO", d: "Annule la prochaine gorgée que tu devrais prendre." }
-    ],
-    TRIPLE: [
-        { t: "DICTATEUR", d: "Désigne 3 personnes qui doivent finir leur verre." },
-        { t: "CASCADE", d: "Lance une cascade générale. Personne ne s'arrête avant toi." },
-        { t: "DÉCRET ROYAL", d: "Invente une règle (ex: pas de prénoms). Celui qui faut boit." },
-        { t: "L'ENCHÈRE", d: "Défie le groupe sur un nombre de gorgées. Le perdant boit le max." },
-        { t: "ESCLAVE", d: "La personne à ta droite doit t'apporter tes verres pendant 20 min." },
-        { t: "BUFFLE", d: "Interdiction de boire de la main droite (ou gauche pour les gauchers)." },
-        { t: "PYRAMIDE", d: "Distribue 5 gorgées à répartir dans le groupe." },
-        { t: "CRACKLIST", d: "Thème : 'Séries Netflix'. Le premier qui sèche prend un shot." },
-        { t: "ROI", d: "Personne ne peut te regarder dans les yeux sans boire." },
-        { t: "TOUR DE TABLE", d: "Raconte une anecdote. Ceux qui l'ont déjà fait boivent." }
-    ],
-    BNZ: [
-        { t: "LE SAINT GRAAL", d: "🔥 TU REMPORTES 10 JETONS IRL ! 🔥" }
-    ]
-};
+        DOUBLE: [
+            { t: "CIBLE", d: "Donne 2 gorgées à ton voisin de gauche." },
+            { t: "MIROIR", d: "Choisis un partenaire : s'il boit, tu bois." },
+            { t: "SYLLABE", d: "Suite de mots (Bateau -> Tonneau). Le premier qui bloque boit." },
+            { t: "LE SAVANT", d: "Cite 5 villes d'un pays en 10s ou bois 3 fois." },
+            { t: "C'EST QUI ?", d: "À 3, tout le monde pointe celui qui est le plus '...'. Le plus désigné boit." },
+            { t: "SANTÉ", d: "Tout le monde boit une gorgée, sauf toi." },
+            { t: "FINGERS", d: "Jeu du doigt sur le verre : le dernier boit." },
+            { t: "MARQUE", d: "Donne une marque de voiture. Le premier qui sèche boit." },
+            { t: "VETO", d: "Annule la prochaine gorgée que tu devrais prendre." }
+        ],
+        TRIPLE: [
+            { t: "DICTATEUR", d: "Désigne 3 personnes qui doivent finir leur verre." },
+            { t: "CASCADE", d: "Lance une cascade générale." },
+            { t: "DÉCRET ROYAL", d: "Invente une règle interdite. Le premier qui faut boit." },
+            { t: "L'ENCHÈRE", d: "Celui qui accepte de boire le plus de gorgées échappe au shot." },
+            { t: "ESCLAVE", d: "La personne à ta droite te sert pendant 20 min." },
+            { t: "BUFFLE", d: "Interdiction de boire de la main forte." },
+            { t: "PYRAMIDE", d: "Distribue 5 gorgées dans le groupe." },
+            { t: "CRACKLIST", d: "Thème : 'Séries Netflix'. Le premier qui sèche boit." },
+            { t: "ROI", d: "Personne ne peut te regarder dans les yeux sans boire." },
+            { t: "TOUR DE TABLE", d: "Une anecdote. Ceux qui l'ont déjà fait boivent." }
+        ],
+        BNZ: [{ t: "LE SAINT GRAAL", d: "🔥 GAGNE 10 JETONS IRL 🔥" }]
+    };
 
-    function play() {
+    async function play() {
         if (chips < 10) return;
         chips -= 10;
         updateUI();
-
         document.getElementById('spin-btn').disabled = true;
-        document.getElementById('action-box').innerHTML = '<div class="title-event">ROTATION...</div>';
 
+        // Tirage (Identique aux specs précédentes)
         let res = [];
         const rng = Math.random();
+        if (rng < 0.02) res = ['B', 'N', 'Z'];
+        else if (rng < 0.07) { const s = fruitSyms[Math.floor(Math.random()*7)]; res = [s, s, s]; }
+        else if (rng < 0.37) { const s = fruitSyms[Math.floor(Math.random()*7)]; res = [s, s, fruitSyms[0]]; }
+        else res = ['B', fruitSyms[1], fruitSyms[2]];
 
-        // LOGIQUE DE PROBABILITÉS
-        if (rng < 0.02) { 
-            res = ['B', 'N', 'Z']; 
-        } else if (rng < 0.07) { 
-            const s = fruitSyms[Math.floor(Math.random()*fruitSyms.length)];
-            res = [s, s, s];
-        } else if (rng < 0.37) { 
-            const s = fruitSyms[Math.floor(Math.random()*fruitSyms.length)];
-            const other = fruitSyms[(fruitSyms.indexOf(s)+1)%fruitSyms.length];
-            // On s'assure que B, N, Z ne pop pas dans les doubles fruits pour respecter ta règle
-            res = [s, s, other]; 
-        } else {
-            // Perte : On mélange aléatoirement sans respecter les combos
-            res = [
-                Math.random() > 0.8 ? 'B' : fruitSyms[0],
-                Math.random() > 0.8 ? 'N' : fruitSyms[1],
-                fruitSyms[2]
-            ];
+        // Animation rapide
+        for(let i=0; i<3; i++) {
+            await new Promise(r => setTimeout(r, 150));
+            document.getElementById(`r${i}`).innerText = res[i];
         }
 
-        setTimeout(() => {
-            document.getElementById('r0').innerText = res[0];
-            document.getElementById('r1').innerText = res[1];
-            document.getElementById('r2').innerText = res[2];
-            resolve(res);
-        }, 600);
+        processResult(res);
     }
 
-    function resolve(res) {
-        const box = document.getElementById('action-box');
+    async function processResult(res) {
         let type = "";
-        let win = 0;
-
-        if (res[0]==='B' && res[1]==='N' && res[2]==='Z') { type = "BNZ"; win = 0; }
-        else if (res[0] === res[1] && res[1] === res[2]) { type = "TRIPLE"; win = 50; }
-        else if (res[0] === res[1] || res[1] === res[2] || res[0] === res[2]) { type = "DOUBLE"; win = 5; }
+        if (res[0]==='B' && res[1]==='N' && res[2]==='Z') type = "BNZ";
+        else if (res[0] === res[1] && res[1] === res[2]) type = "TRIPLE";
+        else if (res[0] === res[1] || res[1] === res[2] || res[0] === res[2]) type = "DOUBLE";
 
         if (type !== "") {
-            const evList = EVENTS[type];
-            const ev = evList[Math.floor(Math.random()*evList.length)];
-            chips += win;
-            let cls = type === "TRIPLE" ? "rare" : (type === "BNZ" ? "legendary" : "");
-            box.innerHTML = `<div class="title-event ${cls}">${type} !</div><div class="title-event" style="font-size:1.2rem">${ev.t}</div><div class="desc-event">${ev.d}</div>`;
-        } else {
-            box.innerHTML = `<div class="title-event">PERDU</div><div class="desc-event">Passe le tour au suivant.</div>`;
-        }
+            const ev = EVENTS[type][Math.floor(Math.random()*EVENTS[type].length)];
+            if(type === "DOUBLE") chips += 5;
+            if(type === "TRIPLE") chips += 50;
+            
+            // SEQUENCE WARIO
+            const overlay = document.getElementById('overlay');
+            const countEl = document.getElementById('countdown');
+            const cardEl = document.getElementById('gage-card');
+            
+            overlay.style.display = 'flex';
+            cardEl.style.display = 'none';
+            countEl.style.display = 'block';
 
-        if (chips < 10) showGameOver();
-        else document.getElementById('spin-btn').disabled = false;
+            // 3, 2, 1...
+            for(let i=3; i>0; i--) {
+                countEl.innerText = i;
+                await new Promise(r => setTimeout(r, 600));
+            }
+            
+            countEl.style.display = 'none';
+            document.getElementById('gage-tag').innerText = type;
+            document.getElementById('gage-name').innerText = ev.t;
+            document.getElementById('gage-info').innerText = ev.d;
+            cardEl.style.display = 'block';
+            
+        } else {
+            if (chips < 10) showGameOver();
+            else document.getElementById('spin-btn').disabled = false;
+        }
         updateUI();
     }
 
+    function closeGage() {
+        document.getElementById('overlay').style.display = 'none';
+        if (chips < 10) showGameOver();
+        else document.getElementById('spin-btn').disabled = false;
+    }
+
     function showGameOver() {
-        document.getElementById('action-box').innerHTML = `<div class="title-event" style="color:red">À SEC !</div><div class="desc-event">Bois ton shot sec pour recharger 100 jetons.</div>`;
-        document.getElementById('spin-btn').style.display = "none";
-        document.getElementById('refill-btn').style.display = "inline-block";
+        document.getElementById('spin-btn').style.display = 'none';
+        document.getElementById('refill-btn').style.display = 'block';
     }
 
     function refill() {
         chips = 100;
-        document.getElementById('refill-btn').style.display = "none";
-        document.getElementById('spin-btn').style.display = "inline-block";
-        document.getElementById('spin-btn').disabled = false;
         updateUI();
+        document.getElementById('spin-btn').style.display = 'block';
+        document.getElementById('refill-btn').style.display = 'none';
+        document.getElementById('spin-btn').disabled = false;
     }
 
-    function updateUI() { document.getElementById('chips-display').innerText = chips; }
+    function updateUI() { document.getElementById('chips-display').innerText = "CHIPS: " + chips; }
 </script>
 </body>
 </html>
