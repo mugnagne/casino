@@ -58,34 +58,34 @@
     const fruitSyms = ['🍺', '💀', '🔥', '🃏', '🍌', '🍒', '🍋'];
 
     const EVENTS = {
-        DOUBLE: [
-            { t: "CIBLE", d: "Donne 2 gorgées à ton voisin de gauche." },
-            { t: "MIROIR", d: "Choisis un partenaire : s'il boit, tu bois, et vice versa." },
-            { t: "INVENTEUR", d: "Interdis un mot (ex: 'boire') jusqu'au prochain Double." },
-            { t: "BOOMERANG", d: "Celui qui a joué avant toi te donne 2 gorgées." },
-            { t: "STATUE", d: "Le dernier qui bouge boit une gorgée." },
-            { t: "QUESTION", d: "Pose une question à quelqu'un. S'il répond, il boit." },
-            { t: "SANTÉ", d: "Tout le monde boit une gorgée, sauf toi." },
-            { t: "FINGERS", d: "Jeu du doigt sur le verre : le dernier boit." },
-            { t: "MARQUE", d: "Donne une marque de voiture. Le premier qui sèche boit." },
-            { t: "VETO", d: "Annule la prochaine gorgée que tu devrais prendre." }
-        ],
-        TRIPLE: [
-            { t: "DICTATEUR", d: "Désigne 3 personnes qui doivent finir leur verre." },
-            { t: "CASCADE", d: "Lance une cascade générale. Personne ne s'arrête avant toi." },
-            { t: "SHOT ROULETTE", d: "Prépare un shot. Joue au Chifoumi avec un rival, le perdant l'avale." },
-            { t: "MAITRE DU POUCE", d: "Quand tu poses ton pouce sur la table, le dernier boit (permanent)." },
-            { t: "ESCLAVE", d: "La personne à ta droite doit t'apporter tes verres pendant 20 min." },
-            { t: "BUFFLE", d: "Interdiction de boire de la main droite (ou gauche pour les gauchers)." },
-            { t: "PYRAMIDE", d: "Distribue 5 gorgées à répartir dans le groupe." },
-            { t: "CRACKLIST", d: "Thème : 'Films de cul'. Le premier qui sèche prend un shot." },
-            { t: "ROI", d: "Personne ne peut te regarder dans les yeux sans boire." },
-            { t: "TOUR DE TABLE", d: "Raconte une anecdote. Ceux qui l'ont déjà fait boivent." }
-        ],
-        BNZ: [
-            { t: "LE SAINT GRAAL", d: "🔥 TU REMPORTES 10 JETONS IRL ! 🔥" }
-        ]
-    };
+    DOUBLE: [
+        { t: "CIBLE", d: "Donne 2 gorgées à ton voisin de gauche." },
+        { t: "MIROIR", d: "Choisis un partenaire : s'il boit, tu bois, et vice versa." },
+        { t: "INVENTEUR", d: "Interdis un mot (ex: 'boire') jusqu'au prochain Double." },
+        { t: "SYLLABE", d: "Jeu des suites (Bateau -> Tonneau). Le premier qui bloque boit." },
+        { t: "LE SAVANT", d: "Cite 5 villes d'un pays choisi par les autres en 10s ou bois 3 fois." },
+        { t: "C'EST QUI ?", d: "À 3, tout le monde pointe celui qui est le plus '...'. Le plus désigné boit 3 fois." },
+        { t: "SANTÉ", d: "Tout le monde boit une gorgée, sauf toi." },
+        { t: "FINGERS", d: "Jeu du doigt sur le verre : le dernier boit." },
+        { t: "MARQUE", d: "Donne une marque de voiture. Le premier qui sèche boit." },
+        { t: "VETO", d: "Annule la prochaine gorgée que tu devrais prendre." }
+    ],
+    TRIPLE: [
+        { t: "DICTATEUR", d: "Désigne 3 personnes qui doivent finir leur verre." },
+        { t: "CASCADE", d: "Lance une cascade générale. Personne ne s'arrête avant toi." },
+        { t: "DÉCRET ROYAL", d: "Invente une règle (ex: pas de prénoms). Celui qui faut boit." },
+        { t: "L'ENCHÈRE", d: "Défie le groupe sur un nombre de gorgées. Le perdant boit le max." },
+        { t: "ESCLAVE", d: "La personne à ta droite doit t'apporter tes verres pendant 20 min." },
+        { t: "BUFFLE", d: "Interdiction de boire de la main droite (ou gauche pour les gauchers)." },
+        { t: "PYRAMIDE", d: "Distribue 5 gorgées à répartir dans le groupe." },
+        { t: "CRACKLIST", d: "Thème : 'Séries Netflix'. Le premier qui sèche prend un shot." },
+        { t: "ROI", d: "Personne ne peut te regarder dans les yeux sans boire." },
+        { t: "TOUR DE TABLE", d: "Raconte une anecdote. Ceux qui l'ont déjà fait boivent." }
+    ],
+    BNZ: [
+        { t: "LE SAINT GRAAL", d: "🔥 TU REMPORTES 10 JETONS IRL ! 🔥" }
+    ]
+};
 
     function play() {
         if (chips < 10) return;
