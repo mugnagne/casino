@@ -167,22 +167,28 @@
 
 <script>
     let chips = 100;
-    const fruits = ['🍺', '💀', '🔥', '🃏', '🍌', '🍒', '🍋'];
+    // Liste complète des symboles pour le tirage aléatoire
+    const symbols = ['🍺', '💀', '🔥', '🃏', '🍌', '🍒', '🍋'];
+    
     const EVENTS = {
         DOUBLE: [
-            { t: "CIBLE", d: "Donne 2 gorgées à ton voisin de gauche." },
-            { t: "LE SAVANT", d: "Cite 5 villes d'un pays en 10s ou bois 3 fois." },
-            { t: "C'EST QUI ?", d: "Tout le monde pointe le plus 'lourd' à 3. Le plus désigné boit." },
-            { t: "FINGERS", d: "Dernier doigt sur le verre boit." },
-            { t: "MARQUE", d: "Marque de voiture. Le premier qui sèche boit." }
+            { t: "LA CIBLE", d: "Désigne une personne du groupe. Elle doit boire immédiatement 2 grosses gorgées de son verre." },
+            { t: "LE MIROIR", d: "Choisis un partenaire. Jusqu'au prochain Double, chaque fois que tu bois une gorgée, il doit boire la même chose, et inversement." },
+            { t: "LA SYLLABE", d: "Dis un mot (ex: 'Bateau'). Ton voisin doit dire un mot commençant par la dernière syllabe (ex: 'Tonneau'). Le premier qui hésite ou répète un mot boit 2 gorgées." },
+            { t: "LE SAVANT", d: "Le groupe te donne un pays. Tu as 10 secondes pour citer 5 villes de ce pays. Si tu échoues, tu bois 3 gorgées." },
+            { t: "C'EST QUI ?", d: "Le joueur compte jusqu'à 3. À 3, tout le monde pointe du doigt la personne du groupe qu'il juge la plus 'lourde' ce soir. La personne la plus désignée boit 3 gorgées." },
+            { t: "FINGERS", d: "Tout le monde pose un doigt sur le bord de la table. Au signal, le dernier à le faire doit boire 2 gorgées." },
+            { t: "LA MARQUE", d: "Choisis une catégorie (ex: Marques de bière). Tour à tour, citez-en une. Le premier qui sèche ou se trompe boit 2 gorgées." },
+            { t: "LE VETO", d: "Tu gagnes un 'Joker'. Tu peux l'utiliser plus tard pour annuler n'importe quelle gorgée que tu devrais prendre. (Usage unique)." }
         ],
         TRIPLE: [
-            { t: "DICTATEUR", d: "Désigne 3 personnes qui doivent finir leur verre." },
-            { t: "L'ENCHÈRE", d: "Le plus gros buveur sur ce tour évite le shot." },
-            { t: "DÉCRET ROYAL", d: "Invente une règle interdite." },
-            { t: "CRACKLIST", d: "Thème : 'Séries Netflix'. Le premier qui sèche boit." }
+            { t: "LE DICTATEUR", d: "Tu as le pouvoir absolu : choisis 3 personnes dans le groupe. Elles doivent toutes finir leur verre cul-sec immédiatement." },
+            { t: "L'ENCHÈRE", d: "Annonce un nombre de gorgées (ex: 5). Quelqu'un peut surenchérir (ex: 6) pour ne pas boire. Celui qui finit avec l'enchère la plus haute boit tout, les autres rien." },
+            { t: "DÉCRET ROYAL", d: "Invente une règle qui dure 10 minutes (ex: interdiction de dire le mot 'Mec' ou de toucher son téléphone). Quiconque l'enfreint boit 1 gorgée." },
+            { t: "CRACKLIST", d: "Donne un thème (ex: 'Séries Netflix'). Chaque joueur doit en citer une en moins de 5 secondes. Le premier qui bloque prend un shot sec." },
+            { t: "LE ROI", d: "Pendant les 3 prochains tours, personne n'a le droit de te regarder dans les yeux. Quiconque croise ton regard par erreur doit boire 1 gorgée." }
         ],
-        BNZ: [{ t: "LE SAINT GRAAL", d: "Gagne 10 jetons IRL immédiatement." }]
+        BNZ: [{ t: "LE SAINT GRAAL", d: "C'est ton jour de chance. Tu remportes 10 jetons physiques (IRL). Ces jetons te donnent un pouvoir total sur la soirée. Garde-les précieusement." }]
     };
 
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -192,7 +198,6 @@
         o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+d);
     }
 
-    // --- MOTEUR DE REELS INFINI ---
     function initReels() {
         [0,1,2].forEach(id => {
             const track = document.getElementById('r'+id);
@@ -200,7 +205,7 @@
             for(let i=0; i<10; i++) {
                 const div = document.createElement('div');
                 div.className = 'symbol';
-                div.innerText = fruits[i%fruits.length];
+                div.innerText = symbols[Math.floor(Math.random()*symbols.length)];
                 track.appendChild(div);
             }
         });
@@ -213,31 +218,53 @@
         document.getElementById('chips-val').innerText = chips;
         document.getElementById('spin-btn').disabled = true;
 
-        // Tirage
         const luck = Math.random();
-        let res = [];
-        if(luck < 0.03) res = ['B', 'N', 'Z'];
-        else if(luck < 0.12) { const s = fruits[Math.floor(Math.random()*7)]; res = [s, s, s]; }
-        else if(luck < 0.45) { const s = fruits[Math.floor(Math.random()*7)]; res = [s, s, fruits[0]]; }
-        else { res = [fruits[0], fruits[1], fruits[2]]; }
+        let res = ["", "", ""];
+
+        // LOGIQUE DE TIRAGE VRAIMENT ALÉATOIRE
+        if(luck < 0.02) { 
+            // 2% de chance Jackpot
+            res = ['B', 'N', 'Z']; 
+        } 
+        else if(luck < 0.10) { 
+            // 8% de chance Triple
+            const s = symbols[Math.floor(Math.random()*symbols.length)];
+            res = [s, s, s];
+        } 
+        else if(luck < 0.40) { 
+            // 30% de chance Double
+            const s = symbols[Math.floor(Math.random()*symbols.length)];
+            let other;
+            do { other = symbols[Math.floor(Math.random()*symbols.length)]; } while(other === s);
+            res = [s, s, other].sort(() => Math.random() - 0.5);
+        } 
+        else { 
+            // 60% Perte (On s'assure qu'aucun symbole n'est identique)
+            let s1, s2, s3;
+            do {
+                s1 = Math.random() > 0.9 ? 'B' : symbols[Math.floor(Math.random()*symbols.length)];
+                s2 = Math.random() > 0.9 ? 'N' : symbols[Math.floor(Math.random()*symbols.length)];
+                s3 = Math.random() > 0.9 ? 'Z' : symbols[Math.floor(Math.random()*symbols.length)];
+            } while (s1 === s2 || s2 === s3 || s1 === s3 || (s1==='B' && s2==='N' && s3==='Z'));
+            res = [s1, s2, s3];
+        }
 
         const anims = [0,1,2].map(id => spin(id, res[id]));
         await Promise.all(anims);
-        
         setTimeout(() => check(res), 500);
     }
 
     function spin(id, target) {
         return new Promise(resolve => {
             const track = document.getElementById('r'+id);
-            const count = 20 + (id * 10);
+            const count = 25 + (id * 8);
             const symbolHeight = 120;
             
-            // On remplit la piste avec le résultat à la fin
             track.innerHTML = '';
             for(let i=0; i<count; i++) {
                 const div = document.createElement('div');
-                const s = (i === count - 1) ? target : fruits[Math.floor(Math.random()*7)];
+                // On met le résultat à la fin, et de l'aléatoire avant
+                const s = (i === count - 1) ? target : symbols[Math.floor(Math.random()*symbols.length)];
                 div.innerText = s;
                 div.className = `symbol ${['B','N','Z'].includes(s) ? 'sym-'+s : ''}`;
                 track.appendChild(div);
@@ -245,12 +272,12 @@
 
             track.style.transition = 'none';
             track.style.transform = 'translateY(0)';
-            track.offsetHeight; // Force reflow
+            track.offsetHeight; 
             
-            track.style.transition = `transform ${1.5 + id*0.5}s cubic-bezier(0.1, 0, 0, 1)`;
+            track.style.transition = `transform ${1.8 + id*0.6}s cubic-bezier(0.1, 0, 0, 1)`;
             track.style.transform = `translateY(-${(count-1)*symbolHeight}px)`;
 
-            setTimeout(() => { beep(200+(id*100), 0.2); resolve(); }, 1500 + id*500);
+            setTimeout(() => { beep(150+(id*100), 0.15); resolve(); }, 1800 + id*600);
         });
     }
 
@@ -261,11 +288,11 @@
         else if (res[0] === res[1] || res[1] === res[2] || res[0] === res[2]) type = "DOUBLE";
 
         if(type !== "") {
-            const ev = EVENTS[type][Math.floor(Math.random()*EVENTS[type].length)];
+            const pool = EVENTS[type];
+            const ev = pool[Math.floor(Math.random()*pool.length)];
             if(type === "DOUBLE") chips += 5;
             if(type === "TRIPLE") chips += 50;
             
-            // RESET GAGE POUR LE NOUVEAU
             document.getElementById('gage-title').innerText = "";
             document.getElementById('gage-desc').innerText = "";
             document.getElementById('pork-body').style.display = 'none';
@@ -274,7 +301,7 @@
 
             for(let i=3; i>0; i--) {
                 document.getElementById('pork-timer').innerText = i;
-                beep(400, 0.1);
+                beep(300, 0.1);
                 await new Promise(r => setTimeout(r, 800));
             }
             
@@ -282,6 +309,7 @@
             document.getElementById('gage-title').innerText = type + " : " + ev.t;
             document.getElementById('gage-desc').innerText = ev.d;
             document.getElementById('pork-body').style.display = 'block';
+            beep(100, 0.4);
         } else {
             document.getElementById('spin-btn').disabled = false;
         }
