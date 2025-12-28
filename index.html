@@ -4,141 +4,50 @@
     <meta charset="UTF-8">
     <title>BONANZA - John Pork's Underground</title>
     <style>
-        :root {
-            --gold: #d4af37;
-            --red: #8b0000;
-            --dark: #0a0a0a;
-            --pork: #ffafcc;
-        }
+        :root { --gold: #d4af37; --red: #8b0000; --dark: #0a0a0a; --pork: #ffafcc; }
+        body { background: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
 
-        body {
-            background: var(--dark);
-            color: white;
-            font-family: 'Garamond', serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow: hidden;
-            height: 100vh;
-        }
+        /* ÉCRAN DE SÉLECTION */
+        #setup-screen { position: fixed; inset: 0; background: var(--dark); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 20px solid var(--red); }
+        .mode-card { background: #111; border: 2px solid var(--gold); padding: 30px; margin: 10px; cursor: pointer; width: 300px; text-align: center; transition: 0.3s; }
+        .mode-card:hover { background: var(--red); transform: scale(1.05); }
 
-        /* BARRE DE STATS LUXE */
-        .header {
-            width: 100%;
-            padding: 15px 40px;
-            background: linear-gradient(to bottom, #222, #000);
-            border-bottom: 2px solid var(--gold);
-            display: flex;
-            justify-content: space-between;
-            box-sizing: border-box;
-            font-family: sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        #chips-val { color: var(--gold); font-weight: bold; font-size: 1.5rem; }
-
-        /* MACHINE DE CASINO */
-        .casino-container {
-            margin-top: 50px;
-            padding: 30px;
-            background: var(--red);
-            border: 10px solid var(--gold);
-            border-radius: 20px;
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.3), inset 0 0 20px #000;
-        }
-
-        .reels-view {
-            display: flex;
-            gap: 15px;
-            background: #000;
-            padding: 15px;
-            border: 5px solid #111;
-            height: 120px;
-            overflow: hidden;
-        }
-
-        .reel-track {
-            width: 100px;
-            display: flex;
-            flex-direction: column;
-            will-change: transform;
-        }
-
-        .symbol {
-            width: 100px;
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3.5rem;
-            flex-shrink: 0;
-        }
-
-        /* Carrés de couleur DA Casino */
+        /* UI JEU */
+        .header { width: 100%; padding: 15px 40px; background: linear-gradient(to bottom, #222, #000); border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; box-sizing: border-box; }
+        .casino-container { margin-top: 50px; padding: 30px; background: var(--red); border: 10px solid var(--gold); border-radius: 20px; box-shadow: 0 0 50px rgba(212,175,55,0.3); }
+        .reels-view { display: flex; gap: 15px; background: #000; padding: 15px; height: 120px; overflow: hidden; border: 5px solid #111; }
+        .reel-track { width: 100px; display: flex; flex-direction: column; }
+        .symbol { width: 100px; height: 120px; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; flex-shrink: 0; }
+        
         .sym-B { background: radial-gradient(circle, #2b4cd6, #000); border: 2px solid #5a7fff; }
         .sym-N { background: radial-gradient(circle, #d62b2b, #000); border: 2px solid #ff5a5a; }
         .sym-Z { background: radial-gradient(circle, #2bd64c, #000); border: 2px solid #5aff7f; }
 
-        /* BOUTON SPIN */
-        .spin-btn {
-            margin-top: 30px;
-            padding: 20px 80px;
-            background: var(--gold);
-            color: #000;
-            font-size: 1.8rem;
-            font-weight: 900;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow: 0 5px 0 #8a6d0d;
-            transition: 0.1s;
-        }
+        .spin-btn { margin-top: 30px; padding: 20px 80px; background: var(--gold); color: #000; font-size: 1.8rem; font-weight: 900; border: none; cursor: pointer; border-radius: 5px; }
+        .spin-btn:disabled { background: #444; }
 
-        .spin-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #8a6d0d; }
-        .spin-btn:disabled { background: #444; color: #888; box-shadow: none; cursor: not-allowed; }
-
-        /* MODALE JOHN PORK (LA MENACE) */
-        #pork-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.98);
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 1000;
-        }
-
-        .countdown { font-size: 10rem; color: var(--gold); font-family: sans-serif; font-weight: 900; }
-
-        .pork-content {
-            display: none;
-            text-align: center;
-            animation: porkShake 0.1s infinite;
-        }
-
-        @keyframes porkShake {
-            0% { transform: translate(1px, 1px); }
-            50% { transform: translate(-1px, -1px); }
-        }
-
-        .pork-img { width: 200px; height: 200px; background: var(--pork); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 80px; border: 5px solid white; margin: 0 auto 30px; }
-        
-        .pork-speech {
-            font-family: sans-serif;
-            font-size: 1.5rem;
-            max-width: 600px;
-            padding: 30px;
-            background: #fff;
-            color: #000;
-            border-left: 10px solid var(--gold);
-        }
-
-        .btn-done { margin-top: 40px; padding: 15px 40px; background: var(--gold); border: none; font-weight: bold; cursor: pointer; }
+        /* MODALE JOHN PORK */
+        #pork-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
+        .pork-speech { background: #fff; color: #000; padding: 30px; max-width: 500px; border-left: 10px solid var(--gold); text-align: center; }
+        .countdown { font-size: 8rem; color: var(--gold); font-weight: 900; }
     </style>
 </head>
 <body>
 
+    <div id="setup-screen">
+        <h1 style="color:var(--gold); font-size: 3rem; margin-bottom: 40px;">CHOISIS TON DESTIN</h1>
+        <div class="mode-card" onclick="initGame('SOLO')">
+            <h2>MODE SOLO</h2>
+            <p>Défis personnels uniquement.<br>Gains de jetons boostés (+15 par double).</p>
+        </div>
+        <div class="mode-card" onclick="initGame('EQUIPE')">
+            <h2>MODE ÉQUIPE</h2>
+            <p>Jeux de groupe et duels.<br>Gains de jetons classiques (+5 par double).</p>
+        </div>
+    </div>
+
     <div class="header">
-        <div>Bonanza <span style="color:var(--gold)">Underground</span></div>
+        <div>Bonanza <span id="mode-label" style="color:var(--gold)"></span></div>
         <div>Chips: <span id="chips-val">100</span></div>
     </div>
 
@@ -154,42 +63,46 @@
 
     <div id="pork-modal">
         <div id="pork-timer" class="countdown">3</div>
-        <div id="pork-body" class="pork-content">
-            <div class="pork-img">🐷</div>
+        <div id="pork-body" style="display:none; text-align:center;">
+            <div style="font-size:80px; margin-bottom:20px;">🐷</div>
             <div class="pork-speech">
-                <h2 id="gage-title" style="margin:0 0 15px 0">TITRE</h2>
-                <p id="gage-desc">...</p>
-                <p style="font-size: 0.9rem; color: red; margin-top: 20px;">— John Pork : "Fais ça vite sinon tu dégages !"</p>
+                <h2 id="gage-title"></h2>
+                <p id="gage-desc"></p>
             </div>
-            <button class="btn-done" onclick="closePork()">OK JE L'AI FAIT</button>
+            <button style="margin-top:30px; padding:15px 30px; cursor:pointer;" onclick="closePork()">C'EST FAIT</button>
         </div>
     </div>
 
 <script>
     let chips = 100;
-    // Liste complète des symboles pour le tirage aléatoire
-    const symbols = ['🍺', '💀', '🔥', '🃏', '🍌', '🍒', '🍋'];
-    
-    const EVENTS = {
-    DOUBLE: [
-        { t: "LA CIBLE", d: "Désigne une personne du groupe. Elle doit boire immédiatement 3 grosses gorgées." },
-        { t: "LE MIROIR", d: "Choisis un partenaire. Jusqu'au prochain Double, chaque fois que tu bois, il boit 2 gorgées, et inversement." },
-        { t: "LA SYLLABE", d: "Jeu des suites (ex: 'Bateau' -> 'Tonneau'). Le premier qui bloque ou répète boit 4 gorgées." },
-        { t: "LE SAVANT", d: "Cite 5 villes d'un pays en 10s. Échec : tu bois 5 gorgées. Réussite : tu distribues 5 gorgées." },
-        { t: "C'EST QUI ?", d: "À 3, tout le monde pointe le plus 'lourd'. Le plus désigné boit 5 gorgées." },
-        { t: "FINGERS", d: "Dernier doigt sur la table boit 3 gorgées." },
-        { t: "LA MARQUE", d: "Catégorie au choix (ex: Marques de Bière). Le premier qui sèche boit 4 gorgées." },
-        { t: "LE VETO", d: "Garde ce joker pour annuler une punition de 5 gorgées maximum plus tard." }
-    ],
-    TRIPLE: [
-        { t: "LE DICTATEUR", d: "Choisis 2 complices. Vous finissez tous les trois votre verre cul-sec." },
-        { t: "L'ENCHÈRE", d: "Tu lances l'enchère à 5 gorgées. Le plus offrant boit son annonce pour sauver les autres." },
-        { t: "DÉCRET ROYAL", d: "Règle interdite pendant 10 min. Chaque faute = 2 gorgées immédiatement." },
-        { t: "CRACKLIST", d: "Thème au choix. Le premier qui bloque prend un shot sec (ou 10 gorgées)." },
-        { t: "LE ROI", d: "Interdiction de te regarder dans les yeux. Chaque contact visuel = 2 gorgées pour l'insolent." }
-    ],
-    BNZ: [{ t: "LE SAINT GRAAL", d: "Tu gagnes 10 jetons IRL. Tu peux forcer n'importe qui à finir son verre une fois dans la soirée." }]
-};
+    let gameMode = "";
+    const fruits = ['🍺', '💀', '🔥', '🃏', '🍌', '🍒', '🍋'];
+
+    const GAGES_SOLO = {
+        DOUBLE: [
+            { t: "CUL-SEC PARTIEL", d: "Bois la moitié de ton verre immédiatement." },
+            { t: "LE SAVANT", d: "Cite 5 villes d'un pays en 10s. Échec : 5 gorgées." },
+            { t: "RÉSISTANCE", d: "Interdiction de boire la moindre goutte d'eau pendant 15 min. Faute : 4 gorgées." },
+            { t: "LE MUET", d: "Tu n'as plus le droit de parler jusqu'à ton prochain tour. Chaque mot coûte 1 gorgée." }
+        ],
+        TRIPLE: [
+            { t: "EXTINCTEUR", d: "Finis ton verre cul-sec pour nettoyer la machine." },
+            { t: "SHOT TIME", d: "John Pork t'offre un shot (de ton choix). Bois-le sans grimacer." }
+        ]
+    };
+
+    const GAGES_EQUIPE = {
+        DOUBLE: [
+            { t: "CIBLE", d: "Désigne une personne. Elle prend 4 gorgées." },
+            { t: "SYLLABE", d: "Jeu des suites. Le premier qui bloque boit 4 gorgées." },
+            { t: "FINGERS", d: "Dernier doigt sur la table boit 5 gorgées." },
+            { t: "MARQUE", d: "Thème au choix. Le premier qui sèche boit 4 gorgées." }
+        ],
+        TRIPLE: [
+            { t: "DICTATEUR", d: "Choisis 2 personnes. Elles finissent leur verre." },
+            { t: "DÉCRET", d: "Règle pour tous : interdiction de dire 'OUI' ou 'NON'. Faute = 2 gorgées." }
+        ]
+    };
 
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     function beep(f, d) {
@@ -198,19 +111,15 @@
         o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+d);
     }
 
-    function initReels() {
+    function initGame(mode) {
+        gameMode = mode;
+        document.getElementById('mode-label').innerText = mode;
+        document.getElementById('setup-screen').style.display = 'none';
         [0,1,2].forEach(id => {
-            const track = document.getElementById('r'+id);
-            track.innerHTML = '';
-            for(let i=0; i<10; i++) {
-                const div = document.createElement('div');
-                div.className = 'symbol';
-                div.innerText = symbols[Math.floor(Math.random()*symbols.length)];
-                track.appendChild(div);
-            }
+            const t = document.getElementById('r'+id);
+            t.innerHTML = '<div class="symbol">🎰</div>';
         });
     }
-    initReels();
 
     async function play() {
         if(chips < 10) return;
@@ -219,35 +128,11 @@
         document.getElementById('spin-btn').disabled = true;
 
         const luck = Math.random();
-        let res = ["", "", ""];
-
-        // LOGIQUE DE TIRAGE VRAIMENT ALÉATOIRE
-        if(luck < 0.02) { 
-            // 2% de chance Jackpot
-            res = ['B', 'N', 'Z']; 
-        } 
-        else if(luck < 0.10) { 
-            // 8% de chance Triple
-            const s = symbols[Math.floor(Math.random()*symbols.length)];
-            res = [s, s, s];
-        } 
-        else if(luck < 0.40) { 
-            // 30% de chance Double
-            const s = symbols[Math.floor(Math.random()*symbols.length)];
-            let other;
-            do { other = symbols[Math.floor(Math.random()*symbols.length)]; } while(other === s);
-            res = [s, s, other].sort(() => Math.random() - 0.5);
-        } 
-        else { 
-            // 60% Perte (On s'assure qu'aucun symbole n'est identique)
-            let s1, s2, s3;
-            do {
-                s1 = Math.random() > 0.9 ? 'B' : symbols[Math.floor(Math.random()*symbols.length)];
-                s2 = Math.random() > 0.9 ? 'N' : symbols[Math.floor(Math.random()*symbols.length)];
-                s3 = Math.random() > 0.9 ? 'Z' : symbols[Math.floor(Math.random()*symbols.length)];
-            } while (s1 === s2 || s2 === s3 || s1 === s3 || (s1==='B' && s2==='N' && s3==='Z'));
-            res = [s1, s2, s3];
-        }
+        let res = [];
+        if(luck < 0.03) res = ['B', 'N', 'Z'];
+        else if(luck < 0.12) { const s = fruits[Math.floor(Math.random()*7)]; res = [s, s, s]; }
+        else if(luck < 0.45) { const s = fruits[Math.floor(Math.random()*7)]; res = [s, s, fruits[0]]; }
+        else { res = [fruits[0], fruits[1], fruits[2]].sort(()=>Math.random()-0.5); }
 
         const anims = [0,1,2].map(id => spin(id, res[id]));
         await Promise.all(anims);
@@ -257,27 +142,21 @@
     function spin(id, target) {
         return new Promise(resolve => {
             const track = document.getElementById('r'+id);
-            const count = 25 + (id * 8);
-            const symbolHeight = 120;
-            
+            const count = 20 + (id * 5);
             track.innerHTML = '';
             for(let i=0; i<count; i++) {
                 const div = document.createElement('div');
-                // On met le résultat à la fin, et de l'aléatoire avant
-                const s = (i === count - 1) ? target : symbols[Math.floor(Math.random()*symbols.length)];
+                const s = (i === count - 1) ? target : fruits[Math.floor(Math.random()*7)];
                 div.innerText = s;
                 div.className = `symbol ${['B','N','Z'].includes(s) ? 'sym-'+s : ''}`;
                 track.appendChild(div);
             }
-
             track.style.transition = 'none';
             track.style.transform = 'translateY(0)';
-            track.offsetHeight; 
-            
-            track.style.transition = `transform ${1.8 + id*0.6}s cubic-bezier(0.1, 0, 0, 1)`;
-            track.style.transform = `translateY(-${(count-1)*symbolHeight}px)`;
-
-            setTimeout(() => { beep(150+(id*100), 0.15); resolve(); }, 1800 + id*600);
+            track.offsetHeight;
+            track.style.transition = `transform ${1.5 + id*0.5}s cubic-bezier(0.1, 0, 0, 1)`;
+            track.style.transform = `translateY(-${(count-1)*120}px)`;
+            setTimeout(() => { beep(200+(id*100), 0.2); resolve(); }, 1500 + id*500);
         });
     }
 
@@ -288,28 +167,27 @@
         else if (res[0] === res[1] || res[1] === res[2] || res[0] === res[2]) type = "DOUBLE";
 
         if(type !== "") {
-            const pool = EVENTS[type];
-            const ev = pool[Math.floor(Math.random()*pool.length)];
-            if(type === "DOUBLE") chips += 5;
-            if(type === "TRIPLE") chips += 50;
+            // GAINS ADAPTÉS
+            if(type === "DOUBLE") chips += (gameMode === "SOLO" ? 15 : 5);
+            if(type === "TRIPLE") chips += (gameMode === "SOLO" ? 60 : 40);
             
-            document.getElementById('gage-title').innerText = "";
-            document.getElementById('gage-desc').innerText = "";
+            const pool = (gameMode === "SOLO" ? GAGES_SOLO : GAGES_EQUIPE)[type] || [{t:"JACKPOT", d:"Gagne 10 jetons IRL"}];
+            const ev = pool[Math.floor(Math.random()*pool.length)];
+
             document.getElementById('pork-body').style.display = 'none';
             document.getElementById('pork-timer').style.display = 'block';
             document.getElementById('pork-modal').style.display = 'flex';
 
             for(let i=3; i>0; i--) {
                 document.getElementById('pork-timer').innerText = i;
-                beep(300, 0.1);
-                await new Promise(r => setTimeout(r, 800));
+                beep(400, 0.1);
+                await new Promise(r => setTimeout(r, 600));
             }
             
             document.getElementById('pork-timer').style.display = 'none';
-            document.getElementById('gage-title').innerText = type + " : " + ev.t;
+            document.getElementById('gage-title').innerText = ev.t;
             document.getElementById('gage-desc').innerText = ev.d;
             document.getElementById('pork-body').style.display = 'block';
-            beep(100, 0.4);
         } else {
             document.getElementById('spin-btn').disabled = false;
         }
