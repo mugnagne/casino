@@ -171,25 +171,25 @@
     const symbols = ['🍺', '💀', '🔥', '🃏', '🍌', '🍒', '🍋'];
     
     const EVENTS = {
-        DOUBLE: [
-            { t: "LA CIBLE", d: "Désigne une personne du groupe. Elle doit boire immédiatement 2 grosses gorgées de son verre." },
-            { t: "LE MIROIR", d: "Choisis un partenaire. Jusqu'au prochain Double, chaque fois que tu bois une gorgée, il doit boire la même chose, et inversement." },
-            { t: "LA SYLLABE", d: "Dis un mot (ex: 'Bateau'). Ton voisin doit dire un mot commençant par la dernière syllabe (ex: 'Tonneau'). Le premier qui hésite ou répète un mot boit 2 gorgées." },
-            { t: "LE SAVANT", d: "Le groupe te donne un pays. Tu as 10 secondes pour citer 5 villes de ce pays. Si tu échoues, tu bois 3 gorgées." },
-            { t: "C'EST QUI ?", d: "Le joueur compte jusqu'à 3. À 3, tout le monde pointe du doigt la personne du groupe qu'il juge la plus 'lourde' ce soir. La personne la plus désignée boit 3 gorgées." },
-            { t: "FINGERS", d: "Tout le monde pose un doigt sur le bord de la table. Au signal, le dernier à le faire doit boire 2 gorgées." },
-            { t: "LA MARQUE", d: "Choisis une catégorie (ex: Marques de bière). Tour à tour, citez-en une. Le premier qui sèche ou se trompe boit 2 gorgées." },
-            { t: "LE VETO", d: "Tu gagnes un 'Joker'. Tu peux l'utiliser plus tard pour annuler n'importe quelle gorgée que tu devrais prendre. (Usage unique)." }
-        ],
-        TRIPLE: [
-            { t: "LE DICTATEUR", d: "Tu as le pouvoir absolu : choisis 3 personnes dans le groupe. Elles doivent toutes finir leur verre cul-sec immédiatement." },
-            { t: "L'ENCHÈRE", d: "Annonce un nombre de gorgées (ex: 5). Quelqu'un peut surenchérir (ex: 6) pour ne pas boire. Celui qui finit avec l'enchère la plus haute boit tout, les autres rien." },
-            { t: "DÉCRET ROYAL", d: "Invente une règle qui dure 10 minutes (ex: interdiction de dire le mot 'Mec' ou de toucher son téléphone). Quiconque l'enfreint boit 1 gorgée." },
-            { t: "CRACKLIST", d: "Donne un thème (ex: 'Séries Netflix'). Chaque joueur doit en citer une en moins de 5 secondes. Le premier qui bloque prend un shot sec." },
-            { t: "LE ROI", d: "Pendant les 3 prochains tours, personne n'a le droit de te regarder dans les yeux. Quiconque croise ton regard par erreur doit boire 1 gorgée." }
-        ],
-        BNZ: [{ t: "LE SAINT GRAAL", d: "C'est ton jour de chance. Tu remportes 10 jetons physiques (IRL). Ces jetons te donnent un pouvoir total sur la soirée. Garde-les précieusement." }]
-    };
+    DOUBLE: [
+        { t: "LA CIBLE", d: "Désigne une personne du groupe. Elle doit boire immédiatement 3 grosses gorgées." },
+        { t: "LE MIROIR", d: "Choisis un partenaire. Jusqu'au prochain Double, chaque fois que tu bois, il boit 2 gorgées, et inversement." },
+        { t: "LA SYLLABE", d: "Jeu des suites (ex: 'Bateau' -> 'Tonneau'). Le premier qui bloque ou répète boit 4 gorgées." },
+        { t: "LE SAVANT", d: "Cite 5 villes d'un pays en 10s. Échec : tu bois 5 gorgées. Réussite : tu distribues 5 gorgées." },
+        { t: "C'EST QUI ?", d: "À 3, tout le monde pointe le plus 'lourd'. Le plus désigné boit 5 gorgées." },
+        { t: "FINGERS", d: "Dernier doigt sur la table boit 3 gorgées." },
+        { t: "LA MARQUE", d: "Catégorie au choix (ex: Marques de Bière). Le premier qui sèche boit 4 gorgées." },
+        { t: "LE VETO", d: "Garde ce joker pour annuler une punition de 5 gorgées maximum plus tard." }
+    ],
+    TRIPLE: [
+        { t: "LE DICTATEUR", d: "Choisis 2 complices. Vous finissez tous les trois votre verre cul-sec." },
+        { t: "L'ENCHÈRE", d: "Tu lances l'enchère à 5 gorgées. Le plus offrant boit son annonce pour sauver les autres." },
+        { t: "DÉCRET ROYAL", d: "Règle interdite pendant 10 min. Chaque faute = 2 gorgées immédiatement." },
+        { t: "CRACKLIST", d: "Thème au choix. Le premier qui bloque prend un shot sec (ou 10 gorgées)." },
+        { t: "LE ROI", d: "Interdiction de te regarder dans les yeux. Chaque contact visuel = 2 gorgées pour l'insolent." }
+    ],
+    BNZ: [{ t: "LE SAINT GRAAL", d: "Tu gagnes 10 jetons IRL. Tu peux forcer n'importe qui à finir son verre une fois dans la soirée." }]
+};
 
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     function beep(f, d) {
