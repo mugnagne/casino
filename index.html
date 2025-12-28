@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>BONANZA - John Pork's Underground</title>
+    <title>BONANZA - The Real Auction Grind</title>
     <style>
         :root { --gold: #d4af37; --red: #8b0000; --dark: #0a0a0a; --pork: #ffafcc; }
         body { background: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
@@ -12,7 +12,6 @@
         .mode-card { background: #111; border: 2px solid var(--gold); padding: 30px; margin: 10px; cursor: pointer; width: 300px; text-align: center; transition: 0.3s; }
         .mode-card:hover { background: var(--red); transform: scale(1.05); }
 
-        /* UI JEU */
         .header { width: 100%; padding: 15px 40px; background: linear-gradient(to bottom, #222, #000); border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; box-sizing: border-box; }
         .casino-container { margin-top: 50px; padding: 30px; background: var(--red); border: 10px solid var(--gold); border-radius: 20px; box-shadow: 0 0 50px rgba(212,175,55,0.3); }
         .reels-view { display: flex; gap: 15px; background: #000; padding: 15px; height: 120px; overflow: hidden; border: 5px solid #111; }
@@ -23,86 +22,96 @@
         .sym-N { background: radial-gradient(circle, #d62b2b, #000); border: 2px solid #ff5a5a; }
         .sym-Z { background: radial-gradient(circle, #2bd64c, #000); border: 2px solid #5aff7f; }
 
-        .spin-btn { margin-top: 30px; padding: 20px 80px; background: var(--gold); color: #000; font-size: 1.8rem; font-weight: 900; border: none; cursor: pointer; border-radius: 5px; }
-        .spin-btn:disabled { background: #444; }
+        .spin-btn { margin-top: 30px; padding: 20px 80px; background: var(--gold); color: #000; font-size: 1.8rem; font-weight: 900; border: none; cursor: pointer; border-radius: 5px; box-shadow: 0 6px 0 #8a6d0d; }
+        .spin-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #8a6d0d; }
+        .spin-btn:disabled { background: #444; color: #777; box-shadow: none; }
 
-        /* MODALE JOHN PORK */
         #pork-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
-        .pork-speech { background: #fff; color: #000; padding: 30px; max-width: 500px; border-left: 10px solid var(--gold); text-align: center; }
+        .pork-speech { background: #fff; color: #000; padding: 30px; max-width: 500px; border-left: 10px solid var(--gold); text-align: center; border-radius: 0 20px 20px 0; }
         .countdown { font-size: 8rem; color: var(--gold); font-weight: 900; }
     </style>
 </head>
 <body>
 
     <div id="setup-screen">
-        <h1 style="color:var(--gold); font-size: 3rem; margin-bottom: 40px;">CHOISIS TON DESTIN</h1>
+        <h1 style="color:var(--gold); font-size: 2.5rem; text-align:center; margin-bottom: 40px;">BONANZA AUCTION HOUSE<br><span style="font-size: 1.2rem; color: white;">Endure les gages pour gagner des jetons pour l'enchère de minuit</span></h1>
         <div class="mode-card" onclick="initGame('SOLO')">
             <h2>MODE SOLO</h2>
-            <p>Défis personnels uniquement.<br>Gains de jetons boostés (+15 par double).</p>
+            <p>Défis personnels.<br>Gains BNZ : 15 Jetons IRL</p>
         </div>
         <div class="mode-card" onclick="initGame('EQUIPE')">
             <h2>MODE ÉQUIPE</h2>
-            <p>Jeux de groupe et duels.<br>Gains de jetons classiques (+5 par double).</p>
+            <p>Duels et jeux de groupe.<br>Gains BNZ : 25 Jetons IRL</p>
         </div>
     </div>
 
     <div class="header">
         <div>Bonanza <span id="mode-label" style="color:var(--gold)"></span></div>
-        <div>Chips: <span id="chips-val">100</span></div>
+        <div style="color:var(--gold); font-weight: bold;">CASINO OUVERT</div>
     </div>
 
     <div class="casino-container">
         <div class="reels-view">
-            <div class="reel-track" id="r0"></div>
-            <div class="reel-track" id="r1"></div>
-            <div class="reel-track" id="r2"></div>
+            <div class="reel-track" id="r0"><div class="symbol">🎰</div></div>
+            <div class="reel-track" id="r1"><div class="symbol">🎰</div></div>
+            <div class="reel-track" id="r2"><div class="symbol">🎰</div></div>
         </div>
     </div>
 
-    <button id="spin-btn" class="spin-btn" onclick="play()">SPIN</button>
+    <button id="spin-btn" class="spin-btn" onclick="play()">LANCER LE DESTIN</button>
 
     <div id="pork-modal">
         <div id="pork-timer" class="countdown">3</div>
         <div id="pork-body" style="display:none; text-align:center;">
             <div style="font-size:80px; margin-bottom:20px;">🐷</div>
             <div class="pork-speech">
-                <h2 id="gage-title"></h2>
-                <p id="gage-desc"></p>
+                <h2 id="gage-title" style="text-transform: uppercase; color: var(--red);"></h2>
+                <p id="gage-desc" style="font-size: 1.2rem; line-height: 1.4;"></p>
+                <p id="pork-insult" style="color: #666; font-style: italic; margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;"></p>
             </div>
-            <button style="margin-top:30px; padding:15px 30px; cursor:pointer;" onclick="closePork()">C'EST FAIT</button>
+            <button style="margin-top:30px; padding:15px 40px; background: var(--gold); border:none; font-weight:bold; cursor:pointer; font-size: 1.2rem;" onclick="closePork()">C'EST FAIT, JE REJOUE</button>
         </div>
     </div>
 
 <script>
-    let chips = 100;
     let gameMode = "";
     const fruits = ['🍺', '💀', '🔥', '🃏', '🍌', '🍒', '🍋'];
 
     const GAGES_SOLO = {
         DOUBLE: [
-            { t: "CUL-SEC PARTIEL", d: "Bois la moitié de ton verre immédiatement." },
-            { t: "LE SAVANT", d: "Cite 5 villes d'un pays en 10s. Échec : 5 gorgées." },
-            { t: "RÉSISTANCE", d: "Interdiction de boire la moindre goutte d'eau pendant 15 min. Faute : 4 gorgées." },
-            { t: "LE MUET", d: "Tu n'as plus le droit de parler jusqu'à ton prochain tour. Chaque mot coûte 1 gorgée." }
+            { t: "CUL-SEC PARTIEL", d: "La machine a soif. Bois la moitié de ton verre immédiatement." },
+            { t: "LE SAVANT", d: "Cite 5 villes d'un pays en 10s. Échec : tu bois 5 gorgées. Réussite : tu ne bois rien." },
+            { t: "RÉSISTANCE", d: "Interdiction de boire de l'eau ou de t'asseoir pendant 10 min. Faute : 4 gorgées." },
+            { t: "LE MUET", d: "Silence radio jusqu'à ton prochain tour de jeu. Chaque mot prononcé te coûte 2 gorgées." }
         ],
         TRIPLE: [
-            { t: "EXTINCTEUR", d: "Finis ton verre cul-sec pour nettoyer la machine." },
-            { t: "SHOT TIME", d: "John Pork t'offre un shot (de ton choix). Bois-le sans grimacer." }
-        ]
+            { t: "EXTINCTEUR", d: "Le casino surchauffe ! Finis ton verre cul-sec pour éteindre l'incendie." },
+            { t: "L'OFFRANDE", d: "John Pork exige un sacrifice. Prépare et bois un shot mélangeant deux alcools différents." }
+        ],
+        BNZ: [{ t: "BONANZA JACKPOT", d: "INCROYABLE ! John Pork te donne 15 JETONS IRL pour l'enchère. Note-les bien !" }]
     };
 
     const GAGES_EQUIPE = {
         DOUBLE: [
-            { t: "CIBLE", d: "Désigne une personne. Elle prend 4 gorgées." },
-            { t: "SYLLABE", d: "Jeu des suites. Le premier qui bloque boit 4 gorgées." },
-            { t: "FINGERS", d: "Dernier doigt sur la table boit 5 gorgées." },
-            { t: "MARQUE", d: "Thème au choix. Le premier qui sèche boit 4 gorgées." }
+            { t: "LA CIBLE", d: "Désigne une personne. Elle doit encaisser 4 gorgées pour te laisser continuer." },
+            { t: "JEU DE LA SYLLABE", d: "Dis un mot. Le suivant utilise la dernière syllabe. Le premier qui bloque boit 4 gorgées." },
+            { t: "FINGERS", d: "Dernier doigt posé sur la table boit 5 gorgées." },
+            { t: "MARQUE", d: "Donne un thème (ex: Marques de luxe). Le premier qui sèche boit 4 gorgées." }
         ],
         TRIPLE: [
-            { t: "DICTATEUR", d: "Choisis 2 personnes. Elles finissent leur verre." },
-            { t: "DÉCRET", d: "Règle pour tous : interdiction de dire 'OUI' ou 'NON'. Faute = 2 gorgées." }
-        ]
+            { t: "LE DICTATEUR", d: "Tu as le plein pouvoir. Choisis 2 personnes : elles finissent leur verre." },
+            { t: "DÉCRET ROYAL", d: "Règle pour tous (ex: pas de prénoms). Chaque erreur constatée = 2 gorgées." }
+        ],
+        BNZ: [{ t: "BONANZA JACKPOT", d: "LE JACKPOT ! Ton équipe ou toi gagnez 25 JETONS IRL pour l'enchère. Vous êtes riches !" }]
     };
+
+    const insults = [
+        "Fais ça vite sinon tu dégages de mon casino !",
+        "Allez les gros lards, on s'active !",
+        "Tu croyais que les jetons tombaient du ciel ?",
+        "Bois et ferme-la, le prochain tour arrive.",
+        "Mon casino, mes règles. Santé !"
+    ];
 
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     function beep(f, d) {
@@ -115,24 +124,30 @@
         gameMode = mode;
         document.getElementById('mode-label').innerText = mode;
         document.getElementById('setup-screen').style.display = 'none';
-        [0,1,2].forEach(id => {
-            const t = document.getElementById('r'+id);
-            t.innerHTML = '<div class="symbol">🎰</div>';
-        });
     }
 
     async function play() {
-        if(chips < 10) return;
-        chips -= 10;
-        document.getElementById('chips-val').innerText = chips;
         document.getElementById('spin-btn').disabled = true;
 
         const luck = Math.random();
         let res = [];
+        // Probabilités : Jackpot 3%, Triple 10%, Double 35%, Perte 52%
         if(luck < 0.03) res = ['B', 'N', 'Z'];
-        else if(luck < 0.12) { const s = fruits[Math.floor(Math.random()*7)]; res = [s, s, s]; }
-        else if(luck < 0.45) { const s = fruits[Math.floor(Math.random()*7)]; res = [s, s, fruits[0]]; }
-        else { res = [fruits[0], fruits[1], fruits[2]].sort(()=>Math.random()-0.5); }
+        else if(luck < 0.13) { const s = fruits[Math.floor(Math.random()*7)]; res = [s, s, s]; }
+        else if(luck < 0.48) { 
+            const s = fruits[Math.floor(Math.random()*7)]; 
+            let s2; do { s2 = fruits[Math.floor(Math.random()*7)]; } while(s2===s);
+            res = [s, s, s2].sort(()=>Math.random()-0.5); 
+        }
+        else { 
+            let s1, s2, s3;
+            do {
+                s1 = fruits[Math.floor(Math.random()*7)];
+                s2 = fruits[Math.floor(Math.random()*7)];
+                s3 = fruits[Math.floor(Math.random()*7)];
+            } while(s1 === s2 || s2 === s3 || s1 === s3);
+            res = [s1, s2, s3]; 
+        }
 
         const anims = [0,1,2].map(id => spin(id, res[id]));
         await Promise.all(anims);
@@ -142,7 +157,7 @@
     function spin(id, target) {
         return new Promise(resolve => {
             const track = document.getElementById('r'+id);
-            const count = 20 + (id * 5);
+            const count = 25 + (id * 5);
             track.innerHTML = '';
             for(let i=0; i<count; i++) {
                 const div = document.createElement('div');
@@ -167,11 +182,7 @@
         else if (res[0] === res[1] || res[1] === res[2] || res[0] === res[2]) type = "DOUBLE";
 
         if(type !== "") {
-            // GAINS ADAPTÉS
-            if(type === "DOUBLE") chips += (gameMode === "SOLO" ? 15 : 5);
-            if(type === "TRIPLE") chips += (gameMode === "SOLO" ? 60 : 40);
-            
-            const pool = (gameMode === "SOLO" ? GAGES_SOLO : GAGES_EQUIPE)[type] || [{t:"JACKPOT", d:"Gagne 10 jetons IRL"}];
+            const pool = (gameMode === "SOLO" ? GAGES_SOLO : GAGES_EQUIPE)[type];
             const ev = pool[Math.floor(Math.random()*pool.length)];
 
             document.getElementById('pork-body').style.display = 'none';
@@ -187,11 +198,11 @@
             document.getElementById('pork-timer').style.display = 'none';
             document.getElementById('gage-title').innerText = ev.t;
             document.getElementById('gage-desc').innerText = ev.d;
+            document.getElementById('pork-insult').innerText = "John Pork : \"" + insults[Math.floor(Math.random()*insults.length)] + "\"";
             document.getElementById('pork-body').style.display = 'block';
         } else {
             document.getElementById('spin-btn').disabled = false;
         }
-        document.getElementById('chips-val').innerText = chips;
     }
 
     function closePork() {
