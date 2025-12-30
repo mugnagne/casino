@@ -3,20 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casino BNZ - John Pork Underground</title>
+    <title>Casino BNZ - Dirty Vegas</title>
     <style>
         :root {
-            --gold: #d4af37;
-            --red: #8b0000;
-            --dark: #0a0a0a;
-            --pork-pink: #ffafcc;
+            /* Palette sun-faded et miteuse */
+            --gold: #c5a059;
+            --gold-glow: #ffd700;
+            --red: #5e1c1c;
+            --dark: #121212;
+            --grime: rgba(0, 0, 0, 0.4);
+            --neon-pink: #ff0055;
+            --neon-blue: #00d4ff;
+            --pork-pink: #d4a5a5;
             --emoji-font: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
         }
 
         body {
             background: var(--dark);
-            color: white;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-image: 
+                radial-gradient(circle at 50% 50%, transparent 80%, rgba(0,0,0,0.8) 100%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3Base-filter id='noiseFilter'%3Base-furbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            color: #ddd;
+            font-family: 'Courier New', Courier, monospace; /* Style machine à écrire / vieille facture */
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -25,45 +33,72 @@
             overflow: hidden;
         }
 
+        /* --- EFFET DE SALETÉ GÉNÉRAL --- */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3B%3Cfilter id='noise'%3B%3CfeTurbulence type='fractalNoise' baseFrequency='0.01' numOctaves='2'/%3B%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 5000;
+        }
+
         /* --- ÉCRAN D'ACCUEIL --- */
         #setup-screen {
             position: fixed;
             inset: 0;
-            background: var(--dark);
+            background: #0a0a0a;
             z-index: 2000;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border: 15px solid var(--red);
+            border: 20px solid #222;
             text-align: center;
+            box-shadow: inset 0 0 100px #000;
+        }
+
+        .neon-text {
+            color: #fff;
+            text-shadow: 
+                0 0 5px #fff,
+                0 0 10px var(--neon-pink),
+                0 0 20px var(--neon-pink),
+                0 0 40px var(--neon-pink);
+            animation: flicker 2s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
+            20%, 24%, 55% { opacity: 0.3; }
         }
 
         .btn-enter {
-            background: var(--red);
-            border: 3px solid var(--gold);
-            padding: 25px 60px;
+            background: transparent;
+            border: 4px solid var(--gold);
+            padding: 20px 50px;
             color: var(--gold);
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 900;
             cursor: pointer;
-            border-radius: 15px;
             text-transform: uppercase;
-            transition: 0.3s;
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.3);
+            transition: 0.2s;
+            margin-top: 20px;
         }
 
         .btn-enter:hover {
             background: var(--gold);
-            color: var(--red);
-            transform: scale(1.1);
+            color: #000;
+            box-shadow: 0 0 30px var(--gold);
         }
 
         /* --- INTERFACE PRINCIPALE --- */
         .header {
             width: 100%;
-            padding: 15px 40px;
-            background: linear-gradient(to bottom, #222, #000);
-            border-bottom: 3px solid var(--gold);
+            padding: 10px 40px;
+            background: #000;
+            border-bottom: 2px solid #333;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -71,83 +106,106 @@
         }
 
         .logo {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 5px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
         }
 
         .casino-unit {
-            margin-top: 60px;
-            padding: 30px;
-            background: var(--red);
-            border: 12px solid var(--gold);
-            border-radius: 25px;
-            box-shadow: 0 0 60px rgba(212, 175, 55, 0.2), inset 0 0 30px #000;
+            margin-top: 40px;
+            padding: 25px;
+            background: #2a2a2a;
+            background-image: radial-gradient(circle at 20% 30%, rgba(0,0,0,0.1) 0%, transparent 50%);
+            border: 8px solid #444;
+            border-radius: 5px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.8), inset 0 0 20px #000;
             position: relative;
+        }
+
+        /* Taches sur la machine */
+        .casino-unit::after {
+            content: "";
+            position: absolute;
+            top: 10px; right: 20px;
+            width: 40px; height: 30px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 50%;
+            filter: blur(10px);
+            pointer-events: none;
         }
 
         .reels-view {
             display: flex;
-            gap: 15px;
-            background: #000;
-            padding: 20px;
-            border: 6px solid #111;
+            gap: 10px;
+            background: #050505;
+            padding: 15px;
+            border: 4px solid #1a1a1a;
             height: 140px;
             overflow: hidden;
-            border-radius: 10px;
         }
 
         .reel-track {
-            width: 110px;
+            width: 100px;
             display: flex;
             flex-direction: column;
             will-change: transform;
+            border-left: 1px solid #111;
+            border-right: 1px solid #111;
         }
 
         .symbol {
-            width: 110px;
+            width: 100px;
             height: 140px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 4.5rem;
+            font-size: 4rem;
             flex-shrink: 0;
             font-family: var(--emoji-font);
+            filter: sepia(0.3) contrast(1.1); /* Rendu un peu sun-faded */
         }
 
         .sym-B, .sym-N, .sym-Z {
             font-family: 'Arial Black', sans-serif;
             font-weight: 900;
-            color: #fff;
+            color: #ccc;
         }
-        .sym-B { background: radial-gradient(circle, #1e3a8a, #000); }
-        .sym-N { background: radial-gradient(circle, #991b1b, #000); }
-        .sym-Z { background: radial-gradient(circle, #065f46, #000); }
+        .sym-B { background: #0a192f; border: 1px solid #1e3a8a; }
+        .sym-N { background: #2d0a0a; border: 1px solid #991b1b; }
+        .sym-Z { background: #0a2d1e; border: 1px solid #065f46; }
 
         .spin-btn {
             margin-top: 40px;
-            padding: 25px 100px;
-            background: linear-gradient(to bottom, #fde047, var(--gold));
-            color: #000;
-            font-size: 2rem;
+            padding: 20px 80px;
+            background: #333;
+            color: var(--gold);
+            font-size: 1.8rem;
             font-weight: 900;
-            border: none;
-            border-radius: 10px;
+            border: 3px solid var(--gold);
             cursor: pointer;
-            box-shadow: 0 8px 0 #8a6d0d;
+            box-shadow: 0 5px 0 #111;
             transition: 0.1s;
             text-transform: uppercase;
         }
 
-        .spin-btn:active { transform: translateY(4px); box-shadow: 0 4px 0 #8a6d0d; }
-        .spin-btn:disabled { background: #444; color: #777; box-shadow: none; cursor: not-allowed; }
+        .spin-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #111;
+        }
 
-        /* --- MODALE --- */
+        .spin-btn:hover {
+            background: #444;
+            text-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        /* --- MODALE STYLE "BACK-ROOM" --- */
         #pork-modal {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.98);
+            background: rgba(0,0,0,0.95);
             display: none;
             flex-direction: column;
             align-items: center;
@@ -156,107 +214,95 @@
         }
 
         .countdown {
-            font-size: 12rem;
-            color: var(--gold);
+            font-size: 10rem;
+            color: #444;
             font-weight: 900;
-            text-shadow: 0 0 30px var(--gold);
+            font-family: 'Impact', sans-serif;
         }
 
         #pork-body {
             text-align: center;
             max-width: 700px;
-            width: 90%;
+            width: 95%;
         }
 
         .pork-avatar {
-            font-size: 100px;
-            margin-bottom: 20px;
-            font-family: var(--emoji-font);
-            animation: shake 0.1s infinite;
+            font-size: 80px;
+            margin-bottom: 10px;
+            filter: grayscale(0.5) sepia(0.5);
         }
 
         .pork-speech {
-            background: #fff;
-            color: #000;
-            padding: 35px;
-            border-left: 15px solid var(--gold);
-            border-radius: 0 30px 30px 0;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            background: #e6dfcc; /* Vieux papier / carton sale */
+            background-image: radial-gradient(circle at 10% 10%, rgba(0,0,0,0.05) 0%, transparent 20%);
+            color: #222;
+            padding: 30px;
+            border: 2px solid #888;
+            box-shadow: 10px 10px 0px #000;
             min-height: 250px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
             position: relative;
         }
 
-        .gage-name { font-size: 2rem; margin: 0 0 15px 0; color: var(--red); text-transform: uppercase; }
-        .gage-rule { font-size: 1.4rem; line-height: 1.5; color: #111; font-weight: 600; }
+        /* Simulation de taches sur le papier */
+        .pork-speech::before {
+            content: "";
+            position: absolute;
+            bottom: 20px; right: 30px;
+            width: 60px; height: 40px;
+            background: rgba(139, 69, 19, 0.1);
+            border-radius: 50%;
+            filter: blur(8px);
+        }
+
+        .gage-name { font-family: 'Impact', sans-serif; font-size: 1.8rem; margin: 0 0 10px 0; color: #000; text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 5px; }
+        .gage-rule { font-size: 1.3rem; line-height: 1.4; color: #333; font-weight: bold; }
 
         .btn-action {
             margin-top: 15px;
-            padding: 12px 25px;
-            background: #222;
+            padding: 10px 20px;
+            background: #000;
             color: #fff;
             border: none;
-            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
         }
 
         .btn-done {
-            margin-top: 40px;
-            padding: 20px 50px;
+            margin-top: 30px;
+            padding: 15px 40px;
             background: var(--gold);
-            border: none;
-            font-size: 1.5rem;
+            color: #000;
+            border: 2px solid #000;
+            font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
-            border-radius: 50px;
+            box-shadow: 5px 5px 0px #000;
         }
 
         /* --- MINI JEUX --- */
         #reaction-game {
             display: none;
             width: 100%;
-            height: 250px;
-            background: #f0f0f0;
+            height: 200px;
+            background: #ccc;
             position: relative;
-            cursor: crosshair;
-            border-radius: 20px;
-            overflow: hidden;
-            margin-top: 15px;
-            border: 4px solid #ddd;
+            border: 2px solid #666;
+            margin-top: 10px;
         }
 
         #pmu-game {
             display: none;
             width: 100%;
-            background: #1b4d1b;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 15px;
-            box-sizing: border-box;
+            background: #1a331a;
+            padding: 15px;
+            margin-top: 10px;
+            border: 2px solid #000;
         }
 
         .horse-track {
-            height: 45px;
-            border-bottom: 2px dashed rgba(255,255,255,0.3);
-            position: relative;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-        }
-
-        .horse {
-            position: absolute;
-            left: 0;
-            font-size: 30px;
-            transition: left 0.1s linear;
-            width: 40px;
             height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-bottom: 1px dashed rgba(255,255,255,0.2);
+            position: relative;
         }
 
         /* --- DEBUG PANEL --- */
@@ -266,8 +312,8 @@
             top: 0;
             width: 300px;
             height: 100vh;
-            background: rgba(0,0,0,0.95);
-            border-left: 2px solid var(--gold);
+            background: #000;
+            border-left: 1px solid #333;
             z-index: 3000;
             transition: 0.3s;
             display: flex;
@@ -275,51 +321,40 @@
             padding: 15px;
             box-sizing: border-box;
             overflow-y: auto;
+            font-size: 0.8rem;
         }
         #debug-panel.open { right: 0; }
         .debug-toggle {
             position: fixed;
-            bottom: 10px;
-            left: 10px;
-            background: rgba(0,0,0,0.5);
-            color: #666;
+            bottom: 5px;
+            left: 5px;
+            background: transparent;
+            color: #333;
             border: none;
-            padding: 5px;
-            font-size: 0.6rem;
+            font-size: 0.5rem;
             cursor: pointer;
             z-index: 3001;
         }
-        .debug-section-title { color: var(--gold); font-weight: bold; margin: 15px 0 5px 0; border-bottom: 1px solid #333; font-size: 0.9rem; }
-        .debug-btn {
-            background: #111;
-            color: #eee;
-            border: 1px solid #222;
-            padding: 6px;
-            text-align: left;
-            margin-bottom: 4px;
-            font-size: 0.75rem;
-            cursor: pointer;
-        }
-        .debug-btn:hover { background: var(--red); }
 
         @keyframes shake {
-            0% { transform: translate(2px, 2px); }
-            50% { transform: translate(-2px, -2px); }
-            100% { transform: translate(2px, -2px); }
+            0% { transform: translate(1px, 1px); }
+            50% { transform: translate(-1px, -1px); }
+            100% { transform: translate(1px, -1px); }
         }
     </style>
 </head>
 <body>
 
     <div id="setup-screen">
-        <h1 style="color:var(--gold); font-size: 4rem; margin-bottom: 10px;">CASINO BNZ</h1>
-        <p style="font-size: 1.5rem; color: #aaa; margin-bottom: 40px;">L'antre de John Pork</p>
-        <button class="btn-enter" onclick="initGame()">Entrer dans le casino</button>
+        <h1 class="neon-text" style="font-size: 3.5rem; margin-bottom: 5px;">CASINO BNZ</h1>
+        <p style="font-size: 1.2rem; color: #555; margin-bottom: 30px; font-style: italic;">"What happens in the basement, stays in the basement."</p>
+        <button class="btn-enter" onclick="initGame()">Entrer à vos risques</button>
+        <div style="margin-top: 50px; opacity: 0.2; font-size: 0.7rem;">Propriété de John Pork Entreprises © 1984</div>
     </div>
 
     <div class="header">
-        <div class="logo">Casino <span style="color:var(--gold)">BNZ</span></div>
-        <div style="color:var(--gold); font-weight: bold;">John Pork vous surveille</div>
+        <div class="logo">Casino <span style="color:var(--neon-pink)">BNZ</span></div>
+        <div style="color:#555; font-size: 0.8rem;">SÉCURITÉ ACTIVE : 🐷</div>
     </div>
 
     <div class="casino-unit">
@@ -330,11 +365,11 @@
         </div>
     </div>
 
-    <button id="spin-btn" class="spin-btn" onclick="play()">Lancer le destin</button>
+    <button id="spin-btn" class="spin-btn" onclick="play()">Actionner</button>
 
-    <button class="debug-toggle" onclick="toggleDebug()">DEBUG</button>
+    <button class="debug-toggle" onclick="toggleDebug()">[ADMIN]</button>
     <div id="debug-panel">
-        <h2 style="color:white; font-size: 1.2rem;">TEST GAGES</h2>
+        <h2 style="color:var(--gold); border-bottom: 1px solid #333;">DEBUG.EXE</h2>
         <div id="debug-content"></div>
     </div>
 
@@ -351,23 +386,23 @@
                 </div>
 
                 <div id="reaction-game" onclick="handleReactionClick()">
-                    <div id="target-pig" style="display:none; position:absolute; font-size:60px; cursor:pointer;">🐷</div>
-                    <div id="reaction-message" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#666; font-weight:bold; font-size:1.5rem;">ATTENDS LE SIGNAL...</div>
+                    <div id="target-pig" style="display:none; position:absolute; font-size:50px; cursor:pointer;">🐷</div>
+                    <div id="reaction-message" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#888; font-weight:bold;">ATTENDRE...</div>
                 </div>
 
                 <div id="pmu-game">
-                    <div class="horse-track"><div class="horse" id="h1" style="background:#ff4d4d; border-radius:50%">🏇</div></div>
-                    <div class="horse-track"><div class="horse" id="h2" style="background:#4d79ff; border-radius:50%">🏇</div></div>
-                    <div class="horse-track"><div class="horse" id="h3" style="background:#ffff4d; border-radius:50%">🏇</div></div>
-                    <div class="horse-track"><div class="horse" id="h4" style="background:#ff4dff; border-radius:50%">🏇</div></div>
-                    <button id="start-pmu-btn" class="btn-action" style="width:100%" onclick="runPMU()">LANCER LA COURSE !</button>
+                    <div class="horse-track"><div class="horse" id="h1" style="border: 2px solid #f00;">🏇</div></div>
+                    <div class="horse-track"><div class="horse" id="h2" style="border: 2px solid #00f;">🏇</div></div>
+                    <div class="horse-track"><div class="horse" id="h3" style="border: 2px solid #ff0;">🏇</div></div>
+                    <div class="horse-track"><div class="horse" id="h4" style="border: 2px solid #f0f;">🏇</div></div>
+                    <button id="start-pmu-btn" class="btn-action" style="width:100%; margin-top:10px;" onclick="runPMU()">START RACE</button>
                 </div>
 
-                <p id="pork-footer" style="margin-top:25px; color:#666; font-style:italic; border-top:1px solid #eee; padding-top:15px; font-size:0.8rem;">
-                    John Pork : "Allez, bois ton venin et rejoue !"
+                <p id="pork-footer" style="margin-top:20px; color:#777; font-style:italic; border-top:1px solid #ccc; padding-top:10px; font-size:0.7rem; text-align: left;">
+                    [LOG] John Pork : "T'as l'air minable. Bois et dégage."
                 </p>
             </div>
-            <button id="close-modal-btn" class="btn-done" onclick="closePork()">C'EST FAIT, JE REJOUE</button>
+            <button id="close-modal-btn" class="btn-done" onclick="closePork()">TERMINÉ</button>
         </div>
     </div>
 
@@ -378,7 +413,7 @@
         { q: "Quel est l'élément dont le symbole chimique est Au ?", r: "L'or" },
         { q: "Quel est le signe opposé au Scorpion dans le zodiaque ?", r: "Le Taureau" },
         { q: "Qui a écrit le roman américain classique 'Their Eyes Were Watching God' ?", r: "Zora Neale Hurston" },
-        { q: "Qui a tiré le coup de feu en 1914 qui a déclenché la Première Guerre mondiale ?", r: "L'archiduc François-Ferdinand (par Gavrilo Princip)" },
+        { q: "Qui a tiré le coup de feu en 1914 qui a déclenché la Première Guerre mondiale ?", r: "L'archiduc François-Ferdinand" },
         { q: "Quelle est la plus petite planète de notre système solaire ?", r: "Mercure" },
         { q: "Quel est le spectacle de Broadway le plus lucratif de tous les temps ?", r: "Le Roi Lion" },
         { q: "Comment s'appellent les 22 premières cartes d'un jeu de tarot ?", r: "Les Arcanes Majeurs" },
@@ -400,21 +435,13 @@
         { q: "Qui a écrit Les aventures de Sherlock Holmes ?", r: "Arthur Conan Doyle" },
         { q: "Quel animal sur le logo de Porsche ?", r: "Le cheval" },
         { q: "En quelle année le Titanic a-t-il coulé ?", r: "1912" },
-        { q: "Quelle est la plus grande île de la Méditerranée ?", r: "La Sicile" },
-        { q: "Quel pays a pour capitale Singapour ?", r: "Singapour" },
-        { q: "Qui détient le record d'Emmy Awards comme animateur de téléréalité ?", r: "RuPaul" },
-        { q: "Quelle ville a accueilli les JO d'hiver 2014 ?", r: "Sotchi" },
-        { q: "Quelle est la langue la plus parlée au Brésil ?", r: "Le portugais" },
-        { q: "Quel président figure sur le billet de 2 dollars ?", r: "Thomas Jefferson" },
-        { q: "Quelle est la température d'ébullition de l'eau ?", r: "100°C" },
-        { q: "Quel célèbre mouvement artistique Picasso a-t-il co-créé ?", r: "Le cubisme" },
-        { q: "Qui a composé la 'Sonate au clair de lune' ?", r: "Beethoven" }
+        { q: "Quelle est la plus grande île de la Méditerranée ?", r: "La Sicile" }
     ];
 
     const DATA = {
         pays: ["France", "USA", "Japon", "Italie", "Brésil", "Allemagne", "Russie", "Espagne", "Belgique", "Canada", "Mexique", "Portugal", "Suède", "Grèce"],
         categories: ["Marques de bière", "Marques de luxe", "Prénoms commençant par A", "Rappeurs français", "Jeux vidéo", "Séries Netflix", "Films d'horreur"],
-        adjectifs: ["le plus radin", "celui qui parle le plus fort", "le plus lourd", "celui qui va finir en PLS", "le plus mauvais perdant", "celui qui a le plus soif", "le plus de mauvaise foi", "le plus susceptible de finir ministre"],
+        adjectifs: ["le plus radin", "celui qui parle le plus fort", "le plus lourd", "celui qui va finir en PLS", "le plus mauvais perdant", "celui qui a le plus soif", "le plus susceptible de finir ministre"],
         lettres: ["A", "B", "C", "D", "E", "F", "G", "H", "L", "M", "N", "P", "R", "S", "T"]
     };
 
@@ -424,53 +451,51 @@
     let isDebugMode = false;
     let isReactionActive = false;
 
-    // --- TEMPLATES DES GAGES ---
     const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
     
     const DOUBLES_TEMPLATE = () => [
-        { id: "REACTION", t: "ON SE BOUGE !", d: "Clique sur le porc dès qu'il apparaît ! Si tu mets plus de 0.65s, tu bois une gorgée." },
-        { t: "LE SAVANT", d: `Cite 5 villes du pays suivant : ${rand(DATA.pays)} sans bégayer ou bois une gorgée.` },
-        { t: "L'ALPHABET", d: `Cite 3 éléments de "${rand(DATA.categories)}" commençant par la lettre ${rand(DATA.lettres)} ou bois une gorgée.` },
-        { t: "SANTÉ SOLO", d: "Punition directe de 3 gorgées pour toi l'ami." },
-        { id: "FLASH", t: "FLASH CONNAISSANCE", d: "Réponds à cette question ou bois une gorgée." },
-        { t: "CINÉMA", d: "Cite 3 films d'un même réalisateur de ton choix ou bois une gorgée." },
-        { t: "GASTRONOMIE", d: "Cite 3 types de fromages différents ou bois une gorgée." },
-        { t: "GÉO/TECH/NATURE", d: "Cite 3 fleuves célèbres ou 3 planètes du système solaire ou bois une gorgée." },
-        { t: "TOP 3", d: `Cite tes 3 pires ${rand(["exs", "coups", "souvenirs de soirée", "vacances"])} ou bois une gorgée.` },
-        { t: "IMITATION", d: "Imite une star ; si personne ne trouve en 20s, bois une gorgée." },
-        { t: "C'EST QUI ?", d: `Vote collectif : Qui est ${rand(DATA.adjectifs)} ? Le plus désigné boit 5 gorgées.` },
-        { t: "LA CIBLE", d: "Désigne une personne du groupe qui doit boire 3 gorgées immédiatement." },
-        { t: "LE DUEL", d: "Duel de Chifoumi contre ton voisin de droite. Le perdant boit 3 gorgées." },
-        { t: "FINGERS", d: "Le dernier à poser son doigt sur le bord de la table boit 3 gorgées." },
-        { t: "LA CHAÎNE", d: `Thème circulaire : ${rand(DATA.categories)}. Le premier qui sèche boit 4 gorgées.` },
-        { t: "DUEL DE REGARD", d: "Contre ton voisin de gauche ; le premier qui rit ou cligne boit 4 gorgées." },
-        { t: "RIZZ TIME", d: "Drague ton voisin de gauche, si c'est pas convaincant tu bois une gorgée." },
-        { t: "LE COMPTE", d: "Comptez jusqu'à 20 un par un. Si deux personnes parlent en même temps, tout le monde boit 3 et on recommence." },
-        { t: "JUMEAUX", d: "Désigne deux personnes qui boiront ensemble pour les trois prochains tours." },
-        { t: "TECHNO/SOCIAL", d: "La personne avec le plus de meufs dans ses dix derniers DMs Insta boit une gorgée." },
-        { t: "HOT TAKE", d: "Donnez une opinion controversée sur les BNZ, le pire fils de pute à le droit de distribuer une gorgée." },
-        { t: "CONNARD !", d: "Sors une phrase qu'un énorme connard pourrait dire. Si c'est trop light tu bois." }
+        { id: "REACTION", t: "REFLEXE MORTEL", d: "Clique sur le porc dès qu'il apparaît ! Plus de 0.65s = Tu bois." },
+        { t: "LE SAVANT", d: `Cite 5 villes de : ${rand(DATA.pays)} sans bégayer ou bois.` },
+        { t: "L'ALPHABET", d: `Cite 3 éléments de "${rand(DATA.categories)}" par la lettre ${rand(DATA.lettres)} ou bois.` },
+        { t: "SANTÉ SOLO", d: "La machine réclame son tribut. Bois 3 gorgées." },
+        { id: "FLASH", t: "FLASH INFO", d: "Réponds ou bois une gorgée." },
+        { t: "CINÉMA", d: "Cite 3 films d'un même réalisateur ou bois une gorgée." },
+        { t: "GASTRONOMIE", d: "Cite 3 types de fromages différents ou bois." },
+        { t: "GÉO/TECH/NATURE", d: "Cite 3 planètes ou 3 fleuves célèbres." },
+        { t: "TOP 3", d: `Cite tes 3 pires ${rand(["exs", "souvenirs de soirée", "vacances"])} ou bois.` },
+        { t: "IMITATION", d: "Imite une star ; si personne ne trouve en 20s, bois." },
+        { t: "C'EST QUI ?", d: `Vote : Qui est ${rand(DATA.adjectifs)} ? Le plus désigné boit 5 gorgées.` },
+        { t: "LA CIBLE", d: "Désigne une victime qui doit boire 3 gorgées immédiatement." },
+        { t: "LE DUEL", d: "Chifoumi contre ton voisin de droite. Le perdant boit 3." },
+        { t: "FINGERS", d: "Le dernier doigt sur la table boit 3 gorgées." },
+        { t: "LA CHAÎNE", d: `Thème : ${rand(DATA.categories)}. Le premier qui sèche boit 4.` },
+        { t: "DUEL DE REGARD", d: "Contre ton voisin de gauche. Le premier qui rit ou cligne boit 4." },
+        { t: "RIZZ TIME", d: "Drague ton voisin de gauche, si c'est pas convaincant tu bois." },
+        { t: "LE COMPTE", d: "Comptez jusqu'à 20. Si deux parlent en même temps, tout le monde boit 3." },
+        { t: "JUMEAUX", d: "Désigne deux personnes qui boiront ensemble pendant 3 tours." },
+        { t: "TECHNO/SOCIAL", d: "La personne avec le plus de meufs dans ses 10 derniers DMs Insta boit." },
+        { t: "HOT TAKE", d: "Opinion controversée sur les BNZ, le pire fdp distribue une gorgée." },
+        { t: "CONNARD !", d: "Sors une phrase d'énorme connard. Si c'est trop light tu bois." }
     ];
 
     const TRIPLES_TEMPLATE = () => [
-        { id: "PMU", t: "PMU", d: "Chacun choisit un cheval. Les gagnants distribuent 6 gorgées aux autres." },
-        { t: "CUL-SEC PARTIEL", d: "Bois la moitié de ton verre immédiatement. John Pork adore ça." },
-        { t: "LE PACTE", d: "Bois 3 gorgées ou parie sur le prochain tour (Gagnant/Perdant). Si tu perds le pari, finis ton verre." },
-        { t: "DOUBLE DOSE", d: "Tes 3 prochaines punitions (peu importe le spin) sont doublées. T'es maudit." },
-        { t: "LE CHOIX", d: "Soit tu bois 7 gorgées, soit tu montres ta dernière photo de téléphone au voisin." },
-        { t: "LE DICTATEUR", d: "Désigne deux personnes qui doivent finir leur verre immédiatement." },
-        { t: "DÉCRET ROYAL", d: "Installe une règle (ex: pas de prénoms). Chaque faute = 2 gorgées." },
-        { t: "L'ENCHÈRE", d: "Qui est prêt à boire le plus de gorgées ? Le gagnant sauve le groupe mais boit son annonce." },
-        { t: "LA CASCADE", d: "Waterfall ! Tout le monde boit, tu décides quand tu t'arrêtes." },
-        { t: "LE CAGEOT", d: "Désigne la personne avec le moins de flow. Elle séduit un objet pendant 1 min ou finit son verre." },
+        { id: "PMU", t: "BACKROOM PMU", d: "Chacun choisit son poulain. Les gagnants distribuent 6 gorgées." },
+        { t: "CUL-SEC PARTIEL", d: "Bois la moitié de ton verre immédiatement. C'est l'ordre du chef." },
+        { t: "LE PACTE", d: "Bois 3 ou parie sur le prochain spin. Échec = Finis ton verre." },
+        { t: "DOUBLE DOSE", d: "T'es marqué. Tes 3 prochaines punitions sont doublées." },
+        { t: "LE CHOIX", d: "Soit tu bois 7, soit tu montres ta dernière photo au voisin." },
+        { t: "LE DICTATEUR", d: "Désigne deux personnes qui doivent finir leur verre." },
+        { t: "DÉCRET ROYAL", d: "Installe une règle stupide. Chaque faute = 2 gorgées." },
+        { t: "L'ENCHÈRE", d: "Celui qui accepte de boire le plus sauve les autres." },
+        { t: "LA CASCADE", d: "Waterfall ! Personne ne s'arrête avant son voisin de gauche." },
+        { t: "LE CAGEOT", d: "Désigne le moins stylé. Il séduit un objet pendant 1 min ou finit son verre." },
         { t: "TRIBUNAL", d: "Le groupe vote pour celui qui doit boire 8 gorgées." },
-        { t: "ESPRIT D'ÉQUIPE", d: "Tout le monde finit son verre sauf toi. Sale traître." },
-        { t: "MAÎTRE DU JEU", d: "Distribue 10 gorgées comme tu veux." },
-        { t: "CHOIX DE PORK", d: "Soit tu bois 10 gorgées, soit tout le monde en boit 3." },
-        { t: "LA DERNIÈRE", d: "Tout le monde finit son verre. Santé !" }
+        { t: "ESPRIT D'ÉQUIPE", d: "Tout le monde finit son verre sauf toi. Traître." },
+        { t: "MAÎTRE DU JEU", d: "Distribue 10 gorgées à ta guise." },
+        { t: "CHOIX DE PORK", d: "Soit tu bois 10, soit tout le monde en boit 3." },
+        { t: "LA DERNIÈRE", d: "Tout le monde finit son verre. C'est la fin." }
     ];
 
-    // --- LOGIQUE DEBUG ---
     function toggleDebug() {
         isDebugMode = !isDebugMode;
         document.getElementById('debug-panel').classList.toggle('open');
@@ -500,25 +525,21 @@
         });
     }
 
-    // --- LOGIQUE JEU DE RÉACTION ---
     function startReactionGame() {
         const game = document.getElementById('reaction-game');
         const target = document.getElementById('target-pig');
         const msg = document.getElementById('reaction-message');
         game.style.display = 'block';
         target.style.display = 'none';
-        msg.innerText = "ATTENDS LE SIGNAL...";
-        msg.style.color = "#666";
+        msg.innerText = "ATTENDRE...";
         isReactionActive = true;
         reactionStartTime = 0;
-        
         const delay = Math.random() * 5000 + 2000;
         reactionTimeout = setTimeout(() => {
             if(!isReactionActive) return;
-            msg.innerText = "CLIQUE MAINTENANT !";
-            msg.style.color = "#d4af37";
+            msg.innerText = "CLIQUE !";
             target.style.display = 'block';
-            target.style.top = Math.random() * 150 + 20 + 'px';
+            target.style.top = Math.random() * 120 + 20 + 'px';
             target.style.left = Math.random() * 70 + 5 + '%';
             reactionStartTime = Date.now();
         }, delay);
@@ -529,52 +550,45 @@
         const msg = document.getElementById('reaction-message');
         const target = document.getElementById('target-pig');
         const extra = document.getElementById('gage-extra');
-        
         if (reactionStartTime === 0) {
             clearTimeout(reactionTimeout);
             msg.innerText = "TROP TÔT !";
-            extra.innerHTML = "<p style='color:red; font-weight:bold;'>T'es trop pressé mon gros. BOIS 2 GORGÉES.</p>";
+            extra.innerHTML = "<p style='color:#8b0000; font-weight:bold;'>T'es pressé ? BOIS 2 GORGÉES.</p>";
         } else {
             const diff = (Date.now() - reactionStartTime) / 1000;
             target.style.display = 'none';
             if (diff <= 0.65) {
-                msg.innerText = "GAGNÉ !";
-                extra.innerHTML = `<p style='color:green; font-weight:bold;'>Temps : ${diff}s. Propre. Tu distribues 2 gorgées.</p>`;
+                msg.innerText = "OK.";
+                extra.innerHTML = `<p style='color:#2d5a27; font-weight:bold;'>Temps : ${diff}s. Distribue 2 gorgées.</p>`;
             } else {
-                msg.innerText = "PERDU !";
-                extra.innerHTML = `<p style='color:red; font-weight:bold;'>Temps : ${diff}s. C'est trop lent ! BOIS 1 GORGÉE.</p>`;
+                msg.innerText = "LENT.";
+                extra.innerHTML = `<p style='color:#8b0000; font-weight:bold;'>Temps : ${diff}s. Trop lent. BOIS 1 GORGÉE.</p>`;
             }
         }
         isReactionActive = false;
         document.getElementById('close-modal-btn').style.display = 'block';
     }
 
-    // --- LOGIQUE PMU ---
     async function runPMU() {
         document.getElementById('start-pmu-btn').style.display = 'none';
         const horses = [document.getElementById('h1'), document.getElementById('h2'), document.getElementById('h3'), document.getElementById('h4')];
         let positions = [0, 0, 0, 0];
         let winner = -1;
-
         while(winner === -1) {
             for(let i=0; i<4; i++) {
-                // Progression beaucoup plus lente et aléatoire
-                positions[i] += Math.random() * 4; 
-                if (Math.random() > 0.8) positions[i] -= Math.random() * 2; // Ralentissement
+                positions[i] += Math.random() * 3.5; 
+                if (Math.random() > 0.85) positions[i] -= Math.random() * 1.5;
                 if (positions[i] < 0) positions[i] = 0;
-                
                 horses[i].style.left = positions[i] + '%';
-                if(positions[i] >= 88) winner = i + 1;
+                if(positions[i] >= 85) winner = i + 1;
             }
             await new Promise(r => setTimeout(r, 100));
         }
-        
-        const colors = ["Rouge", "Bleu", "Jaune", "Rose"];
-        document.getElementById('gage-extra').innerHTML = `<p style='font-size:1.5rem; color:#d4af37; font-weight:bold;'>LE CHEVAL ${colors[winner-1]} GAGNE !</p>`;
+        const colors = ["ROUGE", "BLEU", "JAUNE", "ROSE"];
+        document.getElementById('gage-extra').innerHTML = `<p style='font-size:1.5rem; color:#8b0000; font-weight:bold;'>${colors[winner-1]} GAGNE !</p>`;
         document.getElementById('close-modal-btn').style.display = 'block';
     }
 
-    // --- MOTEUR SLOT ---
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function beep(f, d, type = 'square') {
         const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
@@ -594,10 +608,8 @@
         if (audioCtx.state === 'suspended') await audioCtx.resume();
         document.getElementById('spin-btn').disabled = true;
         beep(200, 0.1);
-
         const luck = Math.random();
         let res = [], combo = "";
-
         if(luck < 0.04) { res = ['B', 'N', 'Z']; combo = "BNZ"; } 
         else if(luck < 0.15) { const s = symbols[Math.floor(Math.random()*4)]; res = [s, s, s]; combo = "TRIPLE"; } 
         else if(luck < 0.50) { 
@@ -615,7 +627,6 @@
             } while (s1 === s2 || s2 === s3 || s1 === s3 || (s1==='B' && s2==='N' && s3==='Z'));
             res = [s1, s2, s3];
         }
-
         const anims = [0,1,2].map(id => animateReel(id, res[id]));
         await Promise.all(anims);
         setTimeout(() => {
@@ -656,17 +667,14 @@
         document.getElementById('reaction-game').style.display = 'none';
         document.getElementById('pmu-game').style.display = 'none';
         document.getElementById('close-modal-btn').style.display = 'block';
-
         document.getElementById('pork-body').style.display = 'none';
         document.getElementById('pork-timer').style.display = 'block';
         document.getElementById('pork-modal').style.display = 'flex';
-
         for(let i=3; i>0; i--) {
             document.getElementById('pork-timer').innerText = i;
             beep(400, 0.1, 'square');
             await new Promise(r => setTimeout(r, 700));
         }
-
         document.getElementById('pork-timer').style.display = 'none';
         document.getElementById('pork-body').style.display = 'block';
         beep(150, 0.4, 'sawtooth');
