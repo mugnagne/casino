@@ -6,25 +6,23 @@
     <title>Casino BNZ - Dirty Vegas</title>
     <style>
         :root {
-            /* Palette sun-faded et miteuse */
             --gold: #c5a059;
             --gold-glow: #ffd700;
             --red: #5e1c1c;
-            --dark: #121212;
-            --grime: rgba(0, 0, 0, 0.4);
+            --dark: #0a0a0a;
             --neon-pink: #ff0055;
             --neon-blue: #00d4ff;
-            --pork-pink: #d4a5a5;
+            --dirty-paper: #e6dfcc;
             --emoji-font: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
         }
 
         body {
             background: var(--dark);
             background-image: 
-                radial-gradient(circle at 50% 50%, transparent 80%, rgba(0,0,0,0.8) 100%),
+                radial-gradient(circle at 50% 50%, transparent 70%, rgba(0,0,0,0.9) 100%),
                 url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3Base-filter id='noiseFilter'%3Base-furbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
             color: #ddd;
-            font-family: 'Courier New', Courier, monospace; /* Style machine à écrire / vieille facture */
+            font-family: 'Courier New', Courier, monospace;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -33,12 +31,11 @@
             overflow: hidden;
         }
 
-        /* --- EFFET DE SALETÉ GÉNÉRAL --- */
         body::before {
             content: "";
             position: fixed;
             inset: 0;
-            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3B%3Cfilter id='noise'%3B%3CfeTurbulence type='fractalNoise' baseFrequency='0.01' numOctaves='2'/%3B%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3B%3Cfilter id='noise'%3B%3CfeTurbulence type='fractalNoise' baseFrequency='0.01' numOctaves='2'/%3B%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
             pointer-events: none;
             z-index: 5000;
         }
@@ -47,30 +44,26 @@
         #setup-screen {
             position: fixed;
             inset: 0;
-            background: #0a0a0a;
+            background: #000;
             z-index: 2000;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border: 20px solid #222;
+            border: 20px solid #1a1a1a;
             text-align: center;
-            box-shadow: inset 0 0 100px #000;
+            box-shadow: inset 0 0 150px #000;
         }
 
         .neon-text {
             color: #fff;
-            text-shadow: 
-                0 0 5px #fff,
-                0 0 10px var(--neon-pink),
-                0 0 20px var(--neon-pink),
-                0 0 40px var(--neon-pink);
-            animation: flicker 2s infinite alternate;
+            text-shadow: 0 0 5px #fff, 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+            animation: flicker 3s infinite alternate;
         }
 
         @keyframes flicker {
-            0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
-            20%, 24%, 55% { opacity: 0.3; }
+            0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; text-shadow: 0 0 5px #fff, 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink); }
+            20%, 24%, 55% { opacity: 0.4; text-shadow: none; }
         }
 
         .btn-enter {
@@ -82,282 +75,107 @@
             font-weight: 900;
             cursor: pointer;
             text-transform: uppercase;
-            box-shadow: 0 0 15px rgba(197, 160, 89, 0.3);
-            transition: 0.2s;
+            transition: all 0.2s ease;
             margin-top: 20px;
         }
 
-        .btn-enter:hover {
-            background: var(--gold);
-            color: #000;
-            box-shadow: 0 0 30px var(--gold);
-        }
+        .btn-enter:hover { background: var(--gold); color: #000; box-shadow: 0 0 40px var(--gold-glow); transform: scale(1.05); }
 
         /* --- INTERFACE PRINCIPALE --- */
         .header {
             width: 100%;
-            padding: 10px 40px;
+            padding: 15px 40px;
             background: #000;
-            border-bottom: 2px solid #333;
+            border-bottom: 2px solid #222;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-sizing: border-box;
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
-        }
+        .logo { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 5px; color: var(--neon-blue); text-shadow: 0 0 8px var(--neon-blue); }
 
         .casino-unit {
             margin-top: 40px;
-            padding: 25px;
-            background: #2a2a2a;
-            background-image: radial-gradient(circle at 20% 30%, rgba(0,0,0,0.1) 0%, transparent 50%);
-            border: 8px solid #444;
-            border-radius: 5px;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.8), inset 0 0 20px #000;
+            padding: 30px;
+            background: #222;
+            background-image: linear-gradient(45deg, #2a2a2a 25%, transparent 25%), linear-gradient(-45deg, #2a2a2a 25%, transparent 25%);
+            background-size: 4px 4px;
+            border: 10px solid #333;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9), inset 0 0 30px #000;
             position: relative;
         }
 
-        /* Taches sur la machine */
-        .casino-unit::after {
-            content: "";
-            position: absolute;
-            top: 10px; right: 20px;
-            width: 40px; height: 30px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 50%;
-            filter: blur(10px);
-            pointer-events: none;
-        }
+        .stain { position: absolute; background: rgba(80, 50, 20, 0.15); border-radius: 50%; filter: blur(15px); pointer-events: none; }
 
-        .reels-view {
-            display: flex;
-            gap: 10px;
-            background: #050505;
-            padding: 15px;
-            border: 4px solid #1a1a1a;
-            height: 140px;
-            overflow: hidden;
-        }
+        .reels-view { display: flex; gap: 12px; background: #020202; padding: 20px; border: 5px solid #111; height: 140px; overflow: hidden; }
 
-        .reel-track {
-            width: 100px;
-            display: flex;
-            flex-direction: column;
-            will-change: transform;
-            border-left: 1px solid #111;
-            border-right: 1px solid #111;
-        }
+        .reel-track { width: 100px; display: flex; flex-direction: column; will-change: transform; }
 
-        .symbol {
-            width: 100px;
-            height: 140px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            flex-shrink: 0;
-            font-family: var(--emoji-font);
-            filter: sepia(0.3) contrast(1.1); /* Rendu un peu sun-faded */
-        }
+        .symbol { width: 100px; height: 140px; display: flex; align-items: center; justify-content: center; font-size: 4rem; flex-shrink: 0; font-family: var(--emoji-font); filter: sepia(0.4) brightness(0.9); }
 
-        .sym-B, .sym-N, .sym-Z {
-            font-family: 'Arial Black', sans-serif;
-            font-weight: 900;
-            color: #ccc;
-        }
-        .sym-B { background: #0a192f; border: 1px solid #1e3a8a; }
-        .sym-N { background: #2d0a0a; border: 1px solid #991b1b; }
-        .sym-Z { background: #0a2d1e; border: 1px solid #065f46; }
+        .sym-B, .sym-N, .sym-Z { font-family: 'Arial Black', sans-serif; font-weight: 900; color: #aaa; }
+        .sym-B { background: #051020; border: 1px solid #1e3a8a; }
+        .sym-N { background: #200505; border: 1px solid #991b1b; }
+        .sym-Z { background: #052010; border: 1px solid #065f46; }
 
         .spin-btn {
             margin-top: 40px;
-            padding: 20px 80px;
-            background: #333;
+            padding: 20px 90px;
+            background: #2a2a2a;
             color: var(--gold);
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 900;
-            border: 3px solid var(--gold);
+            border: 4px solid var(--gold);
             cursor: pointer;
-            box-shadow: 0 5px 0 #111;
+            box-shadow: 6px 6px 0px #000;
             transition: 0.1s;
             text-transform: uppercase;
         }
 
-        .spin-btn:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 #111;
-        }
+        .spin-btn:hover { color: #fff; box-shadow: 8px 8px 0px #000, 0 0 20px rgba(197, 160, 89, 0.3); transform: translate(-2px, -2px); }
+        .spin-btn:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px #000; }
 
-        .spin-btn:hover {
-            background: #444;
-            text-shadow: 0 0 10px var(--gold-glow);
-        }
-
-        /* --- MODALE STYLE "BACK-ROOM" --- */
-        #pork-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.95);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .countdown {
-            font-size: 10rem;
-            color: #444;
-            font-weight: 900;
-            font-family: 'Impact', sans-serif;
-        }
-
-        #pork-body {
-            text-align: center;
-            max-width: 700px;
-            width: 95%;
-        }
-
-        .pork-avatar {
-            font-size: 80px;
-            margin-bottom: 10px;
-            filter: grayscale(0.5) sepia(0.5);
-        }
-
-        .pork-speech {
-            background: #e6dfcc; /* Vieux papier / carton sale */
-            background-image: radial-gradient(circle at 10% 10%, rgba(0,0,0,0.05) 0%, transparent 20%);
-            color: #222;
-            padding: 30px;
-            border: 2px solid #888;
-            box-shadow: 10px 10px 0px #000;
-            min-height: 250px;
-            position: relative;
-        }
-
-        /* Simulation de taches sur le papier */
-        .pork-speech::before {
-            content: "";
-            position: absolute;
-            bottom: 20px; right: 30px;
-            width: 60px; height: 40px;
-            background: rgba(139, 69, 19, 0.1);
-            border-radius: 50%;
-            filter: blur(8px);
-        }
-
-        .gage-name { font-family: 'Impact', sans-serif; font-size: 1.8rem; margin: 0 0 10px 0; color: #000; text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 5px; }
-        .gage-rule { font-size: 1.3rem; line-height: 1.4; color: #333; font-weight: bold; }
-
-        .btn-action {
-            margin-top: 15px;
-            padding: 10px 20px;
-            background: #000;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .btn-done {
-            margin-top: 30px;
-            padding: 15px 40px;
-            background: var(--gold);
-            color: #000;
-            border: 2px solid #000;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 5px 5px 0px #000;
-        }
+        /* --- MODALE --- */
+        #pork-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
+        .countdown { font-size: 12rem; color: #333; font-weight: 900; font-family: 'Impact', sans-serif; }
+        .pork-speech { background: var(--dirty-paper); color: #1a1a1a; padding: 40px; border: 3px solid #666; box-shadow: 15px 15px 0px #000; min-height: 280px; position: relative; max-width: 750px; width: 90%; }
+        .gage-name { font-family: 'Impact', sans-serif; font-size: 2rem; color: #000; text-transform: uppercase; border-bottom: 3px double #000; padding-bottom: 8px; margin-bottom: 15px; }
+        .gage-rule { font-size: 1.4rem; line-height: 1.4; color: #222; font-weight: bold; }
+        .btn-action { margin-top: 20px; padding: 12px 25px; background: #000; color: #fff; border: none; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        .btn-done { margin-top: 40px; padding: 18px 50px; background: var(--gold); color: #000; border: 3px solid #000; font-size: 1.4rem; font-weight: 900; cursor: pointer; box-shadow: 8px 8px 0px #000; transition: 0.2s; }
+        .btn-done:hover { transform: translate(-2px, -2px); box-shadow: 10px 10px 0px #000; }
 
         /* --- MINI JEUX --- */
-        #reaction-game {
-            display: none;
-            width: 100%;
-            height: 200px;
-            background: #ccc;
-            position: relative;
-            border: 2px solid #666;
-            margin-top: 10px;
-        }
-
-        #pmu-game {
-            display: none;
-            width: 100%;
-            background: #1a331a;
-            padding: 15px;
-            margin-top: 10px;
-            border: 2px solid #000;
-        }
-
-        .horse-track {
-            height: 40px;
-            border-bottom: 1px dashed rgba(255,255,255,0.2);
-            position: relative;
-        }
+        #reaction-game { display: none; width: 100%; height: 220px; background: #bbb; position: relative; border: 3px solid #444; margin-top: 15px; overflow: hidden; }
+        #pmu-game { display: none; width: 100%; background: #0f2b0f; padding: 20px; margin-top: 15px; border: 4px inset #000; box-sizing: border-box; }
+        .horse-track { height: 45px; border-bottom: 2px dashed rgba(255,255,255,0.15); position: relative; display: flex; align-items: center; }
+        .horse { position: absolute; left: 0; font-size: 32px; transition: left 0.15s linear; z-index: 2; }
+        .finish-line { position: absolute; right: 10%; top: 0; bottom: 0; width: 4px; background: repeating-linear-gradient(0deg, #fff, #fff 10px, #000 10px, #000 20px); opacity: 0.5; }
 
         /* --- DEBUG PANEL --- */
-        #debug-panel {
-            position: fixed;
-            right: -320px;
-            top: 0;
-            width: 300px;
-            height: 100vh;
-            background: #000;
-            border-left: 1px solid #333;
-            z-index: 3000;
-            transition: 0.3s;
-            display: flex;
-            flex-direction: column;
-            padding: 15px;
-            box-sizing: border-box;
-            overflow-y: auto;
-            font-size: 0.8rem;
-        }
+        #debug-panel { position: fixed; right: -320px; top: 0; width: 300px; height: 100vh; background: #050505; border-left: 2px solid var(--gold); z-index: 3000; transition: 0.3s; padding: 20px; box-sizing: border-box; overflow-y: auto; }
         #debug-panel.open { right: 0; }
-        .debug-toggle {
-            position: fixed;
-            bottom: 5px;
-            left: 5px;
-            background: transparent;
-            color: #333;
-            border: none;
-            font-size: 0.5rem;
-            cursor: pointer;
-            z-index: 3001;
-        }
+        .debug-toggle { position: fixed; bottom: 5px; left: 5px; background: transparent; color: #222; border: none; font-size: 0.5rem; cursor: pointer; z-index: 3001; }
 
-        @keyframes shake {
-            0% { transform: translate(1px, 1px); }
-            50% { transform: translate(-1px, -1px); }
-            100% { transform: translate(1px, -1px); }
-        }
+        @keyframes shake { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-1px, -1px); } 100% { transform: translate(1px, -1px); } }
     </style>
 </head>
 <body>
 
     <div id="setup-screen">
-        <h1 class="neon-text" style="font-size: 3.5rem; margin-bottom: 5px;">CASINO BNZ</h1>
-        <p style="font-size: 1.2rem; color: #555; margin-bottom: 30px; font-style: italic;">"What happens in the basement, stays in the basement."</p>
-        <button class="btn-enter" onclick="initGame()">Entrer à vos risques</button>
-        <div style="margin-top: 50px; opacity: 0.2; font-size: 0.7rem;">Propriété de John Pork Entreprises © 1984</div>
+        <h1 class="neon-text" style="font-size: 4rem; margin-bottom: 5px; font-family: 'Impact', sans-serif;">CASINO BNZ</h1>
+        <p style="font-size: 1.4rem; color: #444; margin-bottom: 30px; font-style: italic; letter-spacing: 2px;">"Dirty Vegas Basement"</p>
+        <button class="btn-enter" onclick="initGame()">Entrer dans le tripot</button>
     </div>
 
     <div class="header">
-        <div class="logo">Casino <span style="color:var(--neon-pink)">BNZ</span></div>
-        <div style="color:#555; font-size: 0.8rem;">SÉCURITÉ ACTIVE : 🐷</div>
+        <div class="logo">Tripot <span style="color:var(--neon-pink)">BNZ</span></div>
+        <div style="color:#444; font-size: 0.7rem; font-family: monospace;">[SERVER_STATUS: DIRTY]</div>
     </div>
 
     <div class="casino-unit">
+        <div class="stain" style="width:100px; height:80px; top:-20px; left:40px;"></div>
         <div class="reels-view">
             <div class="reel-track" id="r0"><div class="symbol">🎰</div></div>
             <div class="reel-track" id="r1"><div class="symbol">🎰</div></div>
@@ -367,225 +185,177 @@
 
     <button id="spin-btn" class="spin-btn" onclick="play()">Actionner</button>
 
-    <button class="debug-toggle" onclick="toggleDebug()">[ADMIN]</button>
+    <button class="debug-toggle" onclick="toggleDebug()">[ADMIN_DUMP]</button>
     <div id="debug-panel">
-        <h2 style="color:var(--gold); border-bottom: 1px solid #333;">DEBUG.EXE</h2>
+        <h2 style="color:var(--gold); font-size: 1rem; border-bottom: 1px solid #333;">DEBUG_LOGS.SYS</h2>
         <div id="debug-content"></div>
     </div>
 
     <div id="pork-modal">
         <div id="pork-timer" class="countdown">3</div>
         <div id="pork-body" style="display:none;">
-            <div class="pork-avatar">🐷</div>
+            <div class="pork-avatar" style="animation: shake 0.2s infinite">🐷</div>
             <div class="pork-speech">
                 <h2 id="gage-title" class="gage-name"></h2>
-                
                 <div id="gage-content">
                     <div id="gage-desc" class="gage-rule"></div>
-                    <div id="gage-extra" style="margin-top:10px;"></div>
+                    <div id="gage-extra" style="margin-top:15px;"></div>
                 </div>
-
                 <div id="reaction-game" onclick="handleReactionClick()">
-                    <div id="target-pig" style="display:none; position:absolute; font-size:50px; cursor:pointer;">🐷</div>
-                    <div id="reaction-message" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#888; font-weight:bold;">ATTENDRE...</div>
+                    <div id="target-pig" style="display:none; position:absolute; font-size:55px; cursor:pointer;">🐷</div>
+                    <div id="reaction-message" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#555; font-weight:900; font-size:1.8rem; text-transform:uppercase;">Ne bouge pas...</div>
                 </div>
-
                 <div id="pmu-game">
-                    <div class="horse-track"><div class="horse" id="h1" style="border: 2px solid #f00;">🏇</div></div>
-                    <div class="horse-track"><div class="horse" id="h2" style="border: 2px solid #00f;">🏇</div></div>
-                    <div class="horse-track"><div class="horse" id="h3" style="border: 2px solid #ff0;">🏇</div></div>
-                    <div class="horse-track"><div class="horse" id="h4" style="border: 2px solid #f0f;">🏇</div></div>
-                    <button id="start-pmu-btn" class="btn-action" style="width:100%; margin-top:10px;" onclick="runPMU()">START RACE</button>
+                    <div class="finish-line"></div>
+                    <div class="horse-track"><div class="horse" id="h1" style="filter: drop-shadow(0 0 5px red)">🏇</div></div>
+                    <div class="horse-track"><div class="horse" id="h2" style="filter: drop-shadow(0 0 5px blue)">🏇</div></div>
+                    <div class="horse-track"><div class="horse" id="h3" style="filter: drop-shadow(0 0 5px yellow)">🏇</div></div>
+                    <div class="horse-track"><div class="horse" id="h4" style="filter: drop-shadow(0 0 5px purple)">🏇</div></div>
+                    <button id="start-pmu-btn" class="btn-action" style="width:100%; margin-top:20px; font-size:1.2rem;" onclick="runPMU()">LANCER LA COURSE</button>
                 </div>
-
-                <p id="pork-footer" style="margin-top:20px; color:#777; font-style:italic; border-top:1px solid #ccc; padding-top:10px; font-size:0.7rem; text-align: left;">
-                    [LOG] John Pork : "T'as l'air minable. Bois et dégage."
+                <p id="pork-footer" style="margin-top:25px; color:#666; font-style:italic; border-top:1px dashed #999; padding-top:15px; font-size:0.75rem; text-align: left;">
+                    [DÉCRYPTAGE] John Pork : "T'es une déception. Bois ton venin."
                 </p>
             </div>
-            <button id="close-modal-btn" class="btn-done" onclick="closePork()">TERMINÉ</button>
+            <button id="close-modal-btn" class="btn-done" onclick="closePork()">C'EST FAIT</button>
         </div>
     </div>
 
 <script>
     const QUESTIONS = [
-        { q: "Qui a été la première femme à recevoir un prix Nobel en 1903 ?", r: "Marie Curie" },
+        { q: "Qui a été la première femme à recevoir un prix Nobel ?", r: "Marie Curie" },
         { q: "En quelle année le mur de Berlin est-il tombé ?", r: "1989" },
-        { q: "Quel est l'élément dont le symbole chimique est Au ?", r: "L'or" },
-        { q: "Quel est le signe opposé au Scorpion dans le zodiaque ?", r: "Le Taureau" },
-        { q: "Qui a écrit le roman américain classique 'Their Eyes Were Watching God' ?", r: "Zora Neale Hurston" },
-        { q: "Qui a tiré le coup de feu en 1914 qui a déclenché la Première Guerre mondiale ?", r: "L'archiduc François-Ferdinand" },
-        { q: "Quelle est la plus petite planète de notre système solaire ?", r: "Mercure" },
-        { q: "Quel est le spectacle de Broadway le plus lucratif de tous les temps ?", r: "Le Roi Lion" },
-        { q: "Comment s'appellent les 22 premières cartes d'un jeu de tarot ?", r: "Les Arcanes Majeurs" },
-        { q: "Quelle est la capitale de l'Inde ?", r: "New Delhi" },
-        { q: "Sous quel nom la viande de cerf apparaît-elle sur le menu ?", r: "Le chevreuil" },
-        { q: "Quel est le plus grand organe du corps humain ?", r: "La peau" },
-        { q: "En quelle année le premier iPhone a-t-il été commercialisé ?", r: "2007" },
-        { q: "Quels sont les prénoms des quatre personnages de 'H' ?", r: "Jamel, Brahim, Aymé et Kader" },
-        { q: "Combien d'os les requins ont-ils ?", r: "Zéro !" },
-        { q: "Quel est l'animal le plus mortel au monde ?", r: "Le moustique" },
-        { q: "Dans quel pays est né Che Guevara ?", r: "L'Argentine" },
-        { q: "Quelle célébrité a inspiré le nom du premier mouton cloné (Dolly) ?", r: "Dolly Parton" },
-        { q: "Quel est le fleuve qui traverse Paris ?", r: "La Seine" },
-        { q: "Combien de couleurs dans un sachet de M&Ms ?", r: "Six" },
-        { q: "Quel pays a offert la statue de la Liberté aux USA ?", r: "La France" },
-        { q: "Quelle boisson alcoolisée est fabriquée à partir de baies de genévrier ?", r: "Le gin" },
-        { q: "Où se trouve le plus petit os du corps humain ?", r: "L'oreille" },
-        { q: "Quelle est la capitale du Canada ?", r: "Ottawa" },
-        { q: "Qui a écrit Les aventures de Sherlock Holmes ?", r: "Arthur Conan Doyle" },
-        { q: "Quel animal sur le logo de Porsche ?", r: "Le cheval" },
-        { q: "En quelle année le Titanic a-t-il coulé ?", r: "1912" },
-        { q: "Quelle est la plus grande île de la Méditerranée ?", r: "La Sicile" }
+        { q: "Quel est l'élément chimique Au ?", r: "L'or" },
+        { q: "Signe opposé au Scorpion ?", r: "Le Taureau" },
+        { q: "Qui a tué l'archiduc François-Ferdinand ?", r: "Gavrilo Princip" },
+        { q: "Plus petite planète du système solaire ?", r: "Mercure" },
+        { q: "Spectacle le plus lucratif de Broadway ?", r: "Le Roi Lion" },
+        { q: "Comment s'appellent les 22 premières cartes d'un tarot ?", r: "Les Arcanes Majeurs" },
+        { q: "Capitale de l'Inde ?", r: "New Delhi" },
+        { q: "Plus grand organe du corps ?", r: "La peau" },
+        { q: "Année du premier iPhone ?", r: "2007" },
+        { q: "Les 4 prénoms dans 'H' ?", r: "Jamel, Brahim, Aymé et Kader" },
+        { q: "Os chez les requins ?", r: "Zéro" },
+        { q: "Animal le plus mortel ?", r: "Le moustique" },
+        { q: "Berceau de Che Guevara ?", r: "Argentine" },
+        { q: "Fleuve à Paris ?", r: "La Seine" },
+        { q: "Couleurs dans un M&Ms ?", r: "Six" },
+        { q: "Plus petit os du corps ?", r: "Étrier (oreille)" },
+        { q: "Capitale du Canada ?", r: "Ottawa" },
+        { q: "Auteur de Sherlock Holmes ?", r: "Arthur Conan Doyle" },
+        { q: "Animal logo de Porsche ?", r: "Le cheval" },
+        { q: "Plus grande île de Méditerranée ?", r: "La Sicile" }
     ];
 
     const DATA = {
-        pays: ["France", "USA", "Japon", "Italie", "Brésil", "Allemagne", "Russie", "Espagne", "Belgique", "Canada", "Mexique", "Portugal", "Suède", "Grèce"],
-        categories: ["Marques de bière", "Marques de luxe", "Prénoms commençant par A", "Rappeurs français", "Jeux vidéo", "Séries Netflix", "Films d'horreur"],
-        adjectifs: ["le plus radin", "celui qui parle le plus fort", "le plus lourd", "celui qui va finir en PLS", "le plus mauvais perdant", "celui qui a le plus soif", "le plus susceptible de finir ministre"],
+        pays: ["France", "USA", "Japon", "Italie", "Brésil", "Allemagne", "Russie", "Espagne", "Canada", "Mexique"],
+        categories: ["Bière", "Luxe", "Prénoms en A", "Rappeurs FR", "Jeux vidéo", "Séries", "Horreur", "Fromages"],
+        adjectifs: ["le plus radin", "celui qui parle fort", "le plus lourd", "celui qui va finir en PLS", "le plus de mauvaise foi"],
         lettres: ["A", "B", "C", "D", "E", "F", "G", "H", "L", "M", "N", "P", "R", "S", "T"]
     };
 
     const symbols = ['🐷', '🐗', '🍺', '💀'];
-    let reactionStartTime = 0;
-    let reactionTimeout = null;
-    let isDebugMode = false;
-    let isReactionActive = false;
-
+    let reactionStartTime = 0, reactionTimeout = null, lastGageTitle = "", isReactionActive = false;
     const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
     
+    // --- TEMPLATES RECALIBRÉS (Ratio ~1.75 sips/token) ---
     const DOUBLES_TEMPLATE = () => [
-        { id: "REACTION", t: "REFLEXE MORTEL", d: "Clique sur le porc dès qu'il apparaît ! Plus de 0.65s = Tu bois." },
-        { t: "LE SAVANT", d: `Cite 5 villes de : ${rand(DATA.pays)} sans bégayer ou bois.` },
-        { t: "L'ALPHABET", d: `Cite 3 éléments de "${rand(DATA.categories)}" par la lettre ${rand(DATA.lettres)} ou bois.` },
-        { t: "SANTÉ SOLO", d: "La machine réclame son tribut. Bois 3 gorgées." },
+        { id: "REACTION", t: "REFLEXE MORTEL", d: "Clique sur le porc dès qu'il apparaît ! Trop lent = Tu bois 1." },
+        { t: "LE SAVANT", d: `Cite 5 villes de : ${rand(DATA.pays)} sans bégayer ou bois 1.` },
+        { t: "L'ALPHABET", d: `Cite 3 éléments de "${rand(DATA.categories)}" par la lettre ${rand(DATA.lettres)} ou bois 1.` },
+        { t: "SANTÉ SOLO", d: "La machine réclame son tribut. Bois 2 gorgées." },
         { id: "FLASH", t: "FLASH INFO", d: "Réponds ou bois une gorgée." },
         { t: "CINÉMA", d: "Cite 3 films d'un même réalisateur ou bois une gorgée." },
-        { t: "GASTRONOMIE", d: "Cite 3 types de fromages différents ou bois." },
-        { t: "GÉO/TECH/NATURE", d: "Cite 3 planètes ou 3 fleuves célèbres." },
-        { t: "TOP 3", d: `Cite tes 3 pires ${rand(["exs", "souvenirs de soirée", "vacances"])} ou bois.` },
-        { t: "IMITATION", d: "Imite une star ; si personne ne trouve en 20s, bois." },
-        { t: "C'EST QUI ?", d: `Vote : Qui est ${rand(DATA.adjectifs)} ? Le plus désigné boit 5 gorgées.` },
-        { t: "LA CIBLE", d: "Désigne une victime qui doit boire 3 gorgées immédiatement." },
-        { t: "LE DUEL", d: "Chifoumi contre ton voisin de droite. Le perdant boit 3." },
-        { t: "FINGERS", d: "Le dernier doigt sur la table boit 3 gorgées." },
-        { t: "LA CHAÎNE", d: `Thème : ${rand(DATA.categories)}. Le premier qui sèche boit 4.` },
-        { t: "DUEL DE REGARD", d: "Contre ton voisin de gauche. Le premier qui rit ou cligne boit 4." },
-        { t: "RIZZ TIME", d: "Drague ton voisin de gauche, si c'est pas convaincant tu bois." },
-        { t: "LE COMPTE", d: "Comptez jusqu'à 20. Si deux parlent en même temps, tout le monde boit 3." },
+        { t: "GASTRONOMIE", d: "Cite 3 types de fromages différents ou bois 2." },
+        { t: "TOP 3", d: `Cite tes 3 pires ${rand(["exs", "souvenirs"])} ou bois 2.` },
+        { t: "IMITATION", d: "Imite une star ; si personne ne trouve en 20s, bois 1." },
+        { t: "C'EST QUI ?", d: `Vote : Qui est ${rand(DATA.adjectifs)} ? Le plus désigné boit 4 gorgées.` },
+        { t: "LA CIBLE", d: "Désigne une victime qui doit boire 2 gorgées immédiatement." },
+        { t: "LE DUEL", d: "Chifoumi contre ton voisin. Le perdant boit 2." },
+        { t: "FINGERS", d: "Le dernier doigt sur la table boit 2 gorgées." },
+        { t: "LA CHAÎNE", d: `Thème : ${rand(DATA.categories)}. Le premier qui sèche boit 3.` },
+        { t: "DUEL DE REGARD", d: "Contre ton voisin. Le premier qui rit ou cligne boit 3." },
+        { t: "RIZZ TIME", d: "Drague ton voisin de gauche, si c'est pas convaincant tu bois 1." },
+        { t: "LE COMPTE", d: "Comptez jusqu'à 20. Si deux parlent en même temps, tout le monde boit 2." },
         { t: "JUMEAUX", d: "Désigne deux personnes qui boiront ensemble pendant 3 tours." },
-        { t: "TECHNO/SOCIAL", d: "La personne avec le plus de meufs dans ses 10 derniers DMs Insta boit." },
-        { t: "HOT TAKE", d: "Opinion controversée sur les BNZ, le pire fdp distribue une gorgée." },
-        { t: "CONNARD !", d: "Sors une phrase d'énorme connard. Si c'est trop light tu bois." }
+        { t: "CONNARD !", d: "Sors une phrase d'énorme connard. Si c'est trop light tu bois 2." }
     ];
 
     const TRIPLES_TEMPLATE = () => [
-        { id: "PMU", t: "BACKROOM PMU", d: "Chacun choisit son poulain. Les gagnants distribuent 6 gorgées." },
-        { t: "CUL-SEC PARTIEL", d: "Bois la moitié de ton verre immédiatement. C'est l'ordre du chef." },
-        { t: "LE PACTE", d: "Bois 3 ou parie sur le prochain spin. Échec = Finis ton verre." },
-        { t: "DOUBLE DOSE", d: "T'es marqué. Tes 3 prochaines punitions sont doublées." },
-        { t: "LE CHOIX", d: "Soit tu bois 7, soit tu montres ta dernière photo au voisin." },
-        { t: "LE DICTATEUR", d: "Désigne deux personnes qui doivent finir leur verre." },
-        { t: "DÉCRET ROYAL", d: "Installe une règle stupide. Chaque faute = 2 gorgées." },
-        { t: "L'ENCHÈRE", d: "Celui qui accepte de boire le plus sauve les autres." },
+        { id: "PMU", t: "BACKROOM PMU", d: "Chacun choisit son poulain. Les gagnants distribuent 5 gorgées." },
+        { t: "CUL-SEC PARTIEL", d: "Bois la moitié de ton verre immédiatement." },
+        { t: "LE PACTE", d: "Bois 2 ou parie sur le prochain spin. Échec = Finis ton verre." },
+        { t: "DOUBLE DOSE", d: "Tes 2 prochaines punitions sont doublées." },
+        { t: "LE CHOIX", d: "Soit tu bois 5, soit tu montres ta dernière photo au voisin." },
+        { t: "LE DICTATEUR", d: "Désigne deux personnes qui doivent boire 5 gorgées." },
+        { t: "DÉCRET ROYAL", d: "Installe une règle. Chaque faute = 1 gorgée." },
+        { t: "L'ENCHÈRE", d: "Enchère de gorgées. Le gagnant sauve le groupe mais boit son annonce." },
         { t: "LA CASCADE", d: "Waterfall ! Personne ne s'arrête avant son voisin de gauche." },
-        { t: "LE CAGEOT", d: "Désigne le moins stylé. Il séduit un objet pendant 1 min ou finit son verre." },
-        { t: "TRIBUNAL", d: "Le groupe vote pour celui qui doit boire 8 gorgées." },
-        { t: "ESPRIT D'ÉQUIPE", d: "Tout le monde finit son verre sauf toi. Traître." },
-        { t: "MAÎTRE DU JEU", d: "Distribue 10 gorgées à ta guise." },
-        { t: "CHOIX DE PORK", d: "Soit tu bois 10, soit tout le monde en boit 3." },
-        { t: "LA DERNIÈRE", d: "Tout le monde finit son verre. C'est la fin." }
+        { t: "LE CAGEOT", d: "Le moins stylé séduit un objet pendant 1 min ou bois 6." },
+        { t: "TRIBUNAL", d: "Le groupe vote pour celui qui doit boire 6 gorgées." },
+        { t: "ESPRIT D'ÉQUIPE", d: "Tout le monde finit son verre sauf toi." },
+        { t: "CHOIX DE PORK", d: "Soit tu bois 8, soit tout le monde en boit 2." }
     ];
 
-    function toggleDebug() {
-        isDebugMode = !isDebugMode;
-        document.getElementById('debug-panel').classList.toggle('open');
-        if (isDebugMode) populateDebugMenu();
-    }
+    function toggleDebug() { document.getElementById('debug-panel').classList.toggle('open'); if (document.getElementById('debug-panel').classList.contains('open')) populateDebugMenu(); }
 
     function populateDebugMenu() {
-        const content = document.getElementById('debug-content');
-        content.innerHTML = '';
-        const sections = [
-            { title: "JACKPOT", list: [{ t: "BNZ JACKPOT", id: "BNZ" }] },
-            { title: "DOUBLES", list: DOUBLES_TEMPLATE() },
-            { title: "TRIPLES", list: TRIPLES_TEMPLATE() }
-        ];
+        const content = document.getElementById('debug-content'); content.innerHTML = '';
+        const sections = [{ title: "JACKPOT", list: [{ t: "BNZ JACKPOT", id: "BNZ" }] }, { title: "DOUBLES", list: DOUBLES_TEMPLATE() }, { title: "TRIPLES", list: TRIPLES_TEMPLATE() }];
         sections.forEach(section => {
-            const title = document.createElement('div');
-            title.className = 'debug-section-title';
-            title.innerText = section.title;
-            content.appendChild(title);
+            const title = document.createElement('div'); title.style = "color:var(--gold); border-bottom:1px solid #333; margin-top:10px; font-weight:bold;";
+            title.innerText = section.title; content.appendChild(title);
             section.list.forEach(gage => {
-                const btn = document.createElement('div');
-                btn.className = 'debug-btn';
-                btn.innerText = gage.t;
-                btn.onclick = () => { toggleDebug(); showGageModal(gage, section.title === "JACKPOT" ? "BNZ" : (section.title === "DOUBLES" ? "DOUBLE" : "TRIPLE")); };
+                const btn = document.createElement('div'); btn.style = "background:#111; color:#eee; border:1px solid #222; padding:5px; margin-top:3px; cursor:pointer; font-size:0.7rem;";
+                btn.innerText = gage.t; btn.onclick = () => { toggleDebug(); showGageModal(gage, section.title === "JACKPOT" ? "BNZ" : (section.title === "DOUBLES" ? "DOUBLE" : "TRIPLE")); };
                 content.appendChild(btn);
             });
         });
     }
 
     function startReactionGame() {
-        const game = document.getElementById('reaction-game');
-        const target = document.getElementById('target-pig');
-        const msg = document.getElementById('reaction-message');
-        game.style.display = 'block';
-        target.style.display = 'none';
-        msg.innerText = "ATTENDRE...";
-        isReactionActive = true;
-        reactionStartTime = 0;
-        const delay = Math.random() * 5000 + 2000;
+        const game = document.getElementById('reaction-game'), target = document.getElementById('target-pig'), msg = document.getElementById('reaction-message');
+        game.style.display = 'block'; target.style.display = 'none'; msg.innerText = "Ne bouge pas...";
+        isReactionActive = true; reactionStartTime = 0;
+        const delay = Math.random() * 4000 + 2000;
         reactionTimeout = setTimeout(() => {
             if(!isReactionActive) return;
-            msg.innerText = "CLIQUE !";
-            target.style.display = 'block';
-            target.style.top = Math.random() * 120 + 20 + 'px';
-            target.style.left = Math.random() * 70 + 5 + '%';
+            msg.innerText = "CLIQUE !"; target.style.display = 'block';
+            target.style.top = Math.random() * 120 + 20 + 'px'; target.style.left = Math.random() * 70 + 5 + '%';
             reactionStartTime = Date.now();
         }, delay);
     }
 
     function handleReactionClick() {
         if (!isReactionActive) return;
-        const msg = document.getElementById('reaction-message');
-        const target = document.getElementById('target-pig');
-        const extra = document.getElementById('gage-extra');
+        const msg = document.getElementById('reaction-message'), extra = document.getElementById('gage-extra');
         if (reactionStartTime === 0) {
-            clearTimeout(reactionTimeout);
-            msg.innerText = "TROP TÔT !";
-            extra.innerHTML = "<p style='color:#8b0000; font-weight:bold;'>T'es pressé ? BOIS 2 GORGÉES.</p>";
+            clearTimeout(reactionTimeout); msg.innerText = "TROP TÔT !";
+            extra.innerHTML = "<p style='color:red; font-weight:bold;'>Trop pressé. BOIS 2.</p>";
         } else {
             const diff = (Date.now() - reactionStartTime) / 1000;
-            target.style.display = 'none';
-            if (diff <= 0.65) {
-                msg.innerText = "OK.";
-                extra.innerHTML = `<p style='color:#2d5a27; font-weight:bold;'>Temps : ${diff}s. Distribue 2 gorgées.</p>`;
-            } else {
-                msg.innerText = "LENT.";
-                extra.innerHTML = `<p style='color:#8b0000; font-weight:bold;'>Temps : ${diff}s. Trop lent. BOIS 1 GORGÉE.</p>`;
-            }
+            document.getElementById('target-pig').style.display = 'none';
+            if (diff <= 0.65) { msg.innerText = "OK."; extra.innerHTML = `<p style='color:green; font-weight:bold;'>${diff}s. Distribue 1.</p>`; }
+            else { msg.innerText = "TROP LENT."; extra.innerHTML = `<p style='color:red; font-weight:bold;'>${diff}s. BOIS 1.</p>`; }
         }
-        isReactionActive = false;
-        document.getElementById('close-modal-btn').style.display = 'block';
+        isReactionActive = false; document.getElementById('close-modal-btn').style.display = 'block';
     }
 
     async function runPMU() {
         document.getElementById('start-pmu-btn').style.display = 'none';
         const horses = [document.getElementById('h1'), document.getElementById('h2'), document.getElementById('h3'), document.getElementById('h4')];
-        let positions = [0, 0, 0, 0];
-        let winner = -1;
+        let positions = [0, 0, 0, 0], winner = -1;
         while(winner === -1) {
             for(let i=0; i<4; i++) {
-                positions[i] += Math.random() * 3.5; 
-                if (Math.random() > 0.85) positions[i] -= Math.random() * 1.5;
-                if (positions[i] < 0) positions[i] = 0;
-                horses[i].style.left = positions[i] + '%';
-                if(positions[i] >= 85) winner = i + 1;
+                positions[i] += Math.random() * 2.2; 
+                if (Math.random() > 0.9) positions[i] -= 0.8;
+                horses[i].style.left = Math.max(0, positions[i]) + '%';
+                if(positions[i] >= 88) winner = i + 1;
             }
-            await new Promise(r => setTimeout(r, 100));
+            await new Promise(r => setTimeout(r, 120));
         }
         const colors = ["ROUGE", "BLEU", "JAUNE", "ROSE"];
-        document.getElementById('gage-extra').innerHTML = `<p style='font-size:1.5rem; color:#8b0000; font-weight:bold;'>${colors[winner-1]} GAGNE !</p>`;
+        document.getElementById('gage-extra').innerHTML = `<p style='font-size:1.2rem; color:#8b0000; font-weight:bold; border:2px solid #000; padding:10px;'>VICTOIRE DU ${colors[winner-1]} !</p>`;
         document.getElementById('close-modal-btn').style.display = 'block';
     }
 
@@ -598,62 +368,40 @@
         o.start(); o.stop(audioCtx.currentTime + d);
     }
 
-    function initGame() {
-        document.getElementById('setup-screen').style.display = 'none';
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        beep(400, 0.2);
-    }
+    function initGame() { document.getElementById('setup-screen').style.display = 'none'; if (audioCtx.state === 'suspended') audioCtx.resume(); beep(400, 0.2); }
 
     async function play() {
         if (audioCtx.state === 'suspended') await audioCtx.resume();
-        document.getElementById('spin-btn').disabled = true;
-        beep(200, 0.1);
+        document.getElementById('spin-btn').disabled = true; beep(200, 0.1);
         const luck = Math.random();
         let res = [], combo = "";
         if(luck < 0.04) { res = ['B', 'N', 'Z']; combo = "BNZ"; } 
         else if(luck < 0.15) { const s = symbols[Math.floor(Math.random()*4)]; res = [s, s, s]; combo = "TRIPLE"; } 
-        else if(luck < 0.50) { 
-            const s = symbols[Math.floor(Math.random()*4)];
-            let s2; do { s2 = symbols[Math.floor(Math.random()*4)]; } while(s2 === s);
-            res = [s, s, s2].sort(() => Math.random() - 0.5);
-            combo = "DOUBLE";
-        } 
-        else { 
-            let s1, s2, s3;
-            do {
-                s1 = Math.random() > 0.8 ? 'B' : symbols[Math.floor(Math.random()*4)];
-                s2 = Math.random() > 0.8 ? 'N' : symbols[Math.floor(Math.random()*4)];
-                s3 = Math.random() > 0.8 ? 'Z' : symbols[Math.floor(Math.random()*4)];
-            } while (s1 === s2 || s2 === s3 || s1 === s3 || (s1==='B' && s2==='N' && s3==='Z'));
-            res = [s1, s2, s3];
-        }
+        else if(luck < 0.50) { const s = symbols[Math.floor(Math.random()*4)]; let s2; do { s2 = symbols[Math.floor(Math.random()*4)]; } while(s2 === s); res = [s, s, s2].sort(() => Math.random() - 0.5); combo = "DOUBLE"; } 
+        else { let s1, s2, s3; do { s1 = Math.random() > 0.8 ? 'B' : symbols[Math.floor(Math.random()*4)]; s2 = Math.random() > 0.8 ? 'N' : symbols[Math.floor(Math.random()*4)]; s3 = Math.random() > 0.8 ? 'Z' : symbols[Math.floor(Math.random()*4)]; } while (s1 === s2 || s2 === s3 || s1 === s3 || (s1==='B' && s2==='N' && s3==='Z')); res = [s1, s2, s3]; }
         const anims = [0,1,2].map(id => animateReel(id, res[id]));
         await Promise.all(anims);
         setTimeout(() => {
             if(combo !== "") {
-                const gage = combo === "BNZ" ? { t: "JACKPOT BNZ", d: "Victoire collective ! Votre équipe gagne 25 JETONS IRL pour l'enchère." } : (combo === "DOUBLE" ? rand(DOUBLES_TEMPLATE()) : rand(TRIPLES_TEMPLATE()));
+                let gage;
+                const pool = (combo === "BNZ") ? [{ t: "JACKPOT BNZ", d: "Victoire collective ! Votre équipe gagne 25 JETONS IRL." }] : (combo === "DOUBLE" ? DOUBLES_TEMPLATE() : TRIPLES_TEMPLATE());
+                do { gage = rand(pool); } while (gage.t === lastGageTitle && pool.length > 1);
+                lastGageTitle = gage.t;
                 showGageModal(gage, combo);
-            } else {
-                document.getElementById('spin-btn').disabled = false;
-            }
+            } else { document.getElementById('spin-btn').disabled = false; }
         }, 500);
     }
 
     function animateReel(id, target) {
         return new Promise(resolve => {
-            const track = document.getElementById('r'+id);
-            const count = 25 + (id * 7);
+            const track = document.getElementById('r'+id), count = 25 + (id * 7);
             track.innerHTML = '';
             for(let i=0; i<count; i++) {
-                const div = document.createElement('div');
-                const s = (i === count - 1) ? target : symbols[Math.floor(Math.random() * 4)];
-                div.innerText = s;
-                div.className = `symbol ${['B','N','Z'].includes(s) ? 'sym-'+s : ''}`;
+                const div = document.createElement('div'), s = (i === count - 1) ? target : symbols[Math.floor(Math.random() * 4)];
+                div.innerText = s; div.className = `symbol ${['B','N','Z'].includes(s) ? 'sym-'+s : ''}`;
                 track.appendChild(div);
             }
-            track.style.transition = 'none';
-            track.style.transform = 'translateY(0)';
-            track.offsetHeight;
+            track.style.transition = 'none'; track.style.transform = 'translateY(0)'; track.offsetHeight;
             track.style.transition = `transform ${1.8 + id*0.5}s cubic-bezier(0.1, 0, 0, 1)`;
             track.style.transform = `translateY(-${(count-1)*140}px)`;
             setTimeout(() => { beep(200 + (id*100), 0.15, 'triangle'); resolve(); }, 1800 + id*500);
@@ -666,41 +414,27 @@
         document.getElementById('gage-extra').innerHTML = "";
         document.getElementById('reaction-game').style.display = 'none';
         document.getElementById('pmu-game').style.display = 'none';
-        document.getElementById('close-modal-btn').style.display = 'block';
+        document.getElementById('close-modal-btn').style.display = 'none';
         document.getElementById('pork-body').style.display = 'none';
         document.getElementById('pork-timer').style.display = 'block';
         document.getElementById('pork-modal').style.display = 'flex';
-        for(let i=3; i>0; i--) {
-            document.getElementById('pork-timer').innerText = i;
-            beep(400, 0.1, 'square');
-            await new Promise(r => setTimeout(r, 700));
-        }
+        for(let i=3; i>0; i--) { document.getElementById('pork-timer').innerText = i; beep(400, 0.1, 'square'); await new Promise(r => setTimeout(r, 700)); }
         document.getElementById('pork-timer').style.display = 'none';
         document.getElementById('pork-body').style.display = 'block';
         beep(150, 0.4, 'sawtooth');
-
         if(gage.id === "FLASH") {
-            const quest = rand(QUESTIONS);
-            document.getElementById('gage-desc').innerText = quest.q;
-            document.getElementById('gage-extra').innerHTML = `<button class="btn-action" onclick="this.innerText='${quest.r.replace(/'/g, "\\'")}'">VOIR LA RÉPONSE</button>`;
-        } else if(gage.id === "REACTION") {
-            document.getElementById('close-modal-btn').style.display = 'none';
-            startReactionGame();
-        } else if(gage.id === "PMU") {
-            document.getElementById('close-modal-btn').style.display = 'none';
+            const q = rand(QUESTIONS); document.getElementById('gage-desc').innerText = q.q;
+            document.getElementById('gage-extra').innerHTML = `<button class="btn-action" onclick="this.innerText='${q.r.replace(/'/g, "\\'")}'">VOIR LA RÉPONSE</button>`;
+            document.getElementById('close-modal-btn').style.display = 'block';
+        } else if(gage.id === "REACTION") { startReactionGame(); }
+        else if(gage.id === "PMU") { 
             document.getElementById('pmu-game').style.display = 'block';
             document.getElementById('start-pmu-btn').style.display = 'block';
-            const hs = [document.getElementById('h1'), document.getElementById('h2'), document.getElementById('h3'), document.getElementById('h4')];
-            hs.forEach(h => h.style.left = '0%');
-        }
+            [1,2,3,4].forEach(i => document.getElementById('h'+i).style.left = '0%');
+        } else { document.getElementById('close-modal-btn').style.display = 'block'; }
     }
 
-    function closePork() {
-        isReactionActive = false;
-        document.getElementById('pork-modal').style.display = 'none';
-        document.getElementById('spin-btn').disabled = false;
-        beep(600, 0.1);
-    }
+    function closePork() { isReactionActive = false; document.getElementById('pork-modal').style.display = 'none'; document.getElementById('spin-btn').disabled = false; beep(600, 0.1); }
 </script>
 </body>
 </html>
